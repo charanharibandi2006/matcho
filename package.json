@@ -1,0 +1,33 @@
+{
+  "name": "matcho",
+  "version": "1.0.0",
+  "description": "Matcho is a modern multi-sport tournament management platform designed to simplify the organization of sports events. It enables organizers to create tournaments, manage teams, schedule matches, update live scores, and provide real-time updates to spectators through a single platform.",
+  "main": "src/server.js",
+  "scripts": {
+  "start": "node src/server.js",
+  "dev": "nodemon src/server.js"
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/charanharibandi2006/matcho.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/charanharibandi2006/matcho/issues"
+  },
+  "homepage": "https://github.com/charanharibandi2006/matcho#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.2",
+    "jsonwebtoken": "^9.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
