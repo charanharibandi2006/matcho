@@ -1,0 +1,134 @@
+.app-shell {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(90deg, rgba(20, 30, 58, 0.08), transparent 18%, transparent 82%, rgba(20, 30, 58, 0.08)),
+    url('./assets/images/desktop.png') top center / 100% auto no-repeat,
+    #f7f9ff;
+}
+
+.auth-form {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 0;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1.5px solid #e7e8f3;
+  background: #f7f9ff;
+  font: inherit;
+  font-size: 14.5px;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: #5644ff;
+}
+.brand-mark {
+  position: relative;
+  z-index: 8;
+  width: 300px;
+  height: 300px;
+  display: grid;
+  place-items: center;
+  margin-top: 110px;
+  border-radius: 50%;
+  background: #ede3ff;
+}
+.brand-mark-login{
+    
+    /* position: relative; */
+    /* z-index: 8; */
+    width: 300px;
+    height: 300px;
+    display: grid;
+    place-items: center;
+    margin-top: 10px;
+    border-radius: 50%;
+    /* background: #ede3ff; */
+
+}
+.brand-logo {
+  width: 250px;
+  height: auto;
+}
+
+.splash-copy {
+  position: relative;
+  z-index: 3;
+  margin-top: 26px;
+  text-align: center;
+}
+
+.splash-copy h1 {
+  margin: 0;
+  color: #151b2d;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.08;
+}
+
+.auth-actions {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 80px;
+}
+
+.primary-action {
+  width: min(320px, 100%);
+  min-height: 50px;
+  border: 0;
+  border-radius: 15px;
+  background: linear-gradient(100deg, #2767f0 0%, #9b2ee9 100%);
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 16px 30px rgba(89, 80, 233, 0.18);
+}
+
+.primary-action:focus-visible,
+.auth-actions a:focus-visible {
+  outline: 3px solid rgba(47, 111, 240, 0.32);
+  outline-offset: 3px;
+}
+
+.auth-actions p {
+  margin: 0;
+  color: #8e8e98;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.auth-actions a {
+  color: #5644ff;
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+@media (min-height: 760px) {
+  .app-shell {
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    background:
+      linear-gradient(90deg, rgba(20, 30, 58, 0.08), transparent 18%, transparent 82%, rgba(20, 30, 58, 0.08)),
+      url('./assets/images/mobile.png') top center / 100% auto repeat,
+      #f7f9ff;
+  }
+}
+
