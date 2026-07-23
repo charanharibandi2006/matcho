@@ -21,17 +21,24 @@ const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = {
-        id: users.length + 1,
-        name,
-        email,
-        password: hashedPassword
-    };
+    id: users.length + 1,
+    name,
+    email,
+    password: hashedPassword,
+    role: "organizer" // Default role
+};
 
     users.push(newUser);
 
     res.status(201).json({
-        message: "User registered successfully"
-    });
+    success: true,
+    message: "User registered successfully",
+    user: {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email
+    }
+});
 };
 
 // Login
@@ -55,11 +62,19 @@ const login = async (req, res) => {
         });
     }
 
-    const token = jwt.sign(
-        { id: user.id, email: user.email },
-        process.env.JWT_SECRET,
-        { expiresIn: "1h" }
-    );
+console.log("JWT Secret while signing:", process.env.JWT_SECRET);
+
+const token = jwt.sign(
+  {
+    id: user.id,
+    email: user.email,
+    role: user.role
+  },
+  process.env.JWT_SECRET,
+  {
+    expiresIn: "24h"   // instead of "1h"
+  }
+);
 
     res.json({
         message: "Login successful",

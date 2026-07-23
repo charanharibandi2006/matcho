@@ -15,7 +15,9 @@ Content-Type: application/json
 
 ###
 
-### Login User
+### Login
+# @name login
+
 POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
@@ -23,11 +25,16 @@ Content-Type: application/json
   "email": "cheran@gmail.com",
   "password": "password123"
 }
+###
 
+### Get Users
 GET http://localhost:5000/api/users
+
+###
 
 ### Create Tournament
 POST http://localhost:5000/api/tournaments
+Authorization: Bearer {{login.response.body.token}}
 Content-Type: application/json
 
 {
@@ -41,49 +48,183 @@ Content-Type: application/json
 ### Get All Tournaments
 GET http://localhost:5000/api/tournaments
 
+###
 
-### Get Tournament by ID
+### Get Tournament By ID
 GET http://localhost:5000/api/tournaments/1
 
-
+###
 
 ### Update Tournament
 PUT http://localhost:5000/api/tournaments/1
+Authorization: Bearer {{login.response.body.token}}
 Content-Type: application/json
 
 {
   "name": "State Cricket Championship"
 }
 
+###
+
 ### Delete Tournament
 DELETE http://localhost:5000/api/tournaments/1
+Authorization: Bearer {{login.response.body.token}}
+
+###
 
 ### Invalid Registration Test
 POST http://localhost:5000/api/auth/register
 Content-Type: application/json
 
 {
-    "name": "",
-    "email": "abc",
-    "password": "123"
+  "name": "",
+  "email": "abc",
+  "password": "123"
 }
+
+###
 
 ### Invalid Tournament Creation Test
 POST http://localhost:5000/api/tournaments
+Authorization: Bearer {{login.response.body.token}}
 Content-Type: application/json
 
 {
-    "name": "",
-    "sport": "",
-    "date": ""
+  "name": "",
+  "sport": "",
+  "date": ""
 }
 
-#### Create Another Tournament
+###
+
+### Create Another Tournament
 POST http://localhost:5000/api/tournaments
+Authorization: Bearer {{login.response.body.token}}
 Content-Type: application/json
 
 {
-    "name": "Football League",
-    "sport": "Football",
-    "date": "2026-08-20"
+  "name": "Football League",
+  "sport": "Football",
+  "date": "2026-08-20"
 }
+
+###
+
+### Get All Tournaments After Adding Another
+GET http://localhost:5000/api/tournaments
+
+###
+
+### Create Player Profile
+POST http://localhost:5000/api/player/profile
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "fullName": "Cheran",
+  "mobile": "9876543210",
+  "email": "cheran@gmail.com",
+  "dob": "2004-06-15",
+  "gender": "Male",
+  "profilePhoto": "profile.jpg"
+}
+
+###
+
+### Get Player Profile
+GET http://localhost:5000/api/player/profile
+Authorization: Bearer {{login.response.body.token}}
+
+###
+
+### Update Player Profile
+PUT http://localhost:5000/api/player/profile
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "mobile": "9999999999"
+}
+
+### Create Team
+POST http://localhost:5000/api/teams
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "teamName": "Warriors",
+  "sport": "Cricket",
+  "captain": "Cheran"
+}
+
+###
+
+### Get All Teams
+GET http://localhost:5000/api/teams
+
+###
+
+### Get Team By ID
+GET http://localhost:5000/api/teams/1
+
+###
+
+### Update Team
+PUT http://localhost:5000/api/teams/1
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "captain": "Rahul"
+}
+
+###
+
+### Delete Team
+DELETE http://localhost:5000/api/teams/1
+Authorization: Bearer {{login.response.body.token}}
+
+### Create Match
+
+POST http://localhost:5000/api/matches
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+    "tournamentId": 1,
+    "teamA": "Warriors",
+    "teamB": "Titans",
+    "venue": "Ground A",
+    "matchDate": "2026-08-15",
+    "matchTime": "10:00 AM"
+}
+
+### Get All Matches
+
+GET http://localhost:5000/api/matches
+
+### Get Match By ID
+
+GET http://localhost:5000/api/matches/1
+
+### Update Match
+
+PUT http://localhost:5000/api/matches/1
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+    "tournamentId": 1,
+    "teamA": "Warriors",
+    "teamB": "Titans",
+    "venue": "Ground B",
+    "matchDate": "2026-08-16",
+    "matchTime": "11:00 AM",
+    "status": "Completed",
+    "winner": "Warriors"
+}
+
+### Delete Match
+
+DELETE http://localhost:5000/api/matches/1
+Authorization: Bearer {{login.response.body.token}}

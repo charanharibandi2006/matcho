@@ -4,6 +4,10 @@ const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const tournamentRoutes = require("./routes/tournamentRoutes");
+const playerRoutes = require("./routes/playerRoutes");
+const teamRoutes = require("./routes/teamRoutes");
+const matchRoutes = require("./routes/matchRoutes");
+
 
 const app = express();
 
@@ -11,6 +15,9 @@ const errorHandler = require("./middleware/errorHandler");
 // Middlewares
 app.use(cors());
 app.use(express.json());
+app.use("/api/player", playerRoutes);
+app.use("/api/teams", teamRoutes);
+app.use("/api/matches", matchRoutes);
 
 // Home Route
 app.get("/", (req, res) => {
