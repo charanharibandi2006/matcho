@@ -7,7 +7,8 @@ const tournamentRoutes = require("./routes/tournamentRoutes");
 const playerRoutes = require("./routes/playerRoutes");
 const teamRoutes = require("./routes/teamRoutes");
 const matchRoutes = require("./routes/matchRoutes");
-
+const registrationRoutes = require("./routes/registrationRoutes");
+const fixtureRoutes = require("./routes/fixtureRoutes");
 
 const app = express();
 
@@ -18,6 +19,8 @@ app.use(express.json());
 app.use("/api/player", playerRoutes);
 app.use("/api/teams", teamRoutes);
 app.use("/api/matches", matchRoutes);
+app.use("/api/registrations", registrationRoutes);
+app.use("/api/fixtures", fixtureRoutes);
 
 // Home Route
 app.get("/", (req, res) => {

@@ -1,4 +1,4 @@
-const matches = [];
+const { matches } = require("../data/dataStore");
 
 // Create Match
 const createMatch = (req, res) => {

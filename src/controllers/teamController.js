@@ -1,4 +1,4 @@
-const teams = [];
+const { teams } = require("../data/dataStore");
 
 // Create Team
 const createTeam = (req, res) => {

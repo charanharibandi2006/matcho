@@ -38,8 +38,8 @@ Authorization: Bearer {{login.response.body.token}}
 Content-Type: application/json
 
 {
-  "name": "Inter College Cricket Cup",
-  "sport": "Cricket",
+  "name": "Apartment Badminton Tournament",
+  "sport": "Badminton",
   "date": "2026-08-01"
 }
 
@@ -67,7 +67,7 @@ Content-Type: application/json
 ###
 
 ### Delete Tournament
-DELETE http://localhost:5000/api/tournaments/1
+DELETE http://localhost:5000/api/tournaments/2
 Authorization: Bearer {{login.response.body.token}}
 
 ###
@@ -228,3 +228,65 @@ Content-Type: application/json
 
 DELETE http://localhost:5000/api/matches/1
 Authorization: Bearer {{login.response.body.token}}
+
+
+### Register Player for Tournament
+
+POST http://localhost:5000/api/registrations
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+    "tournamentId": 1,
+    "playerName": "Ramana",
+    "college": "VCE",
+    "phone": "7894561230"
+}
+
+### Get Registrations
+
+GET http://localhost:5000/api/registrations
+
+
+#### Generate Fixtures for Tournament
+POST http://localhost:5000/api/fixtures/generate/2
+Authorization: Bearer {{login.response.body.token}}
+
+### Generate Fixtures for Tournament
+POST http://localhost:5000/api/fixtures/generate/1
+Authorization: Bearer {{login.response.body.token}}
+
+
+#### Get Fixtures for Tournament
+GET http://localhost:5000/api/fixtures/1
+
+
+#### Update Fixture Score
+PUT http://localhost:5000/api/fixtures/score/7
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+    "playerAScore": 48,
+    "playerBScore": 46
+}
+
+#### Generate Next Round Fixtures
+POST http://localhost:5000/api/fixtures/next-round/1
+Authorization: Bearer {{login.response.body.token}}
+
+#### Get Fixture by ID
+GET http://localhost:5000/api/fixtures/1
+
+### Create Tournament
+POST http://localhost:5000/api/tournaments
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "name": "Apartment Badminton Tournament",
+  "sport": "Badminton",
+  "date": "2026-08-01"
+}
+
+###

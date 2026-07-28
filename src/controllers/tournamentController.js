@@ -1,4 +1,4 @@
-let tournaments = [];
+const { tournaments } = require("../data/dataStore");
 
 // Create Tournament
 const createTournament = (req, res, next) => {

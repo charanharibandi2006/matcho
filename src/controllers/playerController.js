@@ -1,5 +1,5 @@
 // Temporary storage
-const playerProfiles = [];
+const { playerProfiles } = require("../data/dataStore");
 
 // Create Player Profile
 const createPlayerProfile = (req, res) => {
