@@ -1,292 +1,231 @@
-### Home
+###STEP 1 – Home Route
 GET http://localhost:5000/
 
-###
-
-### Register User
+### STEP 2 – Register Organizer
 POST http://localhost:5000/api/auth/register
 Content-Type: application/json
 
 {
-  "name": "Cheran",
-  "email": "cheran@gmail.com",
-  "password": "password123"
+    "name":"Cheran",
+    "email":"cheran@gmail.com",
+    "password":"password123"
 }
 
-###
-
-### Login
+### STEP 3 – Login
 # @name login
 
 POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "cheran@gmail.com",
-  "password": "password123"
+    "email":"cheran@gmail.com",
+    "password":"password123"
 }
-###
 
-### Get Users
-GET http://localhost:5000/api/users
-
-###
-
-### Create Tournament
+### STEP 4 – Create Singles Tournament
 POST http://localhost:5000/api/tournaments
 Authorization: Bearer {{login.response.body.token}}
 Content-Type: application/json
 
 {
-  "name": "Apartment Badminton Tournament",
-  "sport": "Badminton",
-  "date": "2026-08-01"
+    "name":"Inter College Singles",
+    "sport":"Badminton",
+    "format":"Singles",
+    "fixtureType":"Random",
+    "date":"2026-09-10"
 }
 
-###
+### STEP 5 – Create Doubles Tournament
+POST http://localhost:5000/api/tournaments
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
 
-### Get All Tournaments
+{
+    "name":"Inter College Doubles",
+    "sport":"Badminton",
+    "format":"Doubles",
+    "fixtureType":"Random",
+    "date":"2026-09-15"
+}
+
+### STEP 6 – Verify Tournaments
 GET http://localhost:5000/api/tournaments
 
-###
-
-### Get Tournament By ID
-GET http://localhost:5000/api/tournaments/1
-
-###
-
-### Update Tournament
-PUT http://localhost:5000/api/tournaments/1
-Authorization: Bearer {{login.response.body.token}}
-Content-Type: application/json
-
-{
-  "name": "State Cricket Championship"
-}
-
-###
-
-### Delete Tournament
-DELETE http://localhost:5000/api/tournaments/2
-Authorization: Bearer {{login.response.body.token}}
-
-###
-
-### Invalid Registration Test
-POST http://localhost:5000/api/auth/register
-Content-Type: application/json
-
-{
-  "name": "",
-  "email": "abc",
-  "password": "123"
-}
-
-###
-
-### Invalid Tournament Creation Test
-POST http://localhost:5000/api/tournaments
-Authorization: Bearer {{login.response.body.token}}
-Content-Type: application/json
-
-{
-  "name": "",
-  "sport": "",
-  "date": ""
-}
-
-###
-
-### Create Another Tournament
-POST http://localhost:5000/api/tournaments
-Authorization: Bearer {{login.response.body.token}}
-Content-Type: application/json
-
-{
-  "name": "Football League",
-  "sport": "Football",
-  "date": "2026-08-20"
-}
-
-###
-
-### Get All Tournaments After Adding Another
-GET http://localhost:5000/api/tournaments
-
-###
-
-### Create Player Profile
-POST http://localhost:5000/api/player/profile
-Authorization: Bearer {{login.response.body.token}}
-Content-Type: application/json
-
-{
-  "fullName": "Cheran",
-  "mobile": "9876543210",
-  "email": "cheran@gmail.com",
-  "dob": "2004-06-15",
-  "gender": "Male",
-  "profilePhoto": "profile.jpg"
-}
-
-###
-
-### Get Player Profile
-GET http://localhost:5000/api/player/profile
-Authorization: Bearer {{login.response.body.token}}
-
-###
-
-### Update Player Profile
-PUT http://localhost:5000/api/player/profile
-Authorization: Bearer {{login.response.body.token}}
-Content-Type: application/json
-
-{
-  "mobile": "9999999999"
-}
-
-### Create Team
-POST http://localhost:5000/api/teams
-Authorization: Bearer {{login.response.body.token}}
-Content-Type: application/json
-
-{
-  "teamName": "Warriors",
-  "sport": "Cricket",
-  "captain": "Cheran"
-}
-
-###
-
-### Get All Teams
-GET http://localhost:5000/api/teams
-
-###
-
-### Get Team By ID
-GET http://localhost:5000/api/teams/1
-
-###
-
-### Update Team
-PUT http://localhost:5000/api/teams/1
-Authorization: Bearer {{login.response.body.token}}
-Content-Type: application/json
-
-{
-  "captain": "Rahul"
-}
-
-###
-
-### Delete Team
-DELETE http://localhost:5000/api/teams/1
-Authorization: Bearer {{login.response.body.token}}
-
-### Create Match
-
-POST http://localhost:5000/api/matches
-Authorization: Bearer {{login.response.body.token}}
-Content-Type: application/json
-
-{
-    "tournamentId": 1,
-    "teamA": "Warriors",
-    "teamB": "Titans",
-    "venue": "Ground A",
-    "matchDate": "2026-08-15",
-    "matchTime": "10:00 AM"
-}
-
-### Get All Matches
-
-GET http://localhost:5000/api/matches
-
-### Get Match By ID
-
-GET http://localhost:5000/api/matches/1
-
-### Update Match
-
-PUT http://localhost:5000/api/matches/1
-Authorization: Bearer {{login.response.body.token}}
-Content-Type: application/json
-
-{
-    "tournamentId": 1,
-    "teamA": "Warriors",
-    "teamB": "Titans",
-    "venue": "Ground B",
-    "matchDate": "2026-08-16",
-    "matchTime": "11:00 AM",
-    "status": "Completed",
-    "winner": "Warriors"
-}
-
-### Delete Match
-
-DELETE http://localhost:5000/api/matches/1
-Authorization: Bearer {{login.response.body.token}}
-
-
-### Register Player for Tournament
-
+### STEP 7 – Register Singles Players
 POST http://localhost:5000/api/registrations
 Authorization: Bearer {{login.response.body.token}}
 Content-Type: application/json
 
 {
-    "tournamentId": 1,
-    "playerName": "Ramana",
-    "college": "VCE",
-    "phone": "7894561230"
+    "tournamentId":1,
+    "playerName":"Sai",
+    "college":"VCE",
+    "phone":"9000000001"
+}
+### Player 2
+POST http://localhost:5000/api/registrations
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+    "tournamentId":1,
+    "playerName":"Rahul",
+    "college":"VCE",
+    "phone":"9000000001"
 }
 
-### Get Registrations
+### Player 3
+POST http://localhost:5000/api/registrations
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
 
+{
+    "tournamentId":1,
+    "playerName":"Cheran",
+    "college":"VCE",
+    "phone":"9000000001"
+}
+
+### Player 4
+POST http://localhost:5000/api/registrations
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+    "tournamentId":1,
+    "playerName":"Pranav",
+    "college":"VCE",
+    "phone":"9000000001"
+}
+
+### Player 5
+POST http://localhost:5000/api/registrations
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+    "tournamentId":1,
+    "playerName":"Varun",
+    "college":"VCE",
+    "phone":"9000000001"
+}
+
+### Player 6
+POST http://localhost:5000/api/registrations
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+    "tournamentId":1,
+    "playerName":"Damodhar",
+    "college":"VCE",
+    "phone":"9000000001"
+}
+
+### Player 7
+POST http://localhost:5000/api/registrations
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+    "tournamentId":1,
+    "playerName":"Raju",
+    "college":"VCE",
+    "phone":"9000000001"
+}
+
+### Player 8
+POST http://localhost:5000/api/registrations
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+    "tournamentId":1,
+    "playerName":"Ranga",
+    "college":"VCE",
+    "phone":"9000000001"
+}
+
+### STEP 8 – Register Doubles Players
+##Already Added dummy data
+
+
+### STEP 9 – Verify Registrations
 GET http://localhost:5000/api/registrations
 
-
-#### Generate Fixtures for Tournament
-POST http://localhost:5000/api/fixtures/generate/2
+### STEP 10 – Automatic Team Generation
+POST http://localhost:5000/api/teams/auto/3
 Authorization: Bearer {{login.response.body.token}}
 
-### Generate Fixtures for Tournament
-POST http://localhost:5000/api/fixtures/generate/1
+### STEP 11 – View Teams
+GET http://localhost:5000/api/teams
+
+### STEP 12 – Generate Singles Fixtures
+POST http://localhost:5000/api/fixtures/random/1
 Authorization: Bearer {{login.response.body.token}}
 
+### STEP 13 – View Fixtures
+GET http://localhost:5000/api/fixtures/4
 
-#### Get Fixtures for Tournament
-GET http://localhost:5000/api/fixtures/1
-
-
-#### Update Fixture Score
-PUT http://localhost:5000/api/fixtures/score/7
-Authorization: Bearer {{login.response.body.token}}
-Content-Type: application/json
-
-{
-    "playerAScore": 48,
-    "playerBScore": 46
-}
-
-#### Generate Next Round Fixtures
-POST http://localhost:5000/api/fixtures/next-round/1
+### STEP 14 – Generate Doubles Fixtures
+POST http://localhost:5000/api/fixtures/random/4
 Authorization: Bearer {{login.response.body.token}}
 
-#### Get Fixture by ID
-GET http://localhost:5000/api/fixtures/1
-
-### Create Tournament
-POST http://localhost:5000/api/tournaments
+### STEP 15 – Update Scores(Change the fixture no to change all the matches)
+PUT http://localhost:5000/api/fixtures/score/14
 Authorization: Bearer {{login.response.body.token}}
 Content-Type: application/json
 
 {
-  "name": "Apartment Badminton Tournament",
-  "sport": "Badminton",
-  "date": "2026-08-01"
+    "playerAScore":21,
+    "playerBScore":17
 }
 
-###
+### STEP 16 – Generate Next Round
+POST http://localhost:5000/api/fixtures/next-round/4
+Authorization: Bearer {{login.response.body.token}}
+
+# STEP 17 – Champion
+
+# After the Final score is updated
+
+# POST http://localhost:5000/api/fixtures/next-round/1
+# Authorization: Bearer {{login.response.body.token}}
+
+# Expected
+
+# {
+#     "success": true,
+#     "champion":"..."
+# }
+
+### STEP 18 – Manual Teams (Optional)
+POST http://localhost:5000/api/teams
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+    "tournamentId":4,
+    "teamName":"Team Delta",
+    "player1":"Player7",
+    "player2":"Player8"
+}
+
+### STEP 19 – Manual Fixtures
+POST http://localhost:5000/api/fixtures/manual/2
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+    "fixtures":[
+        {
+            "playerA":"Team Alpha",
+            "playerB":"Team Beta"
+        },
+        {
+            "playerA":"Team Gamma",
+            "playerB":"Team Delta"
+        }
+    ]
+}
+
