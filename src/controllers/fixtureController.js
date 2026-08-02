@@ -1,26 +1,32 @@
 const {
     tournaments,
     registrations,
+    teams,
     fixtures
 } = require("../data/dataStore");
 
-// ==============================
-// Shuffle Players
-// ==============================
+// =====================================
+// Shuffle Helper
+// =====================================
 const shuffleArray = (array) => {
+
     const shuffled = [...array];
 
     for (let i = shuffled.length - 1; i > 0; i--) {
+
         const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+
+        [shuffled[i], shuffled[j]] =
+            [shuffled[j], shuffled[i]];
     }
 
     return shuffled;
+
 };
 
-// ==============================
+// =====================================
 // Get Next Round
-// ==============================
+// =====================================
 const getNextRound = (currentRound) => {
 
     switch (currentRound) {
@@ -39,13 +45,14 @@ const getNextRound = (currentRound) => {
 
         default:
             return null;
+
     }
 
 };
 
-// ==============================
+// =====================================
 // Get Latest Round
-// ==============================
+// =====================================
 const getLatestRound = (fixtures) => {
 
     const rounds = [
@@ -72,12 +79,217 @@ const getLatestRound = (fixtures) => {
 
 };
 
-// ==============================
-// Generate Initial Fixtures
-// ==============================
-const generateFixtures = (req, res) => {
+// =====================================
+// Random Fixture Generation
+// =====================================
+const generateRandomFixtures = (req, res) => {
 
     const tournamentId = Number(req.params.tournamentId);
+
+    const tournament = tournaments.find(
+        tournament => tournament.id === tournamentId
+    );
+
+    if (!tournament) {
+
+        return res.status(404).json({
+            success: false,
+            message: "Tournament not found."
+        });
+
+    }
+
+    const alreadyGenerated = fixtures.some(
+        fixture => fixture.tournamentId === tournamentId
+    );
+
+    if (alreadyGenerated) {
+
+        return res.status(400).json({
+            success: false,
+            message: "Fixtures already generated."
+        });
+
+    }
+
+    let participants = [];
+
+    // ======================
+    // Singles
+    // ======================
+
+    if (tournament.format === "Singles") {
+
+        participants = registrations.filter(
+            registration => registration.tournamentId === tournamentId
+        );
+
+        if (participants.length < 2) {
+
+            return res.status(400).json({
+                success: false,
+                message: "At least 2 players are required."
+            });
+
+        }
+
+    }
+
+    // ======================
+    // Doubles
+    // ======================
+
+    else if (tournament.format === "Doubles") {
+
+        participants = teams.filter(
+            team => team.tournamentId === tournamentId
+        );
+
+        if (participants.length < 2) {
+
+            return res.status(400).json({
+                success: false,
+                message: "At least 2 teams are required."
+            });
+
+        }
+
+    }
+
+    else {
+
+        return res.status(400).json({
+            success: false,
+            message: "Invalid tournament format."
+        });
+
+    }
+
+    const shuffledParticipants = shuffleArray(participants);
+
+    let roundName = "";
+
+    if (participants.length <= 2)
+        roundName = "Final";
+    else if (participants.length <= 4)
+        roundName = "Semi Final";
+    else if (participants.length <= 8)
+        roundName = "Quarter Final";
+    else if (participants.length <= 16)
+        roundName = "Round of 16";
+    else
+        roundName = "Round of 32";
+
+    const generatedFixtures = [];
+
+    for (let i = 0; i < shuffledParticipants.length; i += 2) {
+
+        // --------------------
+        // Normal Match
+        // --------------------
+
+        if (i + 1 < shuffledParticipants.length) {
+
+            let sideA;
+            let sideB;
+
+            if (tournament.format === "Singles") {
+
+                sideA = shuffledParticipants[i].playerName;
+                sideB = shuffledParticipants[i + 1].playerName;
+
+            } else {
+
+                sideA = shuffledParticipants[i].teamName;
+                sideB = shuffledParticipants[i + 1].teamName;
+
+            }
+
+            generatedFixtures.push({
+
+                id: fixtures.length + generatedFixtures.length + 1,
+
+                tournamentId,
+
+                round: roundName,
+
+                playerA: sideA,
+
+                playerB: sideB,
+
+                playerAScore: 0,
+
+                playerBScore: 0,
+
+                winner: null,
+
+                status: "Upcoming"
+
+            });
+
+        }
+
+        // --------------------
+        // BYE
+        // --------------------
+
+        else {
+
+            const byeParticipant =
+                tournament.format === "Singles"
+                    ? shuffledParticipants[i].playerName
+                    : shuffledParticipants[i].teamName;
+
+            generatedFixtures.push({
+
+                id: fixtures.length + generatedFixtures.length + 1,
+
+                tournamentId,
+
+                round: roundName,
+
+                playerA: byeParticipant,
+
+                playerB: "BYE",
+
+                playerAScore: 0,
+
+                playerBScore: 0,
+
+                winner: byeParticipant,
+
+                status: "Completed"
+
+            });
+
+        }
+
+    }
+
+    fixtures.push(...generatedFixtures);
+
+    tournament.status = "Ongoing";
+
+    res.status(201).json({
+
+        success: true,
+
+        message: "Random fixtures generated successfully.",
+
+        fixtures: generatedFixtures
+
+    });
+
+};
+
+// =====================================
+// Manual Fixture Generation
+// =====================================
+const generateManualFixtures = (req, res) => {
+
+    const tournamentId = Number(req.params.tournamentId);
+
+    const { fixtures: manualFixtures } = req.body;
 
     const tournament = tournaments.find(
         tournament => tournament.id === tournamentId
@@ -90,6 +302,7 @@ const generateFixtures = (req, res) => {
         });
     }
 
+    // Prevent duplicate generation
     const alreadyGenerated = fixtures.some(
         fixture => fixture.tournamentId === tournamentId
     );
@@ -101,66 +314,51 @@ const generateFixtures = (req, res) => {
         });
     }
 
-    const players = registrations.filter(
-        registration => registration.tournamentId === tournamentId
-    );
-
-    if (players.length < 2) {
+    if (!Array.isArray(manualFixtures) || manualFixtures.length === 0) {
         return res.status(400).json({
             success: false,
-            message: "At least 2 players are required."
+            message: "Fixture list is required."
         });
     }
 
-    const shuffledPlayers = shuffleArray(players);
-
     let roundName = "";
 
-    if (players.length <= 2) {
+    if (manualFixtures.length === 1)
         roundName = "Final";
-    } else if (players.length <= 4) {
+    else if (manualFixtures.length === 2)
         roundName = "Semi Final";
-    } else if (players.length <= 8) {
+    else if (manualFixtures.length === 4)
         roundName = "Quarter Final";
-    } else if (players.length <= 16) {
+    else if (manualFixtures.length === 8)
         roundName = "Round of 16";
-    } else {
+    else
         roundName = "Round of 32";
-    }
 
     const generatedFixtures = [];
 
-    for (let i = 0; i < shuffledPlayers.length; i += 2) {
+    for (let i = 0; i < manualFixtures.length; i++) {
 
-        if (i + 1 < shuffledPlayers.length) {
+        generatedFixtures.push({
 
-            generatedFixtures.push({
-                id: fixtures.length + generatedFixtures.length + 1,
-                tournamentId,
-                round: roundName,
-                playerA: shuffledPlayers[i].playerName,
-                playerB: shuffledPlayers[i + 1].playerName,
-                playerAScore: 0,
-                playerBScore: 0,
-                winner: null,
-                status: "Upcoming"
-            });
+            id: fixtures.length + generatedFixtures.length + 1,
 
-        } else {
+            tournamentId,
 
-            generatedFixtures.push({
-                id: fixtures.length + generatedFixtures.length + 1,
-                tournamentId,
-                round: roundName,
-                playerA: shuffledPlayers[i].playerName,
-                playerB: "BYE",
-                playerAScore: 0,
-                playerBScore: 0,
-                winner: shuffledPlayers[i].playerName,
-                status: "Completed"
-            });
+            round: roundName,
 
-        }
+            playerA: manualFixtures[i].playerA,
+
+            playerB: manualFixtures[i].playerB,
+
+            playerAScore: 0,
+
+            playerBScore: 0,
+
+            winner: null,
+
+            status: "Upcoming"
+
+        });
 
     }
 
@@ -169,16 +367,21 @@ const generateFixtures = (req, res) => {
     tournament.status = "Ongoing";
 
     res.status(201).json({
+
         success: true,
-        message: "Fixtures generated successfully.",
+
+        message: "Manual fixtures generated successfully.",
+
         fixtures: generatedFixtures
+
     });
 
 };
 
-// ==============================
+
+// =====================================
 // Get Fixtures By Tournament
-// ==============================
+// =====================================
 const getFixturesByTournament = (req, res) => {
 
     const tournamentId = Number(req.params.tournamentId);
@@ -201,9 +404,9 @@ const getFixturesByTournament = (req, res) => {
 
 };
 
-// ==============================
+// =====================================
 // Update Match Score
-// ==============================
+// =====================================
 const updateScore = (req, res) => {
 
     const fixtureId = Number(req.params.id);
@@ -224,7 +427,6 @@ const updateScore = (req, res) => {
         });
     }
 
-    // Match already completed
     if (fixture.status === "Completed") {
         return res.status(400).json({
             success: false,
@@ -232,7 +434,6 @@ const updateScore = (req, res) => {
         });
     }
 
-    // Draw not allowed
     if (playerAScore === playerBScore) {
         return res.status(400).json({
             success: false,
@@ -243,11 +444,10 @@ const updateScore = (req, res) => {
     fixture.playerAScore = playerAScore;
     fixture.playerBScore = playerBScore;
 
-    if (playerAScore > playerBScore) {
-        fixture.winner = fixture.playerA;
-    } else {
-        fixture.winner = fixture.playerB;
-    }
+    fixture.winner =
+        playerAScore > playerBScore
+            ? fixture.playerA
+            : fixture.playerB;
 
     fixture.status = "Completed";
 
@@ -259,9 +459,9 @@ const updateScore = (req, res) => {
 
 };
 
-// ==============================
+// =====================================
 // Generate Next Round
-// ==============================
+// =====================================
 const generateNextRound = (req, res) => {
 
     const tournamentId = Number(req.params.tournamentId);
@@ -288,37 +488,41 @@ const generateNextRound = (req, res) => {
         });
     }
 
-    // Get latest round
+    // Latest completed round
     const currentRound = getLatestRound(tournamentFixtures);
 
     const currentRoundFixtures = tournamentFixtures.filter(
         fixture => fixture.round === currentRound
     );
 
-    // Check pending matches
+    // Pending Matches
     const pendingMatches = currentRoundFixtures.some(
         fixture => fixture.status !== "Completed"
     );
 
     if (pendingMatches) {
+
         return res.status(400).json({
             success: false,
             message: "Complete all matches before generating next round."
         });
+
     }
 
-    // Final completed -> Champion
+    // Tournament Completed
     if (currentRound === "Final") {
 
-        const champion = currentRoundFixtures[0].winner;
-
         tournament.status = "Completed";
-        tournament.champion = champion;
+        tournament.champion = currentRoundFixtures[0].winner;
 
         return res.status(200).json({
+
             success: true,
+
             message: "Tournament completed successfully.",
-            champion
+
+            champion: currentRoundFixtures[0].winner
+
         });
 
     }
@@ -326,25 +530,28 @@ const generateNextRound = (req, res) => {
     const nextRound = getNextRound(currentRound);
 
     if (!nextRound) {
+
         return res.status(400).json({
             success: false,
             message: "Unable to determine next round."
         });
+
     }
 
-    // Prevent duplicate round generation
-    const nextRoundExists = tournamentFixtures.some(
+    // Prevent duplicate rounds
+    const alreadyExists = tournamentFixtures.some(
         fixture => fixture.round === nextRound
     );
 
-    if (nextRoundExists) {
+    if (alreadyExists) {
+
         return res.status(400).json({
             success: false,
             message: `${nextRound} fixtures already generated.`
         });
+
     }
 
-    // Collect winners
     const winners = currentRoundFixtures.map(
         fixture => fixture.winner
     );
@@ -356,30 +563,49 @@ const generateNextRound = (req, res) => {
         if (i + 1 < winners.length) {
 
             generatedFixtures.push({
+
                 id: fixtures.length + generatedFixtures.length + 1,
+
                 tournamentId,
+
                 round: nextRound,
+
                 playerA: winners[i],
+
                 playerB: winners[i + 1],
+
                 playerAScore: 0,
+
                 playerBScore: 0,
+
                 winner: null,
+
                 status: "Upcoming"
+
             });
 
         } else {
 
-            // BYE
             generatedFixtures.push({
+
                 id: fixtures.length + generatedFixtures.length + 1,
+
                 tournamentId,
+
                 round: nextRound,
+
                 playerA: winners[i],
+
                 playerB: "BYE",
+
                 playerAScore: 0,
+
                 playerBScore: 0,
+
                 winner: winners[i],
+
                 status: "Completed"
+
             });
 
         }
@@ -389,17 +615,27 @@ const generateNextRound = (req, res) => {
     fixtures.push(...generatedFixtures);
 
     res.status(201).json({
+
         success: true,
+
         message: `${nextRound} fixtures generated successfully.`,
+
         fixtures: generatedFixtures
+
     });
 
 };
 
+// =====================================
+// Exports
+// =====================================
 
 module.exports = {
-    generateFixtures,
+
+    generateRandomFixtures,
+    generateManualFixtures,
     getFixturesByTournament,
     updateScore,
     generateNextRound
+
 };

@@ -10,13 +10,24 @@ const tournaments = [
     }
 ];
 const players = [];
-const teams = [];
+const teams = [{
+    id: 1,
+    tournamentId: 1,
+    teamName: "Team Alpha",
+
+    player1: "Cheran",
+    player2: "Rahul",
+
+    createdBy: 1,
+
+    status: "Active"
+}];
 const matches = [];
 const fixtures = [];
 const registrations = [
     {
         id: 1,
-        tournamentId: 1,
+        tournamentId: 3,
         playerName: "Cheran",
         college: "Vardhaman College of Engineering",
         phone: "9876543210",
@@ -24,7 +35,7 @@ const registrations = [
     },
     {
         id: 2,
-        tournamentId: 1,
+        tournamentId: 3,
         playerName: "Rahul",
         college: "Vardhaman College of Engineering",
         phone: "9876543211",
@@ -32,7 +43,7 @@ const registrations = [
     },
     {
         id: 3,
-        tournamentId: 1,
+        tournamentId: 3,
         playerName: "Ranga",
         college: "CBIT",
         phone: "9876543212",
@@ -40,7 +51,7 @@ const registrations = [
     },
     {
         id: 4,
-        tournamentId: 1,
+        tournamentId: 3,
         playerName: "Damodhar",
         college: "MGIT",
         phone: "9876543213",
@@ -48,7 +59,7 @@ const registrations = [
     },
     {
         id: 5,
-        tournamentId: 1,
+        tournamentId: 3,
         playerName: "Raju",
         college: "VNR VJIET",
         phone: "9876543214",
@@ -56,7 +67,7 @@ const registrations = [
     },
     {
         id: 6,
-        tournamentId: 1,
+        tournamentId: 3,
         playerName: "Sai",
         college: "JNTUH",
         phone: "9876543215",
@@ -64,7 +75,7 @@ const registrations = [
     },
     {
         id: 7,
-        tournamentId: 1,
+        tournamentId: 3,
         playerName: "Varun",
         college: "GRIET",
         phone: "9876543216",
@@ -72,7 +83,7 @@ const registrations = [
     },
     {
         id: 8,
-        tournamentId: 1,
+        tournamentId: 3,
         playerName: "Pranav",
         college: "CBIT",
         phone: "9876543217",

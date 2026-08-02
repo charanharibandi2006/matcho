@@ -4,20 +4,30 @@ const { tournaments } = require("../data/dataStore");
 const createTournament = (req, res, next) => {
     try {
 
-        const { name, sport, date } = req.body;
+        const {
+        name,
+        sport,
+        format,
+        fixtureType,
+        date
+    } = req.body;
 
-        const tournament = {
+        const newTournament = {
             id: tournaments.length + 1,
             name,
             sport,
-            date
-        };
+            format,
+            fixtureType,
+            date,
+            status: "Upcoming",
+            champion: null
+    };
 
-        tournaments.push(tournament);
+        tournaments.push(newTournament);
 
         res.status(201).json({
             message: "Tournament created successfully",
-            tournament
+            newTournament
         });
     } catch (err) {
         next(err);

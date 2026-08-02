@@ -1,30 +1,32 @@
 const express = require("express");
-
 const router = express.Router();
 
 const authenticateUser = require("../middleware/authMiddleware");
 const authorizeRoles = require("../middleware/authorizeRoles");
 
-const validate = require("../middleware/validate");
-
-const { teamValidation } = require("../validators/teamValidator");
-
 const {
     createTeam,
+    generateTeams,
     getAllTeams,
     getTeamById,
     updateTeam,
     deleteTeam
 } = require("../controllers/teamController");
 
-// Create Team
+// Manual Team Creation
 router.post(
     "/",
     authenticateUser,
     authorizeRoles("organizer", "admin"),
-    teamValidation,
-    validate,
     createTeam
+);
+
+// Automatic Team Generation
+router.post(
+    "/auto/:tournamentId",
+    authenticateUser,
+    authorizeRoles("organizer", "admin"),
+    generateTeams
 );
 
 // Get All Teams

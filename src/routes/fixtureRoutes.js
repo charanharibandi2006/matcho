@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const {
-    generateFixtures,
+    generateRandomFixtures,
+    generateManualFixtures,
     getFixturesByTournament,
     updateScore,
     generateNextRound
@@ -12,12 +13,19 @@ const authenticateUser = require("../middleware/authMiddleware");
 const authorizeRoles = require("../middleware/authorizeRoles");
 
 router.post(
-    "/generate/:tournamentId",
+    "/random/:tournamentId",
     authenticateUser,
     authorizeRoles("organizer", "admin"),
-    generateFixtures,
-
+    generateRandomFixtures
 );
+
+router.post(
+    "/manual/:tournamentId",
+    authenticateUser,
+    authorizeRoles("organizer", "admin"),
+    generateManualFixtures
+);
+
 
 router.get("/:tournamentId", getFixturesByTournament);
 
