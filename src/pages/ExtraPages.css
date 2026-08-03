@@ -1,0 +1,164 @@
+/* Shared additions for CreateTournament, ScoreUpdate and Profile pages */
+
+.ep-error-box {
+  background: #fdeaea;
+  color: #c0392b;
+  border: 1px solid #f5c2c2;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  margin-bottom: 16px;
+}
+
+.reg-input-wrap select {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 14px;
+  background: transparent;
+  color: #1a1a2e;
+}
+
+.ep-textarea-wrap {
+  align-items: flex-start;
+  padding-top: 12px;
+}
+
+.reg-input-wrap textarea {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 14px;
+  resize: vertical;
+  font-family: inherit;
+  color: #1a1a2e;
+  background: transparent;
+}
+
+/* Score Update page */
+.ep-score-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 16px 24px 24px;
+}
+
+.ep-score-card {
+  border: 1px solid #ececec;
+  border-radius: 16px;
+  padding: 16px;
+  background: #fff;
+}
+
+.ep-score-card.is-live {
+  border-color: #ffd7d7;
+  box-shadow: 0 0 0 1px rgba(255, 75, 75, 0.08);
+}
+
+.ep-score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px dashed #eee;
+}
+
+.ep-score-row:last-of-type {
+  border-bottom: none;
+}
+
+.ep-score-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ctrl-btn.remove {
+  background: #ececec;
+  color: #333;
+}
+
+.ctrl-btn.remove:hover {
+  background: #dcdcdc;
+}
+
+/* Profile page */
+.ep-profile-panel {
+  background: #fff;
+  border: 1px solid #ececec;
+  border-radius: 18px;
+  padding: 24px;
+}
+
+.ep-profile-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.ep-profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #f2f3fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+
+.ep-profile-headtext {
+  flex: 1;
+}
+
+.ep-profile-headtext h2 {
+  margin: 0 0 6px;
+  color: #1a1a2e;
+}
+
+.ep-profile-view {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ep-profile-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #444;
+  font-size: 14px;
+}
+
+.ep-profile-bio {
+  margin-top: 8px;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.ep-avatar-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.ep-avatar-option {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: #f2f3fb;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ep-avatar-option.active {
+  border-color: #6c3dff;
+  background: #ece5ff;
+}

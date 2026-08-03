@@ -1,0 +1,256 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+*{
+    margin-top:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
+}
+
+html,
+body,
+#root{
+    width:100%;
+    height:100%;
+    /* background:#f5f6fb; */
+}
+
+/* Full Screen */
+
+.dash-shell{
+    width:100%;
+    height:100%;
+    background:
+    linear-gradient(90deg, rgba(20, 30, 58, 0.08), transparent 18%, transparent 82%, rgba(20, 30, 58, 0.08)),
+    url('../assets/images/desktop.png') top center / 100% auto no-repeat,
+    #f7f9ff;
+}
+
+/* ================= Top Bar ================= */
+
+.dash-topbar{
+    min-height:72px;
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 45px;
+    background:white;
+    border-bottom:1px solid #ececec;
+}
+
+.dash-logo{
+    width:145px;
+}
+
+.dash-topbar-right{
+    display:flex;
+    align-items:center;
+    gap:16px;
+}
+
+.dash-bell{
+    border:none;
+    background:white;
+    cursor:pointer;
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    transition:.3s;
+}
+
+.dash-bell:hover{
+    background:#6c3dff;
+    color:white;
+}
+
+.dash-avatar{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:#ececec;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.dash-username{
+    font-weight:600;
+    font-size:15px;
+}
+
+/* ================= Welcome ================= */
+
+.dash-welcome{
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:35px 45px;
+}
+
+.dash-welcome h1{
+    font-size:40px;
+    font-weight:700;
+    color:#232323;
+}
+
+.dash-welcome p{
+    color:#666;
+    margin-top:5px;
+}
+
+.dash-date{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    border:1px solid #ddd;
+    padding:14px 22px;
+    border-radius:12px;
+    background:white;
+    font-weight:500;
+}
+
+/* ================= Register Cards ================= */
+
+.dash-tiles{
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+    padding:0 45px 40px;
+}
+
+.dash-tile{
+    background:white;
+    border:1px solid #ececec;
+    border-radius:18px;
+    display:flex;
+    align-items:center;
+    padding:25px;
+    box-shadow:0 8px 18px rgba(0,0,0,.04);
+    transition:.3s;
+}
+
+.dash-tile:hover{
+    transform:translateY(-5px);
+    box-shadow:0 12px 25px rgba(0,0,0,.08);
+}
+
+.dash-tile-icon{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-shrink:0;
+}
+
+.purple{
+    background:#efe9ff;
+    color:#6540ff;
+}
+
+.orange{
+    background:#fff0dd;
+    color:#ff8b09;
+}
+
+.dash-tile-text{
+    flex:1;
+    margin-left:20px;
+}
+
+.dash-tile-text h3{
+    font-size:24px;
+    margin-bottom:8px;
+}
+
+.dash-tile-text p{
+    color:#666;
+    font-size:14px;
+    max-width:330px;
+    line-height:1.5;
+}
+
+.purple-btn,
+.orange-btn{
+    border:none;
+    color:white;
+    padding:14px 24px;
+    border-radius:10px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.purple-btn{
+    background:#673bff;
+}
+
+.orange-btn{
+    background:#ff7b06;
+}
+
+.purple-btn:hover{
+    background:#5630df;
+}
+
+.orange-btn:hover{
+    background:#e56700;
+}
+
+/* ================= Responsive ================= */
+
+@media(max-width:992px){
+
+.dash-tiles{
+    grid-template-columns:1fr;
+}
+
+.dash-welcome{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:20px;
+}
+
+}
+
+@media(max-width:768px){
+
+.dash-topbar{
+    padding:0 20px;
+}
+
+.dash-welcome{
+    padding:25px 20px;
+}
+
+.dash-tiles{
+    padding:0 20px 25px;
+}
+
+.dash-tile{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:18px;
+}
+
+.dash-tile-text{
+    margin-left:0;
+}
+
+.purple-btn,
+.orange-btn{
+    width:100%;
+}
+
+.dash-welcome h1{
+    font-size:30px;
+}
+
+}
