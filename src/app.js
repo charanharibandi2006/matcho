@@ -9,6 +9,8 @@ const teamRoutes = require("./routes/teamRoutes");
 const matchRoutes = require("./routes/matchRoutes");
 const registrationRoutes = require("./routes/registrationRoutes");
 const fixtureRoutes = require("./routes/fixtureRoutes");
+const leaderboardRoutes = require("./routes/leaderboardRoutes");
+
 
 const app = express();
 
@@ -34,6 +36,8 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/tournaments", tournamentRoutes);
+app.use("/api/leaderboard", leaderboardRoutes);
+
 
 // Error Handling Middleware
 app.use(errorHandler);

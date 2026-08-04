@@ -1,44 +1,117 @@
-const { matches } = require("../data/dataStore");
 
 // Create Match
+const { matches, fixtures } = require("../data/dataStore");
+
 const createMatch = (req, res) => {
 
     const {
-        tournamentId,
-        teamA,
-        teamB,
-        venue,
+        fixtureId,
+        court,
         matchDate,
-        matchTime
+        startTime,
+        endTime,
+        referee
     } = req.body;
 
-    if (teamA.toLowerCase() === teamB.toLowerCase()) {
-    return res.status(400).json({
-        success: false,
-        message: "A team cannot play against itself."
+    // Check Fixture
+    const fixture = fixtures.find(
+        fixture => fixture.id === fixtureId
+    );
+
+    if (!fixture) {
+
+        return res.status(404).json({
+            success: false,
+            message: "Fixture not found."
+        });
+
+    }
+
+    // Already Scheduled
+    const alreadyScheduled = matches.find(
+        match => match.fixtureId === fixtureId
+    );
+
+    if (alreadyScheduled) {
+
+        return res.status(400).json({
+            success: false,
+            message: "Fixture already scheduled."
+        });
+
+    }
+
+    // Court Conflict
+    // Check for overlapping schedules on the same court
+    const courtBusy = matches.find(match => {
+
+        if (
+            match.court !== court ||
+            match.matchDate !== matchDate
+        ) {
+            return false;
+        }
+
+        const existingStart = new Date(`1970-01-01T${match.startTime}:00`);
+        const existingEnd = new Date(`1970-01-01T${match.endTime}:00`);
+
+        const newStart = new Date(`1970-01-01T${startTime}:00`);
+        const newEnd = new Date(`1970-01-01T${endTime}:00`);
+
+        return newStart < existingEnd && newEnd > existingStart;
+
     });
-}
+
+        if (courtBusy) {
+
+        return res.status(400).json({
+            success: false,
+            message: "Court already booked during the selected time slot."
+        });
+
+    }
 
     const newMatch = {
-        id: matches.length + 1,
-        tournamentId,
-        teamA,
-        teamB,
-        venue,
-        matchDate,
-        matchTime,
-        status: "Upcoming",
-        winner: null
-    };
 
+        id: matches.length + 1,
+
+        fixtureId,
+
+        tournamentId: fixture.tournamentId,
+
+        court,
+
+        matchDate,
+
+        startTime,
+
+        endTime,
+
+        referee,
+
+        status: "Scheduled"
+
+    };
 
     matches.push(newMatch);
 
     res.status(201).json({
+
         success: true,
-        message: "Match created successfully",
+
+        message: "Match scheduled successfully.",
+
         match: newMatch
+
     });
+
+    if (newEnd <= newStart) {
+    return res.status(400).json({
+        success: false,
+        message: "End time must be after start time."
+    });
+}
+
 };
 
 // Get All Matches
