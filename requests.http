@@ -165,14 +165,14 @@ POST http://localhost:5000/api/fixtures/random/1
 Authorization: Bearer {{login.response.body.token}}
 
 ### STEP 13 – View Fixtures
-GET http://localhost:5000/api/fixtures/4
+GET http://localhost:5000/api/fixtures/1
 
 ### STEP 14 – Generate Doubles Fixtures
 POST http://localhost:5000/api/fixtures/random/4
 Authorization: Bearer {{login.response.body.token}}
 
 ### STEP 15 – Update Scores(Change the fixture no to change all the matches)
-PUT http://localhost:5000/api/fixtures/score/14
+PUT http://localhost:5000/api/fixtures/score/7
 Authorization: Bearer {{login.response.body.token}}
 Content-Type: application/json
 
@@ -182,7 +182,7 @@ Content-Type: application/json
 }
 
 ### STEP 16 – Generate Next Round
-POST http://localhost:5000/api/fixtures/next-round/4
+POST http://localhost:5000/api/fixtures/next-round/1
 Authorization: Bearer {{login.response.body.token}}
 
 # STEP 17 – Champion
@@ -229,3 +229,23 @@ Content-Type: application/json
     ]
 }
 
+### Get Leaderboard
+GET http://localhost:5000/api/leaderboard/1
+
+### Schedule Match
+
+POST http://localhost:5000/api/matches
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+    "fixtureId": 1,
+    "court": "Court 1",
+    "matchDate": "2026-09-15",
+    "startTime": "10:00",
+    "endTime": "10:45",
+    "referee": "Mr. Kumar"
+}
+
+### Get Fixtures
+GET http://localhost:5000/api/fixtures/1
