@@ -1,37 +1,27 @@
 const express = require("express");
+
 const router = express.Router();
 
+const authenticateUser =
+    require("../middleware/authMiddleware");
+
 const {
-    createRegistration,
-    getAllRegistrations,
-    getRegistrationById,
-    deleteRegistration
+    registerForTournament,
+    getTournamentParticipants
 } = require("../controllers/registrationController");
 
-const authenticateUser = require("../middleware/authMiddleware");
-const authorizeRoles = require("../middleware/authorizeRoles");
-const { registrationValidation } = require("../validators/registrationValidator");
-const validate = require("../middleware/validate");
 
-// Public Routes
-router.get("/", getAllRegistrations);
-router.get("/:id", getRegistrationById);
-
-// Protected Routes
 router.post(
-    "/",
+    "/tournaments/join",
     authenticateUser,
-    authorizeRoles("organizer", "admin"),
-    registrationValidation,
-    validate,
-    createRegistration
+    registerForTournament
 );
 
-router.delete(
-    "/:id",
+router.get(
+    "/tournaments/:tournamentId/participants",
     authenticateUser,
-    authorizeRoles("organizer", "admin"),
-    deleteRegistration
+    getTournamentParticipants
 );
+
 
 module.exports = router;

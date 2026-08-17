@@ -1,50 +1,103 @@
 const express = require("express");
+
 const router = express.Router();
 
-const authenticateUser = require("../middleware/authMiddleware");
-const authorizeRoles = require("../middleware/authorizeRoles");
+const authenticateUser =
+    require("../middleware/authMiddleware");
 
-const { tournamentValidation } = require("../validators/tournamentValidator");
-const validate = require("../middleware/validate");
+const authorizeRoles =
+    require("../middleware/authorizeRoles");
+
+const {
+    tournamentValidation,
+    tournamentUpdateValidation
+} = require("../validators/tournamentValidator");
+
+const validate =
+    require("../middleware/validate");
 
 const {
     createTournament,
     getAllTournaments,
     getTournamentById,
+    getTournamentByRegistrationCode,
+    getMyTournaments,
     updateTournament,
     deleteTournament
 } = require("../controllers/tournamentController");
 
-// Create Tournament (Organizer/Admin Only)
+
+// ==========================================
+// CREATE TOURNAMENT
+// ==========================================
+
 router.post(
     "/",
     authenticateUser,
-    authorizeRoles("organizer", "admin"),
+    authorizeRoles("Organizer"),
     tournamentValidation,
     validate,
     createTournament
 );
 
-// Get All Tournaments (Public)
-router.get("/", getAllTournaments);
 
-// Get Tournament by ID (Public)
-router.get("/:id", getTournamentById);
+// ==========================================
+// GET ALL TOURNAMENTS
+// ==========================================
 
-// Update Tournament (Organizer/Admin Only)
+router.get(
+    "/",
+    getAllTournaments
+);
+
+
+
+
+// ==========================================
+// GET TOURNAMENT BY ID
+// ==========================================
+router.get(
+    "/registration/:code",
+    getTournamentByRegistrationCode
+);
+
+router.get(
+    "/my",
+    authenticateUser,
+    authorizeRoles("Organizer", "Admin"),
+    getMyTournaments
+);
+
+router.get(
+    "/:id",
+    getTournamentById
+);
+
+
+// ==========================================
+// UPDATE TOURNAMENT
+// ==========================================
+
 router.put(
     "/:id",
     authenticateUser,
-    authorizeRoles("organizer", "admin"),
+    authorizeRoles("Organizer", "Admin"),
+    tournamentUpdateValidation,
+    validate,
     updateTournament
 );
 
-// Delete Tournament (Organizer/Admin Only)
+
+// ==========================================
+// DELETE TOURNAMENT
+// ==========================================
+
 router.delete(
     "/:id",
     authenticateUser,
-    authorizeRoles("organizer", "admin"),
+    authorizeRoles("Organizer", "Admin"),
     deleteTournament
 );
+
 
 module.exports = router;

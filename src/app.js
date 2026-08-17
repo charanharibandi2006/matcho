@@ -10,6 +10,7 @@ const matchRoutes = require("./routes/matchRoutes");
 const registrationRoutes = require("./routes/registrationRoutes");
 const fixtureRoutes = require("./routes/fixtureRoutes");
 const leaderboardRoutes = require("./routes/leaderboardRoutes");
+const otpRoutes = require("./routes/otpRoutes");
 
 
 const app = express();
@@ -18,10 +19,10 @@ const errorHandler = require("./middleware/errorHandler");
 // Middlewares
 app.use(cors());
 app.use(express.json());
-app.use("/api/player", playerRoutes);
-app.use("/api/teams", teamRoutes);
+app.use("/api/players", playerRoutes);
 app.use("/api/matches", matchRoutes);
-app.use("/api/registrations", registrationRoutes);
+app.use("/api", registrationRoutes);
+app.use("/api",teamRoutes);
 app.use("/api/fixtures", fixtureRoutes);
 
 // Home Route
@@ -34,6 +35,7 @@ app.get("/", (req, res) => {
 
 // API Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/auth", otpRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/tournaments", tournamentRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);

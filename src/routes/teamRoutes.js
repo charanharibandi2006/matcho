@@ -1,54 +1,79 @@
 const express = require("express");
+
 const router = express.Router();
 
-const authenticateUser = require("../middleware/authMiddleware");
-const authorizeRoles = require("../middleware/authorizeRoles");
+const authenticateUser =
+    require("../middleware/authMiddleware");
+
+const authorizeRoles =
+    require("../middleware/authorizeRoles");
 
 const {
+    getTournamentTeams,
     createTeam,
-    generateTeams,
-    getAllTeams,
-    getTeamById,
     updateTeam,
-    deleteTeam
+    deleteTeam,
 } = require("../controllers/teamController");
 
-// Manual Team Creation
-router.post(
-    "/",
+
+// =========================================================
+// GET TEAMS
+// =========================================================
+
+router.get(
+    "/tournaments/:tournamentId/teams",
     authenticateUser,
-    authorizeRoles("organizer", "admin"),
+    authorizeRoles(
+        "Organizer",
+        "Admin"
+    ),
+    getTournamentTeams
+);
+
+
+// =========================================================
+// CREATE TEAM
+// =========================================================
+
+router.post(
+    "/tournaments/:tournamentId/teams",
+    authenticateUser,
+    authorizeRoles(
+        "Organizer",
+        "Admin"
+    ),
     createTeam
 );
 
-// Automatic Team Generation
-router.post(
-    "/auto/:tournamentId",
-    authenticateUser,
-    authorizeRoles("organizer", "admin"),
-    generateTeams
-);
 
-// Get All Teams
-router.get("/", getAllTeams);
+// =========================================================
+// UPDATE TEAM
+// =========================================================
 
-// Get Team By ID
-router.get("/:id", getTeamById);
-
-// Update Team
 router.put(
-    "/:id",
+    "/tournaments/:tournamentId/teams/:teamId",
     authenticateUser,
-    authorizeRoles("organizer", "admin"),
+    authorizeRoles(
+        "Organizer",
+        "Admin"
+    ),
     updateTeam
 );
 
-// Delete Team
+
+// =========================================================
+// DELETE TEAM
+// =========================================================
+
 router.delete(
-    "/:id",
+    "/tournaments/:tournamentId/teams/:teamId",
     authenticateUser,
-    authorizeRoles("organizer", "admin"),
+    authorizeRoles(
+        "Organizer",
+        "Admin"
+    ),
     deleteTeam
 );
+
 
 module.exports = router;

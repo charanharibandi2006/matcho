@@ -1,36 +1,78 @@
 const express = require("express");
+
 const router = express.Router();
 
 const {
     generateRandomFixtures,
-    generateManualFixtures,
     getFixturesByTournament,
-    updateScore,
-    generateNextRound
+    updateFixtureScore,
+    generateNextRound,
+    generateFinal
 } = require("../controllers/fixtureController");
 
-const authenticateUser = require("../middleware/authMiddleware");
-const authorizeRoles = require("../middleware/authorizeRoles");
+const authenticateUser =
+    require("../middleware/authMiddleware");
+
+const authorizeRoles =
+    require("../middleware/authorizeRoles");
+
+
+// ==========================================
+// GENERATE RANDOM FIXTURES
+// ==========================================
 
 router.post(
     "/random/:tournamentId",
     authenticateUser,
-    authorizeRoles("organizer", "admin"),
+    authorizeRoles("Organizer", "Admin"),
     generateRandomFixtures
 );
 
-router.post(
-    "/manual/:tournamentId",
-    authenticateUser,
-    authorizeRoles("organizer", "admin"),
-    generateManualFixtures
+
+// ==========================================
+// GET TOURNAMENT FIXTURES
+// ==========================================
+
+router.get(
+    "/:tournamentId",
+    getFixturesByTournament
 );
 
 
-router.get("/:tournamentId", getFixturesByTournament);
+// ==========================================
+// UPDATE FIXTURE SCORE
+// ==========================================
 
-router.put("/score/:id", authenticateUser, authorizeRoles("organizer", "admin"), updateScore);
+router.put(
+    "/score/:id",
+    authenticateUser,
+    authorizeRoles("Organizer", "Admin"),
+    updateFixtureScore
+);
 
-router.post("/next-round/:tournamentId", authenticateUser, authorizeRoles("organizer", "admin"), generateNextRound);
+
+// ==========================================
+// GENERATE NEXT ROUND
+// ==========================================
+
+router.post(
+    "/next-round/:tournamentId",
+    authenticateUser,
+    authorizeRoles("Organizer", "Admin"),
+    generateNextRound
+);
+
+
+// ==========================================
+// GENERATE FINAL
+// ==========================================
+
+router.post(
+    "/final/:tournamentId",
+    authenticateUser,
+    authorizeRoles("Organizer", "Admin"),
+    generateFinal
+);
+
 
 module.exports = router;
