@@ -5,6 +5,7 @@ const router = express.Router();
 const {
     generateRandomFixtures,
     getFixturesByTournament,
+    getFixtureById,
     updateFixtureScore,
     generateNextRound,
     generateFinal
@@ -26,6 +27,17 @@ router.post(
     authenticateUser,
     authorizeRoles("Organizer", "Admin"),
     generateRandomFixtures
+);
+
+
+// ==========================================
+// GET SINGLE FIXTURE
+// IMPORTANT: Must come BEFORE /:tournamentId
+// ==========================================
+
+router.get(
+    "/single/:id",
+    getFixtureById
 );
 
 

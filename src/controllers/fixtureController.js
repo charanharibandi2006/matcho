@@ -268,6 +268,17 @@ const getTournament = async (tournamentId) => {
 };
 
 // =========================================================
+// TOURNAMENT OWNERSHIP CHECK
+// =========================================================
+
+const verifyTournamentOwnership = (req, tournament) => {
+    return (
+        String(tournament.organizer_id) ===
+        String(req.user.id)
+    );
+};
+
+// =========================================================
 // PARTICIPANTS
 // =========================================================
 
@@ -437,6 +448,14 @@ const generateRandomFixtures = async (req, res, next) => {
             return res.status(404).json({
                 success: false,
                 message: "Tournament not found.",
+            });
+        }
+
+        if (!verifyTournamentOwnership(req, tournament)) {
+            return res.status(403).json({
+                success: false,
+                message:
+                    "You do not have permission to manage this tournament.",
             });
         }
 
@@ -688,6 +707,94 @@ const getFixturesByTournament = async (req, res, next) => {
 };
 
 // =========================================================
+// GET SINGLE FIXTURE
+// =========================================================
+
+const getFixtureById = async (req, res, next) => {
+    try {
+        const fixtureId = Number(req.params.id);
+
+        if (!Number.isInteger(fixtureId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid fixture ID.",
+            });
+        }
+
+        const result = await pool.query(
+            `
+            SELECT
+                f.id,
+                f.tournament_id,
+                f.stage,
+                f.pool_name,
+                f.round,
+                f.match_number,
+
+                f.player_a_id,
+                ua.full_name AS player_a_name,
+
+                f.player_b_id,
+                ub.full_name AS player_b_name,
+
+                f.team_a_id,
+                ta.team_name AS team_a_name,
+
+                f.team_b_id,
+                tb.team_name AS team_b_name,
+
+                f.player_a_score,
+                f.player_b_score,
+
+                f.winner_player_id,
+                f.winner_team_id,
+
+                f.status,
+                f.best_of,
+                f.created_at
+
+            FROM public.fixtures f
+
+            LEFT JOIN public.users ua
+                ON ua.id = f.player_a_id
+
+            LEFT JOIN public.users ub
+                ON ub.id = f.player_b_id
+
+            LEFT JOIN public.teams ta
+                ON ta.id = f.team_a_id
+
+            LEFT JOIN public.teams tb
+                ON tb.id = f.team_b_id
+
+            WHERE f.id = $1
+            LIMIT 1
+            `,
+            [fixtureId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Fixture not found.",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            fixture: result.rows[0],
+        });
+    } catch (error) {
+        console.error(
+            "Get Fixture By ID Error:",
+            error
+        );
+
+        next(error);
+    }
+};
+
+// =========================================================
 // UPDATE FIXTURE SCORE
 // =========================================================
 
@@ -731,15 +838,19 @@ const updateFixtureScore = async (req, res, next) => {
             });
         }
 
-        const fixtureResult = await pool.query(
-            `
-            SELECT *
-            FROM public.fixtures
-            WHERE id = $1
-            LIMIT 1
-            `,
-            [fixtureId]
-        );
+       const fixtureResult = await pool.query(
+  `
+  SELECT
+    f.*,
+    t.organizer_id
+  FROM public.fixtures f
+  INNER JOIN public.tournaments t
+    ON t.id = f.tournament_id
+  WHERE f.id = $1
+  LIMIT 1
+  `,
+  [fixtureId]
+);
 
         if (fixtureResult.rows.length === 0) {
             return res.status(404).json({
@@ -749,6 +860,17 @@ const updateFixtureScore = async (req, res, next) => {
         }
 
         const fixture = fixtureResult.rows[0];
+
+        if (
+            String(fixture.organizer_id) !==
+            String(req.user.id)
+        ) {
+            return res.status(403).json({
+                success: false,
+                message:
+                    "You do not have permission to update this fixture.",
+            });
+        }
 
         if (fixture.status === "Completed") {
             return res.status(400).json({
@@ -993,6 +1115,14 @@ const generateNextRound = async (req, res, next) => {
             return res.status(404).json({
                 success: false,
                 message: "Tournament not found.",
+            });
+        }
+
+        if (!verifyTournamentOwnership(req, tournament)) {
+            return res.status(403).json({
+                success: false,
+                message:
+                    "You do not have permission to manage this tournament.",
             });
         }
 
@@ -1392,6 +1522,14 @@ const generateFinal = async (req, res, next) => {
             });
         }
 
+        if (!verifyTournamentOwnership(req, tournament)) {
+            return res.status(403).json({
+                success: false,
+                message:
+                    "You do not have permission to manage this tournament.",
+            });
+        }
+
         const format = getTournamentFormat(tournament);
 
         if (!format) {
@@ -1519,6 +1657,7 @@ const generateFinal = async (req, res, next) => {
 module.exports = {
     generateRandomFixtures,
     getFixturesByTournament,
+    getFixtureById,
     updateFixtureScore,
     generateNextRound,
     generateFinal,
