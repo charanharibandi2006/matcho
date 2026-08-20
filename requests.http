@@ -1,0 +1,119 @@
+###STEP 1 – Home Route
+GET http://localhost:5000/
+
+
+
+### STEP 2 – Register Organizer
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+    "name": "Cheran",
+    "email": "cheran@gmail.com",
+    "phone": "9876543210",
+    "password": "password123",
+    "role":"Organizer"
+}
+
+
+###Register Player
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+    "name": "Cheran",
+    "email": "cherand@gmail.com",
+    "phone": "9876543212",
+    "password": "password123",
+    "role":"Player"
+}
+
+### Player Login
+
+# @name playerLogin
+
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+    "identifier": "cherand@gmail.com",
+    "password": "password123"
+}
+
+### STEP 3 – Login
+# @name login
+
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+    //"identifier":"9876543210",
+    "identifier":"cheran@gmail.com",
+    "password":"password123"
+}
+
+### Get All Tournaments
+GET http://localhost:5000/api/tournaments
+
+### Create New Tournament
+POST http://localhost:5000/api/tournaments
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+    "name": "Summer Badminton Cup 2026",
+    "sport": "Badminton",
+    "category": "Men's Singles",
+    "startDate": "2026-09-01",
+    "endDate": "2026-09-10",
+    "location": "College Ground",
+    "maxParticipants": 32,
+    "description": "Annual badminton tournament"
+}
+
+
+###
+GET http://localhost:5000/api/tournaments/1
+
+
+### Update Tournament
+
+PUT http://localhost:5000/api/tournaments/1
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+    "name": "Summer Badminton Cup 2026 - Updated",
+    "location": "Main College Ground",
+    "maxParticipants": 40,
+    "description": "Updated tournament description"
+}
+
+
+###
+DELETE http://localhost:5000/api/tournaments/1
+Authorization: Bearer {{login.response.body.token}}
+
+### Register for Tournament
+
+POST http://localhost:5000/api/tournaments/2/registrations
+Authorization: Bearer {{playerLogin.response.body.token}}
+Content-Type: application/json
+
+{
+    "registrationCode": "MCH-TXRA-1416"
+}
+
+### Get Tournament Registrations
+
+GET http://localhost:5000/api/tournaments/2/registrations
+Authorization: Bearer {{login.response.body.token}}
+
+###
+GET http://localhost:5000/api/tournaments/2/registrations
+Authorization: Bearer {{login.response.body.token}}
+
+
+###
+GET http://localhost:5000/api/tournaments/2/registrations
+Authorization: Bearer {{playerLogin.response.body.token}}
