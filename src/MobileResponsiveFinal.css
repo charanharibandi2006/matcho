@@ -1,0 +1,721 @@
+/* =========================================================
+   MATCHO FINAL MOBILE RESPONSIVE OVERRIDES
+   IMPORT THIS FILE LAST IN App.jsx.
+   Desktop is untouched.
+   ========================================================= */
+
+@media (max-width: 900px) {
+  html,
+  body,
+  #root {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .app-shell {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  /* Shared page shells */
+  .stat-shell,
+  .org-layout,
+  .tm-page {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+
+  /* =======================================================
+     STATS / PLAYER / SCORE VIEWER
+     ======================================================= */
+
+  .stat-shell .stat-main {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  .stat-shell .stat-main h1 {
+    font-size: 25px;
+    line-height: 1.2;
+  }
+
+  .stat-shell .stat-main > p {
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .stat-shell .dash-header-flex {
+    width: 100%;
+    min-width: 0;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .stat-shell .dash-header-flex > div {
+    min-width: 0;
+  }
+
+  .stat-shell .dash-header-flex .stat-banner-btn.primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .stat-shell .stat-banner {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 20px 18px;
+    border-radius: 15px;
+  }
+
+  .stat-shell .stat-banner h2 {
+    font-size: 18px;
+    line-height: 1.3;
+  }
+
+  .stat-shell .stat-banner p {
+    max-width: 240px;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .stat-shell .stat-banner-icon {
+    font-size: 42px;
+    flex-shrink: 0;
+  }
+
+  .stat-shell .stat-cards {
+    width: 100%;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .stat-shell .stat-card {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 14px;
+    border-radius: 14px;
+  }
+
+  .stat-shell .stat-panels,
+  .stat-shell .stat-panels.two,
+  .stat-shell .stat-panels.three {
+    grid-template-columns: 1fr;
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* =======================================================
+     PLAYER MATCH FILTERS
+     ======================================================= */
+
+  .stat-shell #player-matches {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .stat-shell #player-matches .stat-panel-head {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .stat-shell #player-matches .filter-tabs-sm {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 7px;
+    padding: 2px 1px 5px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .stat-shell #player-matches .filter-tabs-sm::-webkit-scrollbar {
+    display: none;
+  }
+
+  .stat-shell #player-matches .filter-tabs-sm .tab-btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    min-height: 34px;
+    padding: 7px 12px;
+    font-size: 11px;
+    border-radius: 9px;
+  }
+
+  .stat-shell #player-matches .live-matches-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* =======================================================
+     ORGANIZER DASHBOARD
+     ======================================================= */
+
+  .org-layout .org-content {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .org-layout .org-header {
+    width: 100%;
+    min-width: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .org-layout .org-header-right {
+    width: 100%;
+  }
+
+  .org-layout .org-header-right .org-btn-primary {
+    width: 100%;
+  }
+
+  .org-layout .org-stats-row {
+    width: 100%;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .org-layout .org-bottom-grid {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+
+  .org-layout .org-live-grid {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+
+  /* =======================================================
+     TOURNAMENT MANAGEMENT
+     ======================================================= */
+
+  .tm-page .tm-main,
+  .tm-page .org-main {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+
+  .tm-page .org-content,
+  .tm-page .tm-content {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .tm-page .tm-header {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .tm-page .tm-header h1 {
+    font-size: 24px;
+    line-height: 1.2;
+  }
+
+  .tm-page .tm-header p {
+    max-width: 100%;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  /* ---- Tournament selector card ---- */
+  .tm-page .tm-selection-row {
+    display: block !important;
+    width: 100%;
+    min-width: 0;
+    margin-top: 14px;
+  }
+
+  .tm-page .tm-selection-row > * {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .tm-page .tm-dropdown {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .tm-page .tm-dropdown-trigger {
+    width: 100%;
+    min-width: 0;
+    min-height: 52px;
+    height: 52px;
+    box-sizing: border-box;
+    padding: 0 14px;
+    border-radius: 12px;
+    font-size: 12px;
+  }
+
+  .tm-page .tm-dropdown-trigger > span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* IMPORTANT:
+     Keep the dropdown inside the viewport instead of being
+     clipped by the selector card. */
+  @media (max-width: 640px) {
+  .tm-page .tm-dropdown {
+    position: relative;
+    width: 100%;
+    z-index: 100;
+  }
+
+  .tm-page .tm-dropdown-menu {
+    position: absolute !important;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+
+    width: 100% !important;
+    max-width: none !important;
+
+    max-height: 280px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    z-index: 1500 !important;
+
+    box-sizing: border-box;
+  }
+}
+
+  .tm-page .tm-dropdown-option {
+    min-height: 44px;
+    padding: 10px 13px;
+    font-size: 12px;
+  }
+
+  /* ---- Registration / share actions ---- */
+  .tm-page .tm-selection-actions,
+  .tm-page .tm-top-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .tm-page .tm-selection-actions > *,
+  .tm-page .tm-top-actions > * {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* ---- Section tabs ---- */
+  .tm-page .tm-section-tabs {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4px;
+    margin: 14px 0;
+    padding: 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    box-sizing: border-box;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tm-page .tm-section-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tm-page .tm-section-tabs button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    min-height: 38px;
+    padding: 8px 12px;
+    font-size: 10.5px;
+  }
+
+  /* ---- Overview card ---- */
+  .tm-page .tm-card,
+  .tm-page .tm-overview-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 14px;
+    border-radius: 14px;
+    overflow: visible;
+  }
+
+  .tm-page .tm-overview-header {
+    width: 100%;
+    min-width: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .tm-page .tm-overview-title {
+    min-width: 0;
+  }
+
+  .tm-page .tm-overview-title h2,
+  .tm-page .tm-overview-header h2 {
+    max-width: 100%;
+    font-size: 17px;
+    overflow-wrap: anywhere;
+  }
+
+  .tm-page .tm-overview-title p,
+  .tm-page .tm-overview-header p {
+    font-size: 10px;
+    line-height: 1.4;
+  }
+
+  .tm-page .tm-overview-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .tm-page .tm-overview-actions .tm-outline-btn {
+    width: 100%;
+    min-width: 0;
+    min-height: 40px;
+    padding: 0 10px;
+    font-size: 10px;
+  }
+
+  .tm-page .tm-overview-actions .tm-sport-badge {
+    min-height: 40px;
+    padding: 0 11px;
+    font-size: 10px;
+  }
+
+  /* ---- Overview information ---- */
+  .tm-page .tm-overview-grid {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .tm-page .tm-overview-item {
+    min-width: 0;
+    padding: 11px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .tm-page .tm-overview-item span {
+    font-size: 8px;
+    line-height: 1.2;
+  }
+
+  .tm-page .tm-overview-item strong {
+    font-size: 11px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .tm-page .tm-overview-item.tm-overview-wide {
+    grid-column: 1 / -1;
+  }
+
+  /* ---- Fixtures / standings ---- */
+  .tm-page .tm-fixtures-grid,
+  .tm-page .tm-standings-grid,
+  .tm-page .tm-teams-grid {
+    width: 100%;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .tm-page .tm-team-summary {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .tm-page .tm-table-wrap {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .tm-page .tm-table {
+    min-width: 560px;
+  }
+
+  /* =======================================================
+     SCOREBOARD
+     ======================================================= */
+
+  .score-viewer-shell .stat-main {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .score-viewer-shell .score-viewer-banner {
+    min-height: 150px;
+  }
+
+  .score-viewer-shell .score-viewer-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .tm-page .tm-content,
+  .tm-page .org-content {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .tm-page .tm-overview-grid {
+    gap: 7px;
+  }
+
+  .tm-page .tm-overview-item {
+    padding: 10px;
+  }
+
+  .tm-page .tm-overview-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .tm-page .tm-overview-actions .tm-sport-badge {
+    width: fit-content;
+  }
+
+  .stat-shell .stat-main {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .org-layout .org-content {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  .tm-page .tm-header h1,
+  .stat-shell .stat-main h1 {
+    font-size: 22px;
+  }
+
+  .tm-page .tm-overview-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tm-page .tm-overview-item strong {
+    font-size: 10.5px;
+  }
+}
+
+/* =========================================================
+   FINAL MOBILE TOOLBAR FIX
+   Fixes My Tournaments search/filter/refresh overflow
+   ========================================================= */
+
+@media (max-width: 640px) {
+
+  /* Prevent panels themselves from creating horizontal overflow */
+  .stat-shell .stat-panel {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  /* Panel header */
+  .stat-shell .stat-panel-head {
+    width: 100%;
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    box-sizing: border-box;
+  }
+
+  /* Heading */
+  .stat-shell .stat-panel-head .flex-head {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .stat-shell .stat-panel-head .flex-head h4 {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.25;
+  }
+
+  /* Any toolbar containing Search / All / Refresh */
+  .stat-shell .stat-panel-head > div:last-child {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  /* Search + filter controls */
+  .stat-shell .stat-panel-head input,
+  .stat-shell .stat-panel-head select {
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+
+  /* Common toolbar wrappers */
+  .stat-shell .tournament-toolbar,
+  .stat-shell .tournament-filters,
+  .stat-shell .panel-actions,
+  .stat-shell .table-toolbar,
+  .stat-shell .toolbar {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+
+    gap: 8px;
+
+    box-sizing: border-box;
+  }
+
+  /* Search field */
+  .stat-shell .tournament-toolbar input,
+  .stat-shell .tournament-filters input,
+  .stat-shell .panel-actions input,
+  .stat-shell .table-toolbar input,
+  .stat-shell .toolbar input {
+    flex: 1 1 150px;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /* Buttons such as All / Refresh */
+  .stat-shell .tournament-toolbar button,
+  .stat-shell .tournament-filters button,
+  .stat-shell .panel-actions button,
+  .stat-shell .table-toolbar button,
+  .stat-shell .toolbar button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    box-sizing: border-box;
+  }
+
+  /* Refresh should NEVER push the page wider */
+  .stat-shell button.refresh-btn,
+  .stat-shell .refresh-btn,
+  .stat-shell .refresh-button {
+    max-width: 100%;
+    flex-shrink: 1;
+  }
+
+  /* Tabs */
+  .stat-shell .filter-tabs-sm {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    display: flex;
+    flex-wrap: nowrap;
+
+    gap: 7px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    padding-bottom: 5px;
+
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .stat-shell .filter-tabs-sm::-webkit-scrollbar {
+    display: none;
+  }
+
+  .stat-shell .filter-tabs-sm .tab-btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+  .stat-shell .stat-panel-head {
+    align-items: stretch;
+  }
+
+  .stat-shell .tournament-toolbar,
+  .stat-shell .tournament-filters,
+  .stat-shell .panel-actions,
+  .stat-shell .table-toolbar,
+  .stat-shell .toolbar {
+    width: 100%;
+  }
+
+  .stat-shell .tournament-toolbar input,
+  .stat-shell .tournament-filters input,
+  .stat-shell .panel-actions input,
+  .stat-shell .table-toolbar input,
+  .stat-shell .toolbar input {
+    flex: 1 1 100%;
+  }
+
+  .stat-shell .tournament-toolbar button,
+  .stat-shell .tournament-filters button,
+  .stat-shell .panel-actions button,
+  .stat-shell .table-toolbar button,
+  .stat-shell .toolbar button {
+    min-height: 36px;
+  }
+}

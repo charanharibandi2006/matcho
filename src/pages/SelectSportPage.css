@@ -1,0 +1,372 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+.sport-shell * {
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+.sport-shell {
+  width: 80%;
+  min-height: 100vh;
+  background: #f7f9ff;
+}
+
+/* ==========================================
+   TOP BAR
+   ========================================== */
+
+.sport-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 28px;
+  background: #ffffff;
+  border-bottom: 1px solid #ececf3;
+}
+
+.sport-logo {
+  width: 120px;
+  height: auto;
+  object-fit: contain;
+}
+
+.sport-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.sport-icon-btn {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #e7e7ef;
+  background: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #555;
+}
+
+.sport-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #efe9ff;
+  color: #6c3dff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sport-username {
+  font-size: 14px;
+  font-weight: 500;
+  color: #303040;
+}
+
+/* ==========================================
+   MAIN LAYOUT
+   ========================================== */
+
+.sport-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px 60px;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+.sport-content h1 {
+  font-size: 30px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 6px;
+}
+
+.sport-subtitle {
+  color: #6b7280;
+  margin: 0 0 22px;
+}
+
+/* ==========================================
+   SEARCH
+   ========================================== */
+
+.sport-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  border: 1px solid #e4e6f1;
+  border-radius: 12px;
+  padding: 14px 18px;
+  color: #9aa0b4;
+  margin-bottom: 26px;
+}
+
+.sport-search input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 14px;
+  background: transparent;
+  font-family: "Poppins", sans-serif;
+}
+
+/* ==========================================
+   SPORT GRID
+   ========================================== */
+
+.sport-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.sport-card {
+  position: relative;
+  text-align: left;
+  background: white;
+  border: 1.5px solid #ececf3;
+  border-radius: 16px;
+  padding: 18px;
+  cursor: pointer;
+  transition: 0.25s;
+  font-family: "Poppins", sans-serif;
+}
+
+.sport-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(20, 20, 60, 0.06);
+}
+
+.sport-card.active {
+  border-color: #6c3dff;
+  box-shadow: 0 0 0 3px rgba(108, 61, 255, 0.12);
+}
+
+.sport-radio {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #d8d8e4;
+  display: inline-block;
+}
+
+.sport-card.active .sport-radio {
+  border-color: #6c3dff;
+  background: #6c3dff;
+  box-shadow: inset 0 0 0 3px white;
+}
+
+.sport-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #f2f3fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 14px;
+}
+
+.sport-card h4 {
+  margin: 0 0 4px;
+  font-size: 15px;
+  color: #1a1a2e;
+}
+
+.sport-card p {
+  margin: 0;
+  font-size: 12px;
+  color: #8a8fa3;
+  line-height: 1.4;
+}
+
+/* ==========================================
+   ACTIONS
+   ========================================== */
+
+.sport-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-top: 32px;
+}
+
+.sport-cancel {
+  border: 1px solid #e0e0ea;
+  background: white;
+  padding: 13px 26px;
+  border-radius: 10px;
+  font-weight: 600;
+  color: #444;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+}
+
+.sport-next {
+  border: none;
+  background: #6c3dff;
+  color: white;
+  padding: 13px 28px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  font-family: "Poppins", sans-serif;
+}
+
+.sport-next:hover {
+  background: #5630df;
+}
+
+/* ==========================================
+   SIDEBAR
+   ========================================== */
+
+.sport-side {
+  background: white;
+  border: 1px solid #ececf3;
+  border-radius: 18px;
+  padding: 26px;
+  position: sticky;
+  top: 24px;
+}
+
+.sport-side h3 {
+  margin: 0 0 18px;
+  font-size: 16px;
+  color: #1a1a2e;
+}
+
+.sport-side-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.sport-side-icon {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 10px;
+  background: #efe9ff;
+  color: #6c3dff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sport-side-item p {
+  margin: 0;
+  font-size: 13px;
+  color: #5b5f73;
+  line-height: 1.5;
+}
+
+/* ==========================================
+   COMING SOON
+   ========================================== */
+
+.coming-soon-message {
+  margin-top: 22px;
+  padding: 22px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #e7e3f8;
+  box-shadow: 0 8px 20px rgba(20, 20, 60, 0.05);
+  text-align: center;
+}
+
+.coming-soon-icon {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  background: #efe9ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+}
+
+.coming-soon-message h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  color: #1a1a2e;
+}
+
+.coming-soon-message p {
+  margin: 0 0 8px;
+  color: #5b5f73;
+  font-size: 14px;
+}
+
+.coming-soon-message span {
+  display: block;
+  font-size: 12px;
+  color: #8a8fa3;
+  margin-bottom: 16px;
+}
+
+.coming-soon-message button {
+  border: none;
+  background: #6c3dff;
+  color: white;
+  padding: 11px 18px;
+  border-radius: 10px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.coming-soon-message button:hover {
+  background: #5630df;
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+
+@media (max-width: 992px) {
+  .sport-shell {
+    width: 100%;
+  }
+
+  .sport-main {
+    grid-template-columns: 1fr;
+  }
+
+  .sport-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .sport-topbar {
+    padding: 14px 20px;
+  }
+
+  .sport-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sport-actions {
+    flex-direction: column-reverse;
+  }
+
+  .sport-cancel,
+  .sport-next {
+    width: 100%;
+  }
+}

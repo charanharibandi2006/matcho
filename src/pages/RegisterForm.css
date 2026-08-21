@@ -1,0 +1,2863 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+
+/* =========================================================
+   GLOBAL REGISTER / TOURNAMENT
+   ========================================================= */
+
+.reg-shell,
+.reg-shell * {
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+.reg-shell {
+  width: 100%;
+  min-height: 100vh;
+  background: #f7f9ff;
+}
+
+
+/* =========================================================
+   TOP BAR
+   ========================================================= */
+
+.reg-topbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 45px;
+  background: white;
+  border-bottom: 1px solid #ececec;
+}
+
+.reg-logo {
+  width: 140px;
+  height: auto;
+}
+
+.reg-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.reg-icon-btn {
+  border: none;
+  background: #f2f3fb;
+  cursor: pointer;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #232323;
+}
+
+.reg-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #ececec;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.reg-username {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.reg-main {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 34px 48px 60px;
+}
+
+.reg-page-title {
+  color: #98a0bd;
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0 0 24px;
+}
+
+
+/* =========================================================
+   MAIN TWO-COLUMN LAYOUT
+   ========================================================= */
+
+.reg-layout {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 30px;
+  align-items: start;
+}
+
+
+/* =========================================================
+   MAIN CARD
+   ========================================================= */
+
+.reg-card {
+  min-width: 0;
+  width: 100%;
+  background: white;
+  border: 1px solid #ececf3;
+  border-radius: 18px;
+  padding: 32px;
+}
+
+.reg-card h1 {
+  font-size: 24px;
+  margin: 0 0 4px;
+  color: #1a1a2e;
+}
+
+.reg-card > p {
+  margin: 0 0 26px;
+  color: #8a8fa3;
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   CREATE TOURNAMENT HEADER
+   ========================================================= */
+
+.create-title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.create-title-row h1 {
+  margin: 0;
+}
+
+.create-title-row p {
+  margin: 4px 0 26px;
+}
+
+.create-back-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin-top: 2px;
+
+  border: none;
+  background: transparent;
+
+  color: #111827;
+  font-size: 24px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   FORM ROWS
+   ========================================================= */
+
+.reg-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.reg-field {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reg-field.full {
+  grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   LABELS
+   ========================================================= */
+
+.reg-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #33364a;
+}
+
+.reg-field label .req {
+  color: #ff5b5b;
+}
+
+
+/* =========================================================
+   NORMAL INPUT WRAPPER
+   ========================================================= */
+
+.reg-input-wrap {
+  width: 100%;
+  height: 60px;
+  min-height: 60px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  border: 1px solid #e4e6f1;
+  border-radius: 12px;
+
+  padding: 0 14px;
+
+  background: #fbfbfe;
+  color: #b4b7c6;
+
+  box-sizing: border-box;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.reg-input-wrap:focus-within {
+  border-color: #7543f5;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 4px
+    rgba(117, 67, 245, 0.08);
+}
+
+.reg-input-wrap svg {
+  flex-shrink: 0;
+  color: #9aa0b4;
+  transition: color 0.2s ease;
+}
+
+.reg-input-wrap:focus-within svg {
+  color: #7543f5;
+}
+
+
+/* =========================================================
+   INPUT
+   ========================================================= */
+
+.reg-input-wrap input {
+  width: 100%;
+  height: 100%;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  flex: 1;
+  min-width: 0;
+
+  font-size: 15px;
+  color: #1a1a2e;
+  font-family: inherit;
+}
+
+.reg-input-wrap input::placeholder {
+  color: #b4b7c6;
+}
+
+
+/* =========================================================
+   TEXTAREA
+   ========================================================= */
+
+.reg-input-wrap.ep-textarea-wrap {
+  min-height: 120px;
+  height: auto;
+  align-items: flex-start;
+  padding-top: 14px;
+}
+
+.reg-input-wrap textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 90px;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  resize: vertical;
+
+  color: #1a1a2e;
+
+  font-family: inherit;
+  font-size: 15px;
+
+  line-height: 1.5;
+}
+
+.reg-input-wrap textarea::placeholder {
+  color: #b4b7c6;
+}
+
+
+/* =========================================================
+   CUSTOM DROPDOWN
+   ========================================================= */
+
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.custom-dropdown-trigger {
+  width: 100%;
+  height: 60px;
+  min-height: 60px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 0 16px;
+
+  border: 1px solid #e4e6f1;
+  border-radius: 12px;
+
+  background: #fbfbfe;
+
+  color: #17203a;
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 400;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.custom-dropdown-trigger:hover {
+  border-color: #c8c0f5;
+  background: #fcfbff;
+}
+
+.custom-dropdown-trigger:focus {
+  outline: none;
+
+  border-color: #7555e8;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(108, 61, 255, 0.08);
+}
+
+.custom-dropdown-trigger:disabled {
+  opacity: 1;
+  cursor: default;
+  background: #fbfbfe;
+}
+
+.dropdown-icon {
+  flex-shrink: 0;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.dropdown-value {
+  flex: 1;
+  min-width: 0;
+  color: #273047;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-placeholder {
+  flex: 1;
+  min-width: 0;
+  color: #9ca5b9;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-chevron {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 20px;
+
+  color: #596174;
+
+  font-size: 18px;
+  line-height: 1;
+
+  transition: transform 0.2s ease;
+}
+
+.dropdown-chevron.open {
+  transform: rotate(180deg);
+}
+
+
+/* =========================================================
+   CUSTOM DROPDOWN MENU
+   ========================================================= */
+
+.custom-dropdown-menu {
+  position: absolute;
+
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+
+  z-index: 1000;
+
+  padding: 6px;
+
+  background: #ffffff;
+
+  border: 1px solid #e3e6ef;
+  border-radius: 12px;
+
+  box-shadow:
+    0 16px 35px
+    rgba(30, 33, 60, 0.14);
+
+  overflow: hidden;
+
+  animation: dropdownAppear 0.15s ease;
+}
+
+@keyframes dropdownAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* =========================================================
+   DROPDOWN OPTIONS
+   ========================================================= */
+
+.custom-dropdown-option {
+  width: 100%;
+
+  display: block;
+
+  padding: 11px 13px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: transparent;
+
+  color: #273047;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.custom-dropdown-option:hover {
+  background: #f3efff;
+  color: #633cff;
+}
+
+.custom-dropdown-option.selected {
+  background: #eee9ff;
+  color: #633cff;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   FORMAT HEADER
+   ========================================================= */
+
+.format-heading-row {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 8px;
+}
+
+.format-heading-row label {
+  margin-bottom: 0;
+}
+
+
+/* =========================================================
+   FORMAT EDIT BUTTON
+   ========================================================= */
+
+.format-edit-btn {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 4px 2px;
+
+  border: none;
+  background: transparent;
+
+  color: #6c3dff;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.format-edit-btn:hover {
+  color: #4f25dd;
+}
+
+
+/* =========================================================
+   FORMAT DISPLAY
+   ========================================================= */
+
+.format-display {
+  min-height: 70px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  margin-top: 0;
+}
+
+.format-display-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.format-display-content strong {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #17203a;
+
+  font-size: 15px;
+}
+
+.format-display-content p {
+  margin: 0;
+
+  color: #8d95aa;
+
+  font-size: 13px;
+
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   FORMAT DROPDOWN
+   ========================================================= */
+
+.format-dropdown {
+  width: 100%;
+}
+
+
+/* =========================================================
+   CUSTOM FORMAT
+   ========================================================= */
+
+.custom-format-field {
+  margin-top: 14px;
+}
+
+.custom-format-field .reg-input-wrap {
+  min-height: 105px;
+  height: auto;
+
+  align-items: flex-start;
+
+  padding-top: 14px;
+}
+
+.custom-format-field textarea {
+  min-height: 75px;
+}
+
+
+/* =========================================================
+   DESCRIPTION
+   ========================================================= */
+
+.description-field {
+  margin-top: 18px;
+}
+
+
+/* =========================================================
+   READY / SAFE BOX
+   ========================================================= */
+
+.reg-safe-box {
+  display: flex;
+
+  gap: 14px;
+
+  background: #f6f3ff;
+
+  border-radius: 14px;
+
+  padding: 18px;
+
+  align-items: flex-start;
+}
+
+.reg-safe-icon {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+
+  border-radius: 10px;
+
+  background: #e6ddff;
+
+  color: #6c3dff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reg-safe-box strong {
+  display: block;
+
+  font-size: 14px;
+
+  color: #1a1a2e;
+
+  margin-bottom: 4px;
+}
+
+.reg-safe-box p {
+  margin: 0;
+
+  font-size: 12.5px;
+
+  color: #8a8fa3;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.reg-actions {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 16px;
+
+  margin-top: 28px;
+
+  padding-top: 2px;
+}
+
+.reg-cancel {
+  border: 1px solid #e0e0ea;
+
+  background: white;
+
+  padding: 13px 26px;
+
+  border-radius: 10px;
+
+  font-weight: 600;
+
+  color: #444;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.reg-cancel:hover {
+  background: #f8f8fb;
+  border-color: #cfd3df;
+}
+
+.reg-next {
+  border: none;
+
+  background: #6c3dff;
+
+  color: white;
+
+  padding: 13px 30px;
+
+  border-radius: 10px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.reg-next:hover {
+  background: #5630df;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 8px 18px
+    rgba(106, 57, 239, 0.18);
+}
+
+.reg-next:disabled,
+.reg-cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.reg-side {
+  width: 100%;
+
+  background: white;
+
+  border: 1px solid #ececf3;
+
+  border-radius: 18px;
+
+  padding: 26px;
+
+  box-sizing: border-box;
+}
+
+.reg-side h3 {
+  margin: 0 0 18px;
+
+  font-size: 16px;
+
+  color: #1a1a2e;
+}
+
+.reg-side-item {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 12px;
+
+  margin-bottom: 18px;
+}
+
+.reg-side-icon {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+
+  border-radius: 10px;
+
+  background: #efe9ff;
+
+  color: #6c3dff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reg-side-item strong {
+  display: block;
+
+  font-size: 13.5px;
+
+  color: #1a1a2e;
+
+  margin-bottom: 3px;
+}
+
+.reg-side-item p {
+  margin: 0;
+
+  font-size: 12px;
+
+  color: #8a8fa3;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   ACCOUNT BOX
+   ========================================================= */
+
+.reg-account-box {
+  margin-top: 22px;
+
+  background: #fbfbff;
+
+  border: 1px solid #ececf3;
+
+  border-radius: 14px;
+
+  padding: 18px;
+}
+
+.reg-account-box strong {
+  display: block;
+
+  font-size: 14px;
+
+  color: #1a1a2e;
+
+  margin-bottom: 6px;
+}
+
+.reg-account-box p {
+  margin: 0 0 14px;
+
+  font-size: 12.5px;
+
+  color: #8a8fa3;
+
+  line-height: 1.5;
+}
+
+.reg-login-btn {
+  width: 100%;
+
+  border: 1px solid #6c3dff;
+
+  background: white;
+
+  color: #6c3dff;
+
+  padding: 11px;
+
+  border-radius: 10px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.reg-login-btn:hover {
+  background: #6c3dff;
+  color: white;
+}
+
+
+/* =========================================================
+   ERROR BOX
+   ========================================================= */
+
+.ep-error-box {
+  width: 100%;
+
+  margin-bottom: 20px;
+
+  padding: 12px 14px;
+
+  border-radius: 10px;
+
+  background: #fff3f3;
+
+  border: 1px solid #ffd1d1;
+
+  color: #d93636;
+
+  font-size: 13px;
+
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   JOIN TOURNAMENT PAGE
+   ========================================================= */
+
+.join-tournament-page {
+  min-height: 100vh;
+  background: #f7f8fc;
+}
+
+.join-tournament-page .reg-main {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 42px 0 70px;
+}
+
+.join-page-heading {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 24px;
+}
+
+.join-heading-line {
+  width: 4px;
+  height: 23px;
+
+  border-radius: 10px;
+
+  background: #6d3df5;
+}
+
+.join-tournament-page .reg-page-title {
+  margin: 0;
+
+  color: #8992aa;
+
+  font-size: 16px;
+
+  font-weight: 600;
+
+  letter-spacing: 0.1px;
+}
+
+.join-tournament-page .reg-layout {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr) 360px;
+
+  gap: 28px;
+
+  align-items: start;
+}
+
+.join-tournament-page .reg-card {
+  background: #ffffff;
+
+  border: 1px solid #e8eaf1;
+
+  border-radius: 22px;
+
+  padding: 40px;
+
+  box-shadow:
+    0 12px 35px
+    rgba(34, 38, 67, 0.05);
+}
+
+.join-card-header {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 17px;
+
+  margin-bottom: 34px;
+}
+
+.join-card-icon {
+  width: 48px;
+  height: 48px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+
+  color: #6d3df5;
+
+  background: #f0ebff;
+}
+
+.join-card-header h1 {
+  margin: 0 0 8px;
+
+  color: #101a3a;
+
+  font-size: 27px;
+
+  line-height: 1.2;
+
+  font-weight: 750;
+
+  letter-spacing: -0.5px;
+}
+
+.join-card-header p {
+  margin: 0;
+
+  max-width: 620px;
+
+  color: #8992aa;
+
+  font-size: 15px;
+
+  line-height: 1.65;
+}
+
+.join-tournament-page .reg-field label {
+  display: block;
+
+  margin-bottom: 9px;
+
+  color: #18213f;
+
+  font-size: 14px;
+
+  font-weight: 650;
+}
+
+.join-tournament-page .req {
+  color: #f04444;
+}
+
+.join-tournament-page .reg-input-wrap {
+  height: 58px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+
+  padding: 0 17px;
+
+  border: 1px solid #e0e3ec;
+
+  border-radius: 13px;
+
+  background: #fbfbfd;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.join-tournament-page .reg-input-wrap svg {
+  flex-shrink: 0;
+
+  color: #a1a9bc;
+
+  transition: color 0.2s ease;
+}
+
+.join-tournament-page .reg-input-wrap:focus-within {
+  border-color: #7543f5;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(117, 67, 245, 0.09);
+}
+
+.join-tournament-page
+  .reg-input-wrap:focus-within
+  svg {
+  color: #7543f5;
+}
+
+.join-tournament-page .reg-input-wrap input {
+  width: 100%;
+  height: 100%;
+
+  border: 0;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #17203d;
+
+  font-size: 15px;
+
+  font-weight: 500;
+}
+
+.join-tournament-page
+  .reg-input-wrap
+  input::placeholder {
+  color: #b1b8c9;
+
+  font-weight: 400;
+}
+
+.join-input-hint {
+  display: block;
+
+  margin-top: 8px;
+
+  color: #9aa2b5;
+
+  font-size: 12px;
+
+  line-height: 1.5;
+}
+
+.join-tournament-page .reg-safe-box,
+.join-tournament-page .ep-error-box {
+  margin-bottom: 24px;
+
+  border-radius: 12px;
+
+  padding: 13px 15px;
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+.join-tournament-page .reg-actions {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 16px;
+
+  margin-top: 35px;
+
+  padding-top: 27px;
+
+  border-top: 1px solid #edf0f5;
+}
+
+.join-tournament-page .reg-cancel,
+.join-tournament-page .reg-next {
+  height: 54px;
+
+  border-radius: 12px;
+
+  font-size: 14px;
+
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+.join-tournament-page .reg-cancel {
+  min-width: 108px;
+
+  padding: 0 24px;
+
+  border: 1px solid #dfe2eb;
+
+  background: #ffffff;
+
+  color: #26304c;
+}
+
+.join-tournament-page .reg-cancel:hover {
+  background: #f8f8fb;
+
+  border-color: #cfd3df;
+}
+
+.join-tournament-page .reg-next {
+  min-width: 210px;
+
+  padding: 0 28px;
+
+  border: none;
+
+  background:
+    linear-gradient(
+      135deg,
+      #7040f5,
+      #6332e9
+    );
+
+  color: #ffffff;
+
+  box-shadow:
+    0 8px 18px
+    rgba(106, 57, 239, 0.2);
+}
+
+.join-tournament-page .reg-next:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 11px 24px
+    rgba(106, 57, 239, 0.27);
+}
+
+.join-tournament-page
+  .reg-next:active,
+.join-tournament-page
+  .reg-cancel:active {
+  transform: translateY(0);
+}
+
+
+/* =========================================================
+   JOIN RIGHT SIDE
+   ========================================================= */
+
+.join-tournament-page .reg-side {
+  padding: 29px;
+
+  border: 1px solid #e8eaf1;
+
+  border-radius: 22px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 12px 35px
+    rgba(34, 38, 67, 0.045);
+}
+
+.join-side-heading {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 13px;
+
+  margin-bottom: 27px;
+}
+
+.join-side-heading-icon {
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  color: #6d3df5;
+
+  background: #f0ebff;
+}
+
+.join-side-heading h3 {
+  margin: 0 0 4px;
+
+  color: #141d3a;
+
+  font-size: 13px;
+
+  font-weight: 720;
+}
+
+.join-side-heading p {
+  margin: 0;
+
+  color: #9aa2b5;
+
+  font-size: 12px;
+
+  line-height: 1.5;
+}
+
+.join-tournament-page .reg-side-item {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 14px;
+}
+
+.join-tournament-page .reg-side-icon {
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  color: #7040f5;
+
+  background: #f1edff;
+}
+
+.join-tournament-page .reg-side-item strong {
+  display: block;
+
+  margin: 1px 0 6px;
+
+  color: #1a2340;
+
+  font-size: 14px;
+
+  font-weight: 700;
+}
+
+.join-tournament-page .reg-side-item p {
+  margin: 0;
+
+  color: #929aaf;
+
+  font-size: 12px;
+
+  line-height: 1.65;
+}
+
+.join-side-divider {
+  height: 1px;
+
+  margin: 24px 0;
+
+  background: #edf0f5;
+}
+
+.join-side-tip {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 9px;
+
+  margin-top: 26px;
+
+  padding: 13px;
+
+  border: 1px solid #eeeafd;
+
+  border-radius: 12px;
+
+  background: #faf9ff;
+}
+
+.join-side-tip span {
+  font-size: 14px;
+
+  line-height: 1.5;
+}
+
+.join-side-tip p {
+  margin: 0;
+
+  color: #7f879c;
+
+  font-size: 11.5px;
+
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 992px) {
+  .reg-main {
+    padding: 30px 30px 50px;
+  }
+
+  .reg-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .reg-side {
+    width: 100%;
+  }
+}
+
+@media (max-width: 900px) {
+  .join-tournament-page .reg-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .join-tournament-page .reg-side {
+    width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .reg-main {
+    padding: 25px 20px 45px;
+  }
+
+  .reg-row {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .reg-card {
+    padding: 24px 20px;
+  }
+
+  .reg-page-title {
+    font-size: 16px;
+  }
+
+  .reg-actions {
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
+
+  .reg-cancel,
+  .reg-next {
+    width: 100%;
+  }
+
+  .create-title-row h1 {
+    font-size: 22px;
+  }
+
+  .custom-dropdown-trigger {
+    height: 58px;
+    min-height: 58px;
+  }
+}
+
+@media (max-width: 640px) {
+  .reg-topbar {
+    padding: 14px 20px;
+  }
+
+  .reg-row {
+    grid-template-columns: 1fr;
+  }
+
+  .reg-card {
+    padding: 22px;
+  }
+
+  .reg-category-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .reg-pills {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 600px) {
+  .join-tournament-page .reg-main {
+    width: calc(100% - 28px);
+    padding: 28px 0 45px;
+  }
+
+  .join-tournament-page .reg-card {
+    padding: 24px 20px;
+    border-radius: 18px;
+  }
+
+  .join-card-header {
+    gap: 12px;
+    margin-bottom: 27px;
+  }
+
+  .join-card-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+  }
+
+  .join-card-header h1 {
+    font-size: 22px;
+  }
+
+  .join-card-header p {
+    font-size: 13px;
+  }
+
+  .join-tournament-page .reg-side {
+    padding: 22px 20px;
+    border-radius: 18px;
+  }
+
+  .join-tournament-page .reg-actions {
+    margin-top: 28px;
+    padding-top: 22px;
+  }
+
+  .join-tournament-page .reg-cancel,
+  .join-tournament-page .reg-next {
+    min-width: 0;
+    width: 50%;
+    padding: 0 12px;
+  }
+}
+
+/* ==========================================
+   TOURNAMENT SUCCESS MODAL
+   ========================================== */
+
+.tournament-success-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 5000;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background:
+    rgba(18, 22, 42, 0.42);
+
+  backdrop-filter: blur(6px);
+
+  animation:
+    successOverlayIn 0.2s ease;
+}
+
+.tournament-success-modal {
+  position: relative;
+
+  width: min(500px, 100%);
+
+  padding: 36px;
+
+  background: #ffffff;
+
+  border:
+    1px solid #ececf4;
+
+  border-radius: 24px;
+
+  box-shadow:
+    0 25px 70px
+    rgba(24, 25, 50, 0.2);
+
+  text-align: center;
+
+  animation:
+    successModalIn 0.25s ease;
+}
+
+@keyframes successOverlayIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes successModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+/* ==========================================
+   CLOSE
+   ========================================== */
+
+.success-close-btn {
+  position: absolute;
+
+  top: 16px;
+  right: 18px;
+
+  width: 34px;
+  height: 34px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: #f4f4f8;
+
+  color: #596174;
+
+  font-size: 22px;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-close-btn:hover {
+  background: #ececf2;
+}
+
+
+/* ==========================================
+   SUCCESS ICON
+   ========================================== */
+
+.success-check {
+  width: 72px;
+  height: 72px;
+
+  margin: 0 auto 20px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      135deg,
+      #6d45f5,
+      #8b3df2
+    );
+
+  color: #ffffff;
+
+  font-size: 36px;
+  font-weight: 700;
+
+  box-shadow:
+    0 12px 28px
+    rgba(108, 61, 255, 0.25);
+}
+
+
+/* ==========================================
+   HEADING
+   ========================================== */
+
+.tournament-success-modal h2 {
+  margin: 0 0 10px;
+
+  color: #121a38;
+
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.success-message {
+  margin: 0 auto 24px;
+
+  max-width: 390px;
+
+  color: #8992aa;
+
+  font-size: 14px;
+
+  line-height: 1.6;
+}
+
+
+/* ==========================================
+   REGISTRATION CODE
+   ========================================== */
+
+.success-registration-box {
+  padding: 18px;
+
+  margin-bottom: 20px;
+
+  border:
+    1px solid #e4defd;
+
+  border-radius: 16px;
+
+  background: #f8f6ff;
+}
+
+.success-registration-box span {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #9299ad;
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.success-registration-box strong {
+  display: block;
+
+  color: #6238e8;
+
+  font-size: 24px;
+
+  letter-spacing: 1px;
+}
+
+
+/* ==========================================
+   DETAILS
+   ========================================== */
+
+.success-details {
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr 1fr;
+
+  gap: 10px;
+
+  margin-bottom: 24px;
+}
+
+.success-details > div {
+  padding: 12px 8px;
+
+  border-radius: 12px;
+
+  background: #fafafd;
+}
+
+.success-details span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #9aa1b5;
+
+  font-size: 11px;
+}
+
+.success-details strong {
+  display: block;
+
+  color: #25304b;
+
+  font-size: 12px;
+
+  line-height: 1.4;
+}
+
+
+/* ==========================================
+   DASHBOARD BUTTON
+   ========================================== */
+
+.success-dashboard-btn {
+  width: 100%;
+
+  height: 52px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #315fec,
+      #8b2ee9
+    );
+
+  color: #ffffff;
+
+  font-family: inherit;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 9px 20px
+    rgba(100, 60, 230, 0.2);
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.success-dashboard-btn:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 12px 24px
+    rgba(100, 60, 230, 0.27);
+}
+
+
+/* ==========================================
+   MOBILE
+   ========================================== */
+
+@media (max-width: 600px) {
+
+  .tournament-success-modal {
+    padding: 30px 22px;
+    border-radius: 20px;
+  }
+
+  .success-details {
+    grid-template-columns: 1fr;
+  }
+
+  .success-registration-box strong {
+    font-size: 21px;
+  }
+}
+
+/* ==========================================
+   SUCCESS MODAL - COPY BUTTON
+   ========================================== */
+
+.success-code-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.success-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  height: 36px;
+  padding: 0 12px;
+
+  border: 1px solid #ddd7f8;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: #633cff;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.success-copy-btn:hover {
+  background: #f4f0ff;
+  border-color: #c9bcff;
+  color: #5428e6;
+}
+
+.success-copy-btn:active {
+  transform: scale(0.97);
+}
+
+.success-copy-btn:focus {
+  outline: none;
+  box-shadow:
+    0 0 0 3px
+    rgba(108, 61, 255, 0.10);
+}
+
+.success-copy-btn svg {
+  flex-shrink: 0;
+}
+
+/* ==========================================
+   SUCCESS MODAL - SHARE ACTIONS
+   ========================================== */
+
+.success-code-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-code-row strong {
+  display: block;
+  color: #633cff;
+  font-size: 24px;
+  letter-spacing: 1px;
+}
+
+
+/* ==========================================
+   SHARE / COPY BUTTONS
+   ========================================== */
+
+.success-share-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.success-copy-btn,
+.success-share-btn {
+  height: 38px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding: 0 14px;
+
+  border-radius: 9px;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.success-copy-btn {
+  border: 1px solid #ddd7f8;
+  background: #ffffff;
+  color: #633cff;
+}
+
+.success-copy-btn:hover {
+  background: #f4f0ff;
+  border-color: #c9bcff;
+  color: #5428e6;
+}
+
+.success-share-btn {
+  border: 1px solid transparent;
+
+  background:
+    linear-gradient(
+      135deg,
+      #315fec,
+      #8b2ee9
+    );
+
+  color: #ffffff;
+
+  box-shadow:
+    0 6px 14px
+    rgba(100, 60, 230, 0.18);
+}
+
+.success-share-btn:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 9px 18px
+    rgba(100, 60, 230, 0.25);
+}
+
+.success-copy-btn:active,
+.success-share-btn:active {
+  transform: scale(0.97);
+}
+
+.success-copy-btn:focus,
+.success-share-btn:focus {
+  outline: none;
+}
+
+.success-copy-btn svg,
+.success-share-btn svg {
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   JOIN TOURNAMENT - FINAL TYPOGRAPHY SYSTEM
+   Keep one consistent type scale for the whole page.
+   ========================================================= */
+
+.join-tournament-page {
+  font-family: "Poppins", sans-serif;
+  color: #17203e;
+}
+
+/* Main page eyebrow */
+.join-tournament-page .reg-page-title {
+  margin: 0;
+  color: #8992aa;
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+/* Main card heading */
+.join-tournament-page .join-card-header h1 {
+  margin: 0 0 7px;
+  font-family: "Poppins", sans-serif;
+  color: #111a3a;
+  font-size: 30px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+}
+
+/* Main card subtitle */
+.join-tournament-page .join-card-header p {
+  margin: 0;
+  max-width: 620px;
+  color: #8993ad;
+  font-size: 14px;
+  line-height: 1.55;
+  font-weight: 400;
+}
+
+/* Form labels */
+.join-tournament-page .reg-field > label {
+  display: block;
+  margin: 0 0 8px;
+  color: #18213f;
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.join-tournament-page .req {
+  color: #f04444;
+}
+
+/* Inputs */
+.join-tournament-page .reg-input-wrap input {
+  font-family: "Poppins", sans-serif;
+  font-size: 15px;
+  line-height: 1.4;
+  font-weight: 500;
+  color: #17203e;
+}
+
+.join-tournament-page .reg-input-wrap input::placeholder {
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 400;
+  color: #a3abc0;
+}
+
+/* Helper text below input */
+.join-tournament-page .join-input-hint {
+  display: block;
+  margin-top: 7px;
+  color: #95a0b8;
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* Error/success message */
+.join-tournament-page .ep-error-box,
+.join-tournament-page .join-success-message,
+.join-tournament-page .reg-safe-box {
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.join-tournament-page .ep-error-box strong,
+.join-tournament-page .join-success-message strong {
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 600;
+}
+
+/* Tournament preview card */
+.join-tournament-page .reg-safe-box {
+  padding: 17px 18px;
+}
+
+/* Tournament name */
+.join-tournament-page .reg-safe-box > div > strong:first-child {
+  display: block;
+  margin-bottom: 0;
+  color: #17203e;
+  font-size: 16px;
+  line-height: 1.35;
+  font-weight: 700;
+}
+
+/* Preview labels */
+.join-tournament-page .reg-safe-box span {
+  font-size: 11px !important;
+  line-height: 1.4;
+  font-weight: 500 !important;
+  color: #95a0b8 !important;
+}
+
+/* Preview values */
+.join-tournament-page .tournament-preview-value {
+  display: block;
+  color: #17203e !important;
+  font-size: 13px !important;
+  line-height: 1.4;
+  font-weight: 600 !important;
+}
+
+/* Badminton value */
+.join-tournament-page .join-tournament-sport {
+  display: inline-block;
+  color: #17203e !important;
+  font-size: 13px !important;
+  line-height: 1.4;
+  font-weight: 700 !important;
+  text-transform: capitalize;
+}
+
+/* Right sidebar */
+.join-tournament-page .reg-side h3 {
+  margin: 0;
+  color: #18213f;
+  font-size: 20px;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: -0.25px;
+}
+
+.join-tournament-page .join-side-heading p {
+  margin: 5px 0 0;
+  color: #929bb2;
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* Sidebar item titles */
+.join-tournament-page .reg-side-item strong {
+  display: block;
+  margin: 0 0 5px;
+  color: #1b2542;
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 650;
+}
+
+/* Sidebar item descriptions */
+.join-tournament-page .reg-side-item p {
+  margin: 0;
+  color: #929bb2;
+  font-size: 12px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+/* Sidebar tip */
+.join-tournament-page .join-side-tip p {
+  margin: 0;
+  color: #8993ad;
+  font-size: 12px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+/* Buttons */
+.join-tournament-page .reg-cancel,
+.join-tournament-page .reg-next {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 600;
+}
+
+/* Icon sizing/alignment */
+.join-tournament-page .join-side-heading-icon,
+.join-tournament-page .reg-side-icon,
+.join-tournament-page .join-card-icon {
+  flex-shrink: 0;
+}
+
+/* Slightly larger visual breathing room for the sidebar */
+.join-tournament-page .reg-side-item {
+  margin-bottom: 20px;
+}
+
+.join-tournament-page .join-side-divider {
+  margin: 22px 0;
+}
+
+/* Responsive typography */
+@media (max-width: 700px) {
+  .join-tournament-page .join-card-header h1 {
+    font-size: 25px;
+  }
+
+  .join-tournament-page .join-card-header p {
+    font-size: 13px;
+  }
+
+  .join-tournament-page .reg-field > label {
+    font-size: 13px;
+  }
+
+  .join-tournament-page .reg-side h3 {
+    font-size: 13px;
+  }
+
+  .join-tournament-page .reg-side-item strong {
+    font-size: 13px;
+  }
+
+  .join-tournament-page .reg-side-item p,
+  .join-tournament-page .join-side-tip p {
+    font-size: 12px;
+  }
+}
+
+/* =========================================================
+   JOIN TOURNAMENT - HOW IT WORKS TYPOGRAPHY
+   ========================================================= */
+
+.join-tournament-page .join-side-heading h3 {
+  margin: 0 0 6px;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 18px !important;
+  line-height: 1.3;
+  font-weight: 700 !important;
+
+  color: #18213f;
+}
+
+.join-tournament-page .join-side-heading p {
+  margin: 0;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 13px !important;
+  line-height: 1.55;
+  font-weight: 400 !important;
+
+  color: #929bb2;
+}
+
+
+/* Individual section headings */
+
+.join-tournament-page .reg-side-item strong {
+  display: block;
+
+  margin: 0 0 6px;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 14px !important;
+  line-height: 1.4;
+  font-weight: 600 !important;
+
+  color: #1a2340;
+}
+
+
+/* Text below each heading */
+
+.join-tournament-page .reg-side-item p {
+  margin: 0;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 12.5px !important;
+  line-height: 1.6;
+  font-weight: 400 !important;
+
+  color: #929bb2;
+}
+
+
+/* Bottom tip */
+
+.join-tournament-page .join-side-tip p {
+  margin: 0;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 12.5px !important;
+  line-height: 1.6;
+  font-weight: 400 !important;
+
+  color: #8993ad;
+}
+
+/* =========================================================
+   JOIN TOURNAMENT - FINAL SIDEBAR TYPOGRAPHY
+   ========================================================= */
+
+.join-tournament-page .join-side-heading h3 {
+  margin: 0 0 6px !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 18px !important;
+  line-height: 1.3 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  color: #18213f !important;
+}
+
+.join-tournament-page .join-side-heading p {
+  margin: 0 !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 13px !important;
+  line-height: 1.55 !important;
+  font-weight: 400 !important;
+  color: #929bb2 !important;
+}
+
+.join-tournament-page .reg-side-item strong {
+  margin: 0 0 6px !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  font-weight: 600 !important;
+  color: #1a2340 !important;
+}
+
+.join-tournament-page .reg-side-item p {
+  margin: 0 !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 13px !important;
+  line-height: 1.55 !important;
+  font-weight: 400 !important;
+  color: #929bb2 !important;
+}
+
+.join-tournament-page .join-side-tip p {
+  margin: 0 !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 13px !important;
+  line-height: 1.55 !important;
+  font-weight: 400 !important;
+  color: #8993ad !important;
+}
+
+/* =========================================
+   JOIN TOURNAMENT HEADER
+========================================= */
+
+.join-page-heading {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.join-back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  height: 42px;
+  padding: 0 15px;
+
+  border: 1px solid #dce2f0;
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: #4d5b78;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.join-back-btn:hover {
+  background: #f7f5ff;
+  border-color: #7040f5;
+  color: #7040f5;
+  transform: translateX(-2px);
+}
+
+.join-back-btn svg {
+  flex-shrink: 0;
+}
+
+.join-heading-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.join-page-subtitle {
+  margin: 4px 0 0;
+  color: #7180a0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.join-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 2px;
+  border: none;
+  background: transparent;
+  color: #7180a0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.join-back-btn svg {
+  transition: transform 0.2s ease;
+}
+
+.join-back-btn:hover {
+  color: #7040f5;
+}
+
+.join-back-btn:hover svg {
+  transform: translateX(-3px);
+}
+
+.join-page-heading {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.join-heading-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.join-page-subtitle {
+  margin: 4px 0 0;
+  color: #7180a0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.player-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 14px;
+  margin-top: 18px;
+}
+
+.player-form-field {
+  min-width: 0;
+}
+
+.player-form-field .auth-label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.player-form-field .auth-input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.player-form-actions {
+  display: grid;
+  grid-template-columns: 0.7fr 1.3fr;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.player-form-actions button {
+  min-height: 48px;
+}
+
+@media (max-width: 600px) {
+  .player-form-grid {
+    grid-template-columns: 1fr;
+    gap: 13px;
+  }
+
+  .player-form-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   JOIN TOURNAMENT - MOBILE RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+  .join-tournament-page {
+    width: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .join-tournament-page .reg-main {
+    width: 100%;
+    max-width: 100%;
+    padding: 24px 16px 40px;
+    box-sizing: border-box;
+  }
+
+  /* -------------------------
+     HEADER
+     ------------------------- */
+
+  .join-page-heading {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin: 0 0 22px;
+    box-sizing: border-box;
+  }
+
+  .join-page-heading > div {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .reg-page-title {
+    margin: 0;
+    font-size: 22px !important;
+    line-height: 1.25;
+    font-weight: 800;
+  }
+
+  .join-page-heading p:not(.reg-page-title) {
+    margin-top: 6px !important;
+    font-size: 14px !important;
+    line-height: 1.5;
+  }
+
+  /* Back button */
+  .join-page-heading .tm-outline-btn {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 44px;
+    height: 42px;
+    padding: 0 13px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    white-space: nowrap;
+  }
+
+  /* -------------------------
+     SEARCH
+     ------------------------- */
+
+  .join-tournament-page .auth-input {
+    max-width: 100%;
+  }
+
+  .join-tournament-page
+  [style*="max-width: 1050px"] {
+    width: 100%;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .join-tournament-page
+  [style*="position: relative"] {
+    width: 100%;
+    margin-bottom: 18px !important;
+  }
+
+  .join-tournament-page
+  [style*="position: relative"] .auth-input {
+    height: 52px;
+    font-size: 14px;
+    border-radius: 14px;
+  }
+
+  /* -------------------------
+     AVAILABLE TOURNAMENTS
+     ------------------------- */
+
+  .join-tournament-page
+  [style*="grid-template-columns"] {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    width: 100%;
+  }
+
+  /* -------------------------
+     TOURNAMENT CARD
+     ------------------------- */
+
+  .join-tournament-page .reg-card {
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 18px;
+    padding: 18px !important;
+    margin: 0 !important;
+  }
+
+  .join-tournament-page .reg-card h2 {
+    font-size: 20px !important;
+    line-height: 1.25;
+    margin-top: 14px !important;
+  }
+
+  .join-tournament-page .reg-card p {
+    font-size: 13px;
+  }
+
+  /* Tournament information */
+  .join-tournament-page .reg-card
+  [style*="display: grid"] {
+    gap: 10px !important;
+  }
+
+  .join-tournament-page .reg-card
+  [style*="display: grid"] > div {
+    font-size: 13px !important;
+    line-height: 1.4;
+  }
+
+  /* -------------------------
+     JOIN BUTTON
+     ------------------------- */
+
+  .join-tournament-page .tm-primary-btn {
+    min-height: 46px;
+    border-radius: 11px;
+    font-size: 14px;
+  }
+
+  /* -------------------------
+     MODAL / REGISTRATION FORM
+     ------------------------- */
+
+  .join-tournament-page
+  [style*="position: fixed"] {
+    padding: 12px !important;
+    align-items: center;
+  }
+
+  .join-tournament-page
+  [style*="position: fixed"] .reg-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 92vh !important;
+    padding: 20px !important;
+    border-radius: 20px;
+  }
+
+  /* -------------------------
+     FORM BUTTONS
+     ------------------------- */
+
+  .join-tournament-page
+  [style*="display: flex"][style*="gap: 10px"] {
+    flex-direction: column-reverse;
+  }
+
+  .join-tournament-page
+  [style*="display: flex"][style*="gap: 10px"] button {
+    width: 100%;
+    min-height: 48px;
+  }
+}
+
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .join-tournament-page .reg-main {
+    padding: 20px 14px 32px;
+  }
+
+  .join-page-heading {
+    gap: 10px;
+  }
+
+  .join-page-heading .tm-outline-btn {
+    min-width: 42px;
+    width: 42px;
+    padding: 0;
+  }
+
+  .join-page-heading .tm-outline-btn svg {
+    margin: 0;
+  }
+
+  /* Hide "Back" text on very small screens */
+  .join-page-heading .tm-outline-btn {
+    font-size: 0;
+  }
+
+  .join-page-heading .tm-outline-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .reg-page-title {
+    font-size: 20px !important;
+  }
+
+  .join-page-heading p:not(.reg-page-title) {
+    font-size: 13px !important;
+  }
+
+  .join-tournament-page .reg-card {
+    padding: 16px !important;
+  }
+
+  .join-tournament-page .reg-card h2 {
+    font-size: 19px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .join-page-heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .join-page-heading > div {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .join-page-heading .reg-page-title {
+    font-size: 20px !important;
+    line-height: 1.2 !important;
+    white-space: nowrap;
+    margin: 0 !important;
+  }
+
+  .join-page-heading p:not(.reg-page-title) {
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+    margin-top: 6px !important;
+    max-width: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  .join-page-heading {
+    display: block !important;
+    width: 100%;
+  }
+
+  /* Dashboard / back button stays on top */
+  .join-page-heading .join-back-btn,
+  .join-page-heading .tm-outline-btn {
+    display: inline-flex;
+    margin-bottom: 18px;
+  }
+
+  /* Heading comes below */
+  .join-page-heading > div {
+    width: 100%;
+  }
+
+  .join-page-heading .reg-page-title {
+    font-size: 21px !important;
+    line-height: 1.25 !important;
+    white-space: nowrap;
+    margin: 0 !important;
+  }
+
+  .join-page-heading p:not(.reg-page-title) {
+    max-width: 290px;
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+    margin: 6px 0 0 !important;
+  }
+}

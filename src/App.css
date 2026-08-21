@@ -1,0 +1,1362 @@
+/* ---------- Page shell / background ---------- */
+/* Base = mobile background. Swaps to desktop.png at the 900px breakpoint below. */
+
+.app-shell {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(90deg, rgba(20, 30, 58, 0.08), transparent 18%, transparent 82%, rgba(20, 30, 58, 0.08)),
+    url('./assets/images/desktop.jpg') top center / 100% auto no-repeat,
+    #f7f9ff;
+}
+
+@media (min-width: 900px) {
+  .app-shell {
+    background:
+      linear-gradient(90deg, rgba(20, 30, 58, 0.08), transparent 18%, transparent 82%, rgba(20, 30, 58, 0.08)),
+      url('./assets/images/desktop.jpg') top center / 100% auto no-repeat,
+      #f7f9ff;
+  }
+}
+
+/* ---------- Splash / page section ---------- */
+
+.splash {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 64px 24px 40px;
+}
+
+.signup-login {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 64px 24px 40px;
+}
+
+@media (min-width: 640px) {
+  .splash {
+    max-width: 460px;
+    min-height: min(100svh, 844px);
+    margin: 32px 0;
+  }
+}
+
+@media (max-width: 374px) {
+  .splash {
+    padding: 40px 16px 28px;
+  }
+}
+
+/* ---------- Auth form fields ---------- */
+
+.auth-form {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 0;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1.5px solid #e7e8f3;
+  background: #f7f9ff;
+  font: inherit;
+  font-size: 14.5px;
+  box-sizing: border-box;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: #5644ff;
+}
+
+/* ---------- Account type dropdown ---------- */
+
+.account-type-field {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.account-type-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #151b2d;
+}
+
+.account-type-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1.5px solid #e7e8f3;
+  background: #f7f9ff;
+  font: inherit;
+  font-size: 14.5px;
+  color: #151b2d;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.account-type-trigger:focus-visible,
+.account-type-trigger[aria-expanded="true"] {
+  outline: none;
+  border-color: #2767f0;
+}
+
+.account-type-trigger svg {
+  color: #7d7d8a;
+  flex-shrink: 0;
+}
+
+.account-type-menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 18px 40px rgba(20, 30, 58, 0.16);
+  border: 1px solid #eef0fa;
+}
+
+.account-type-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 14.5px;
+  color: #151b2d;
+  cursor: pointer;
+}
+
+.account-type-option:hover {
+  background: #f4f6ff;
+}
+
+.account-type-option.selected {
+  background: #eaf0ff;
+  color: #2767f0;
+  font-weight: 700;
+}
+
+.account-type-option.selected svg {
+  color: #2767f0;
+}
+
+/* ---------- Brand mark / logo (scales fluidly with viewport) ---------- */
+
+.brand-mark {
+  position: relative;
+  z-index: 8;
+  width: clamp(160px, 40vw, 220px);
+  height: clamp(160px, 40vw, 220px);
+  display: grid;
+  place-items: center;
+  margin-top: 10px;
+  border-radius: 50%;
+  background: #ede3ff;
+}
+
+.brand-logo {
+  width: clamp(130px, 32vw, 170px);
+  height: auto;
+}
+
+/* ---------- Password fields with eye toggle ---------- */
+
+/* =========================
+   PASSWORD INPUT
+   ========================= */
+
+.password-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.password-container .auth-input {
+  width: 100%;
+  padding-right: 52px;
+}
+
+/* Eye icon */
+.password-container .eye-icon {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  margin: 0;
+
+  border: none;
+  outline: none;
+  background: transparent;
+
+  color: #7357ff;
+  cursor: pointer;
+
+  font-size: 20px;
+
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* Remove browser button styling */
+.password-container .eye-icon:hover,
+.password-container .eye-icon:focus,
+.password-container .eye-icon:active {
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+/* Slight hover effect */
+.password-container .eye-icon:hover {
+  color: #5c3df5;
+  transform: translateY(-50%) scale(1.08);
+}
+
+/* Make icon smooth */
+.password-container .eye-icon svg {
+  width: 21px;
+  height: 21px;
+  stroke-width: 2;
+}
+
+/* ---------- Headings / copy ---------- */
+
+.splash-copy {
+  position: relative;
+  z-index: 3;
+  margin-top: 26px;
+  text-align: center;
+}
+
+.splash-copy h1 {
+  margin: 0;
+  color: #151b2d;
+  font-size: clamp(18px, 5vw, 24px);
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.splash-copy p {
+  margin-top: 10px;
+  color: #7b7b8a;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 320px;
+  text-align: center;
+}
+
+/* ---------- Landing page CTA row ---------- */
+
+.auth-actions {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 100px;
+  padding-top: 50px;
+}
+
+.auth-actions p {
+  margin: 0;
+  color: #8e8e98;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.auth-actions a {
+  color: #2767f0;
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ---------- Shared primary button ---------- */
+
+.primary-action {
+  width: min(320px, 100%);
+  min-height: 50px;
+  border: 0;
+  border-radius: 15px;
+  background: linear-gradient(100deg, #2767f0 0%, #9b2ee9 100%);
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 16px 30px rgba(89, 80, 233, 0.18);
+}
+
+.primary-action:focus-visible,
+.auth-actions a:focus-visible {
+  outline: 3px solid rgba(47, 111, 240, 0.32);
+  outline-offset: 3px;
+}
+
+@media (max-width: 374px) {
+  .primary-action {
+    font-size: 14px;
+  }
+}
+
+/* ---------- Social login row ---------- */
+
+.social-login {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.social-btn {
+  width: 55px;
+  height: 55px;
+  border: none;
+  border-radius: 15px;
+  background: white;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 26px;
+  transition: 0.3s;
+}
+
+.social-btn:hover {
+  transform: translateY(-3px);
+}
+
+.social-btn:nth-child(1) svg {
+  color: #ea4335;
+}
+
+.social-btn:nth-child(2) svg {
+  color: #1877f2;
+}
+
+.social-btn:nth-child(3) svg {
+  color: #000;
+}
+
+@media (max-width: 374px) {
+  .social-login {
+    gap: 18px;
+  }
+  .social-btn {
+    width: 46px;
+    height: 46px;
+    font-size: 22px;
+  }
+}
+
+/* ---------- Signup / terms text ---------- */
+
+.signup-text {
+  margin-top: 18px;
+  font-size: 13px;
+  color: #5c5f7a;
+  font-weight: 600;
+  text-align: center;
+}
+
+.signup-text a {
+  color: #5644ff;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.terms {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #5c5f7a;
+  margin: 6px 0 20px;
+  text-align: left;
+}
+
+.terms a {
+  color: #5644ff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* ---------- Divider ---------- */
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 22px 0;
+  color: #8b8b8b;
+  font-size: 14px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #dcdcdc;
+}
+
+.divider span {
+  padding: 0 12px;
+}
+
+/* ---------- Forgot password link ---------- */
+
+.forgot-password {
+  width: 100%;
+  text-align: right;
+  margin-top: -8px;
+  margin-bottom: 5px;
+}
+
+.forgot-password a {
+  text-decoration: none;
+  color: #6c63ff;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.forgot-password a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Email input with icon (Forgot Password flow) ---------- */
+
+.email-container {
+  position: relative;
+  width: 100%;
+}
+
+.email-input {
+  width: 100%;
+  padding: 14px 16px 14px 45px;
+  border-radius: 12px;
+  border: 1.5px solid #e7e8f3;
+  background: #f7f9ff;
+  font-size: 14.5px;
+  box-sizing: border-box;
+}
+
+.email-input-wrapper {
+  position: relative;
+  width: 100%;
+  height: 62px;
+}
+
+.email-input-wrapper .auth-input {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding-left: 56px;
+  padding-right: 18px;
+}
+
+.email-input-wrapper .email-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 22px;
+  height: 22px;
+
+  display: block;
+
+  color: #7657ff;
+  stroke-width: 2;
+
+  pointer-events: none;
+  z-index: 2;
+}
+
+.reset-password-container{
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 30px;
+  align-items: center;
+}
+
+.reset-password-container .auth-input {
+  width: 100%;
+}
+
+.forget-image {
+  display: block;
+  width: clamp(160px, 40vw, 220px);
+  height: auto;
+  margin: 0 auto 20px;
+}
+
+/* ---------- OTP verification ---------- */
+
+.otp-container {
+  width: 100%;
+  max-width: 340px;
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.otp-inputs {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.otp-box {
+  width: 48px;
+  height: 55px;
+  border: 2px solid #7d5fff;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  outline: none;
+}
+
+.otp-box:focus {
+  border-color: #2767f0;
+}
+
+@media (max-width: 374px) {
+  .otp-box {
+    width: 40px;
+    height: 48px;
+    font-size: 18px;
+  }
+  .otp-inputs {
+    gap: 6px;
+  }
+}
+
+.resend-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  margin-top: 20px;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+
+  color: #777b91;
+}
+
+.resend-button {
+  border: none;
+  outline: none;
+  padding: 0;
+
+  background: transparent;
+
+  color: #7040ff;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.resend-button:hover {
+  color: #5b2ee6;
+  text-decoration: underline;
+}
+
+.resend-button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* ---------- Desktop (≥900px) ---------- */
+
+@media (min-width: 900px) {
+  .splash {
+    margin-top: 90px;
+  }
+}
+
+.registration-success {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.success-icon {
+  width: 82px;
+  height: 82px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 10px auto 24px;
+
+  border-radius: 50%;
+
+  background: #efeaff;
+  color: #7040f5;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 38px;
+  font-weight: 600;
+
+  box-shadow: 0 10px 30px rgba(112, 64, 245, 0.12);
+}
+
+.registration-success .splash-copy {
+  margin-bottom: 26px;
+}
+
+.registration-success .splash-copy h1 {
+  line-height: 1.3;
+}
+
+.registration-success .splash-copy p {
+  line-height: 1.7;
+}
+
+.auth-error {
+  margin: 8px 0 4px;
+
+  color: #e53935;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+
+  text-align: center;
+}
+
+.resend-text {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.resend-button {
+  border: none;
+  background: none;
+  padding: 0;
+  margin-left: 4px;
+  color: #6c3cff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.resend-button:hover {
+  text-decoration: underline;
+}
+
+.resend-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.resend-timer {
+  color: #6c3cff;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   RESPONSIVE AUTH FIXES
+   ========================================================= */
+
+/* Prevent the desktop stadium artwork from behaving like a
+   large banner on phones. */
+/* =========================================================
+   MATCHO MOBILE AUTH DESIGN
+   Uses:
+   /src/assets/images/left.png
+   /src/assets/images/right.png
+   /src/assets/images/bottom.png
+
+   Desktop remains unchanged.
+   ========================================================= */
+
+@media (max-width: 640px) {
+
+  /* -------------------------------------------------------
+     PAGE
+     ------------------------------------------------------- */
+
+  .auth-container,
+  .splash {
+    position: relative;
+    width: 100%;
+    min-height: 100svh;
+    min-height: 100dvh;
+    margin: 0;
+    padding: 22px 20px 32px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    background:
+      radial-gradient(
+        circle at 50% 10%,
+        rgba(108, 61, 255, 0.06),
+        transparent 28%
+      ),
+      #f9faff;
+  }
+
+  /* -------------------------------------------------------
+     SPORTS IMAGES
+     ------------------------------------------------------- */
+
+  .auth-container::before,
+  .splash::before {
+    content: "";
+    position: absolute;
+    top: 90px;
+    left: -28px;
+
+    width: 190px;
+    height: 390px;
+
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: contain;
+
+    opacity: 0.23;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .auth-container::after,
+  .splash::after {
+    content: "";
+    position: absolute;
+    top: 80px;
+    right: -30px;
+
+    width: 190px;
+    height: 400px;
+
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: contain;
+
+    opacity: 0.23;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Bottom stadium is a third image, so use a background
+     layer on the page rather than another pseudo-element. */
+  .auth-container,
+  .splash {
+
+    background-repeat: no-repeat;
+
+    background-position:
+      center bottom,
+      center top;
+
+    background-size:
+      100% auto,
+      auto;
+
+    background-color: #f9faff;
+  }
+
+  /* -------------------------------------------------------
+     CONTENT ABOVE THE SPORTS ARTWORK
+     ------------------------------------------------------- */
+
+  .auth-container > *,
+  .splash > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* -------------------------------------------------------
+     BACK BUTTON
+     ------------------------------------------------------- */
+
+  .back-button,
+  .auth-back-button,
+  .back-btn {
+    align-self: flex-start;
+
+    width: 48px;
+    height: 48px;
+
+    margin: 4px 0 6px -2px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    background: transparent;
+
+    color: #11182f;
+    font-size: 30px;
+
+    cursor: pointer;
+    z-index: 3;
+  }
+
+  /* -------------------------------------------------------
+     LOGO
+     ------------------------------------------------------- */
+
+  .brand-mark,
+  .brand-mark-login {
+    width: 160px;
+    height: 160px;
+    min-width: 160px;
+    min-height: 160px;
+
+    margin: 22px auto 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(232, 220, 255, 0.88);
+
+    box-shadow:
+      0 16px 35px rgba(108, 61, 255, 0.08);
+  }
+
+  .brand-logo {
+    width: 125px;
+    max-width: 80%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  /* -------------------------------------------------------
+     HEADING
+     ------------------------------------------------------- */
+
+  .splash-copy {
+    width: min(100%, 340px);
+
+    margin: 22px auto 20px;
+
+    text-align: center;
+  }
+
+  .splash-copy h1 {
+    margin: 0;
+
+    color: #101936;
+
+    font-size: 30px;
+    line-height: 1.15;
+    font-weight: 800;
+
+    letter-spacing: -0.6px;
+  }
+
+  .splash-copy p {
+    margin: 12px 0 0;
+
+    color: #737c98;
+
+    font-size: 16px;
+    line-height: 1.45;
+    font-weight: 400;
+  }
+
+  /* -------------------------------------------------------
+     FORM
+     ------------------------------------------------------- */
+
+  .auth-form {
+    width: min(100%, 340px);
+
+    margin: 14px auto 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 14px;
+  }
+
+  /* -------------------------------------------------------
+     ACCOUNT TYPE
+     ------------------------------------------------------- */
+
+  .account-type-label {
+    margin: 0 0 6px;
+
+    color: #131a35;
+
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .account-type-trigger,
+  .account-type-select,
+  .auth-form select {
+    width: 100%;
+    min-height: 54px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #dedff0;
+    border-radius: 15px;
+
+    background: rgba(255, 255, 255, 0.94);
+
+    color: #27304b;
+
+    font-family: "Poppins", sans-serif;
+    font-size: 15px;
+  }
+
+  /* -------------------------------------------------------
+     INPUTS
+     ------------------------------------------------------- */
+
+  .auth-input {
+    width: 100%;
+    min-height: 58px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #e0e2ef;
+    border-radius: 16px;
+
+    background: rgba(255, 255, 255, 0.96);
+
+    padding: 0 18px;
+
+    color: #1c2544;
+
+    font-family: "Poppins", sans-serif;
+    font-size: 15px;
+
+    outline: none;
+
+    box-shadow:
+      0 8px 22px rgba(30, 34, 70, 0.055);
+
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background 0.2s ease;
+  }
+
+  .auth-input::placeholder {
+    color: #969db0;
+  }
+
+  .auth-input:focus {
+    border-color: #8e6aff;
+
+    background: #fff;
+
+    box-shadow:
+      0 0 0 3px rgba(108, 61, 255, 0.08),
+      0 10px 24px rgba(30, 34, 70, 0.06);
+  }
+
+  /* -------------------------------------------------------
+     PASSWORD
+     ------------------------------------------------------- */
+
+  .password-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .password-container .auth-input {
+    padding-right: 55px;
+  }
+
+  .eye-icon {
+    position: absolute;
+
+    top: 50%;
+    right: 14px;
+
+    width: 34px;
+    height: 34px;
+
+    transform: translateY(-50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    background: transparent;
+
+    color: #7346ff;
+
+    cursor: pointer;
+  }
+
+  /* -------------------------------------------------------
+     FORGOT PASSWORD
+     ------------------------------------------------------- */
+
+  .forgot-password {
+    width: 100%;
+
+    margin-top: 1px;
+
+    text-align: right;
+  }
+
+  .forgot-password a {
+    color: #6940ff;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    text-decoration: none;
+  }
+
+  .forgot-password a:hover {
+    text-decoration: underline;
+  }
+
+  /* -------------------------------------------------------
+     PRIMARY BUTTON
+     ------------------------------------------------------- */
+
+  .primary-action {
+    width: 100%;
+    min-height: 58px;
+
+    margin-top: 10px;
+
+    border: none;
+    border-radius: 17px;
+
+    background:
+      linear-gradient(
+        100deg,
+        #2e73f5 0%,
+        #5949ee 52%,
+        #9a28e9 100%
+      );
+
+    color: #fff;
+
+    font-family: "Poppins", sans-serif;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+      0 12px 28px rgba(87, 66, 233, 0.20);
+
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .primary-action:hover:not(:disabled) {
+    transform: translateY(-1px);
+
+    box-shadow:
+      0 15px 30px rgba(87, 66, 233, 0.25);
+  }
+
+  .primary-action:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+
+  /* -------------------------------------------------------
+     ERROR
+     ------------------------------------------------------- */
+
+  .auth-error {
+    width: 100%;
+
+    margin: 2px 0;
+
+    color: #c53636;
+
+    font-size: 12px;
+    line-height: 1.45;
+    text-align: center;
+  }
+
+  /* -------------------------------------------------------
+     SIGN UP TEXT
+     ------------------------------------------------------- */
+
+  .signup-text {
+    margin: 18px auto 0;
+
+    color: #7f869b;
+
+    font-size: 13px;
+    line-height: 1.5;
+
+    text-align: center;
+  }
+
+  .signup-text a {
+    color: #6940ff;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  /* -------------------------------------------------------
+     TERMS
+     ------------------------------------------------------- */
+
+  .terms {
+    width: 100%;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+
+    color: #767e97;
+
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  .terms input {
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .terms a {
+    color: #6940ff;
+    font-weight: 600;
+  }
+
+  /* -------------------------------------------------------
+     GOOGLE / SOCIAL AREA
+     Since Google OAuth is removed
+     ------------------------------------------------------- */
+
+  .divider,
+  .social-login {
+    display: none !important;
+  }
+
+  /* -------------------------------------------------------
+     OTP
+     ------------------------------------------------------- */
+
+  .otp-container {
+    width: min(100%, 340px);
+
+    margin: 20px auto 0;
+  }
+
+  .otp-inputs {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+
+    width: 100%;
+  }
+
+  .otp-box {
+    width: 46px;
+    height: 52px;
+
+    flex: 0 0 46px;
+
+    border: 1px solid #e0e2ef;
+    border-radius: 13px;
+
+    background: #fff;
+
+    color: #1d2750;
+
+    font-family: "Poppins", sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+
+    text-align: center;
+
+    outline: none;
+
+    box-shadow:
+      0 7px 18px rgba(30, 34, 70, 0.05);
+  }
+
+  .otp-box:focus {
+    border-color: #7b50ff;
+
+    box-shadow:
+      0 0 0 3px rgba(108, 61, 255, 0.08);
+  }
+
+  /* -------------------------------------------------------
+     FORGOT / RESET PASSWORD
+     ------------------------------------------------------- */
+
+  .reset-password-container,
+  .email-container {
+    width: min(100%, 340px);
+
+    margin: 18px auto 0;
+  }
+
+  .email-input-wrapper {
+    width: 100%;
+    min-height: 58px;
+
+    position: relative;
+  }
+
+  .email-input-wrapper .auth-input {
+    padding-left: 50px;
+  }
+
+  .email-icon {
+    position: absolute;
+
+    left: 16px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #7d4cff;
+  }
+
+  /* -------------------------------------------------------
+     VERY SMALL PHONES
+     ------------------------------------------------------- */
+
+  @media (max-width: 380px) {
+
+    .auth-container,
+    .splash {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+
+    .brand-mark,
+    .brand-mark-login {
+      width: 140px;
+      height: 140px;
+      min-width: 140px;
+      min-height: 140px;
+    }
+
+    .brand-logo {
+      width: 108px;
+    }
+
+    .splash-copy h1 {
+      font-size: 26px;
+    }
+
+    .splash-copy p {
+      font-size: 14px;
+    }
+
+    .auth-form,
+    .otp-container,
+    .reset-password-container,
+    .email-container {
+      max-width: 320px;
+    }
+
+    .auth-input {
+      min-height: 54px;
+      font-size: 14px;
+    }
+
+    .primary-action {
+      min-height: 54px;
+      font-size: 15px;
+    }
+
+    .auth-container::before,
+    .splash::before {
+      width: 155px;
+      height: 340px;
+      left: -45px;
+    }
+
+    .auth-container::after,
+    .splash::after {
+      width: 155px;
+      height: 340px;
+      right: -45px;
+    }
+
+    .otp-box {
+      width: 42px;
+      height: 48px;
+      flex-basis: 42px;
+      font-size: 18px;
+    }
+  }
+}

@@ -1,0 +1,326 @@
+/* =========================================
+   MATCHO PORTAL LOGIN
+   Player + Organizer Login
+   ========================================= */
+
+.portal-shell {
+    min-height: 100vh;
+    width: 100%;
+    background: #f7f8fc;
+    color: #171923;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ---------- TOP BAR ---------- */
+
+.portal-topbar {
+    width: 100%;
+    height: 76px;
+    padding: 0 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: #ffffff;
+    border-bottom: 1px solid #e9eaf0;
+
+    box-sizing: border-box;
+}
+
+.portal-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.portal-logo {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+}
+
+.portal-brand-name {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.portal-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+/* ---------- NOTIFICATION ---------- */
+
+.portal-bell {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    background: #f4f5f9;
+
+    cursor: pointer;
+    font-size: 18px;
+}
+
+/* ---------- USER ---------- */
+
+.portal-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.portal-avatar {
+    width: 38px;
+    height: 38px;
+
+    border-radius: 50%;
+    background: #ececff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: 700;
+}
+
+.portal-username {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* ---------- MAIN ---------- */
+
+.portal-main {
+    width: 100%;
+    max-width: 1180px;
+
+    margin: 0 auto;
+    padding: 52px 32px 70px;
+
+    box-sizing: border-box;
+}
+
+/* ---------- WELCOME ---------- */
+
+.portal-welcome {
+    margin-bottom: 34px;
+}
+
+.portal-welcome h1 {
+    margin: 0 0 8px;
+
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+}
+
+.portal-welcome p {
+    margin: 0;
+
+    color: #707481;
+    font-size: 15px;
+}
+
+/* ---------- CARDS ---------- */
+
+.portal-tiles {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 24px;
+
+    width: 100%;
+}
+
+.portal-tile {
+    min-height: 250px;
+
+    padding: 30px;
+
+    background: #ffffff;
+
+    border: 1px solid #e8e9ef;
+    border-radius: 20px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.portal-tile:hover {
+    transform: translateY(-3px);
+
+    box-shadow: 0 14px 35px rgba(20, 24, 40, 0.08);
+
+    border-color: #d8d9e5;
+}
+
+.portal-tile-icon {
+    width: 58px;
+    height: 58px;
+
+    border-radius: 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 25px;
+    font-weight: 700;
+
+    background: #f1efff;
+}
+
+.portal-tile-text {
+    margin-top: 22px;
+}
+
+.portal-tile-text h2 {
+    margin: 0 0 8px;
+
+    font-size: 21px;
+    font-weight: 750;
+}
+
+.portal-tile-text p {
+    margin: 0;
+
+    color: #747782;
+
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* ---------- BUTTONS ---------- */
+
+.portal-btn {
+    width: 100%;
+
+    min-height: 48px;
+
+    margin-top: 24px;
+
+    border: none;
+    border-radius: 12px;
+
+    padding: 0 18px;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        opacity 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.portal-btn:hover {
+    transform: translateY(-1px);
+}
+
+.portal-btn:active {
+    transform: translateY(0);
+}
+
+.portal-btn-purple {
+    background: #6657d9;
+    color: #ffffff;
+
+    box-shadow: 0 8px 20px rgba(102, 87, 217, 0.18);
+}
+
+.portal-btn-orange {
+    background: #f28b38;
+    color: #ffffff;
+
+    box-shadow: 0 8px 20px rgba(242, 139, 56, 0.18);
+}
+
+/* ---------- DATE ---------- */
+
+.portal-date {
+    margin-top: 10px;
+
+    color: #858995;
+    font-size: 13px;
+}
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width: 768px) {
+
+    .portal-topbar {
+        height: 68px;
+        padding: 0 20px;
+    }
+
+    .portal-logo {
+        width: 36px;
+        height: 36px;
+    }
+
+    .portal-brand-name {
+        font-size: 19px;
+    }
+
+    .portal-username {
+        display: none;
+    }
+
+    .portal-main {
+        padding: 34px 18px 50px;
+    }
+
+    .portal-welcome h1 {
+        font-size: 26px;
+    }
+
+    .portal-tiles {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .portal-tile {
+        min-height: 220px;
+        padding: 24px;
+    }
+}
+
+@media (max-width: 420px) {
+
+    .portal-topbar {
+        padding: 0 14px;
+    }
+
+    .portal-main {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .portal-welcome h1 {
+        font-size: 23px;
+    }
+
+    .portal-tile {
+        border-radius: 16px;
+    }
+}
