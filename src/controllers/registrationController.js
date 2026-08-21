@@ -26,7 +26,8 @@ const publicRegisterForTournament = async (req, res, next) => {
             name,
             gender,
             cFlatNumber,
-            mobile
+            mobile,
+            transactionId
         } = req.body;
 
         // =====================================================
@@ -46,6 +47,9 @@ const publicRegisterForTournament = async (req, res, next) => {
 
         const cleanMobile =
             String(mobile || "").replace(/\D/g, "");
+
+        const cleanTransactionId =
+            String(transactionId || "").trim();
 
         // =====================================================
         // VALIDATION
@@ -86,6 +90,13 @@ const publicRegisterForTournament = async (req, res, next) => {
             return res.status(400).json({
                 success: false,
                 message: "Mobile number is required."
+            });
+        }
+
+        if (!cleanTransactionId) {
+            return res.status(400).json({
+                success: false,
+                message: "Transaction ID is required."
             });
         }
 
@@ -349,7 +360,8 @@ const publicRegisterForTournament = async (req, res, next) => {
                     participant_name,
                     gender,
                     c_flat_number,
-                    mobile_number
+                    mobile_number,
+                    transaction_id
                 )
                 VALUES
                 (
@@ -358,7 +370,8 @@ const publicRegisterForTournament = async (req, res, next) => {
                     $3,
                     $4,
                     $5,
-                    $6
+                    $6,
+                    $7
                 )
                 RETURNING
                     id,
@@ -368,6 +381,7 @@ const publicRegisterForTournament = async (req, res, next) => {
                     gender,
                     c_flat_number,
                     mobile_number,
+                    transaction_id,
                     registered_at
                 `,
                 [
@@ -376,7 +390,8 @@ const publicRegisterForTournament = async (req, res, next) => {
                     cleanName,
                     cleanGender,
                     cleanFlat,
-                    cleanMobile
+                    cleanMobile,
+                    cleanTransactionId
                 ]
             );
 
@@ -518,6 +533,7 @@ const getTournamentParticipants = async (
                     tr.gender,
                     tr.c_flat_number,
                     tr.mobile_number,
+                    tr.transaction_id,
                     tr.registered_at,
 
                     u.email,
