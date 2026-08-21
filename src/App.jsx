@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 // ==============================
 // AUTH / GENERAL PAGES
 // ==============================
+
 import Landing from "./pages/Landing.jsx";
 import SignIn from "./pages/SignIn.jsx";
 import SignUp from "./pages/SignUp.jsx";
@@ -17,6 +18,7 @@ import ScoreViewDashboard from "./pages/ScoreViewDashboard";
 // ==============================
 // SPORTS / TOURNAMENT
 // ==============================
+
 import SelectSportPage from "./pages/SelectSportPage.jsx";
 import CreateTournament from "./pages/CreateTournament.jsx";
 import JoinTournament from "./pages/JoinTournament.jsx";
@@ -25,11 +27,13 @@ import TournamentManagement from "./pages/TournamentManagement.jsx";
 // ==============================
 // DASHBOARDS
 // ==============================
+
 import OrganizerDashboardHome from "./pages/OrganizerDashboardHome.jsx";
 
 // ==============================
 // SCORING
 // ==============================
+
 import ScoreUpdate from "./pages/ScoreUpdate.jsx";
 import LiveScoringFullScreen from "./pages/LiveScoringFullScreen.jsx";
 import ScoreboardDashboard from "./pages/ScoreboardDashboard.jsx";
@@ -37,21 +41,25 @@ import ScoreboardDashboard from "./pages/ScoreboardDashboard.jsx";
 // ==============================
 // PROFILE
 // ==============================
+
 import Profile from "./pages/Profile.jsx";
 
 // ==============================
 // PROTECTION
 // ==============================
+
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 // ==============================
 // MOBILE NAVIGATION
 // ==============================
+
 import { MobileMenuProvider } from "./components/MobileMenuProvider.jsx";
 
 // ==============================
 // CONTEXT
 // ==============================
+
 import { LiveMatchProvider } from "./context/LiveMatchContext.jsx";
 
 // ==============================
@@ -60,6 +68,7 @@ import { LiveMatchProvider } from "./context/LiveMatchContext.jsx";
 // Keep MobileResponsiveFinal.css AFTER
 // App.css so its mobile overrides win.
 // ==============================
+
 import "./App.css";
 import "./MobileResponsiveFinal.css";
 
@@ -68,7 +77,6 @@ function App() {
     <LiveMatchProvider>
       <MobileMenuProvider>
         <main className="app-shell">
-
           <Routes>
 
             {/* =================================
@@ -178,6 +186,13 @@ function App() {
 
             {/* =================================
                 PUBLIC PLAYER REGISTRATION
+
+                IMPORTANT:
+                This route must NOT be wrapped
+                inside ProtectedRoute.
+
+                Shared tournament links should
+                be able to open directly.
             ================================= */}
 
             <Route
@@ -187,7 +202,7 @@ function App() {
 
             {/* =================================
                 PROFILE
-                PLAYER + ORGANIZER
+                ORGANIZER
             ================================= */}
 
             <Route
@@ -213,7 +228,6 @@ function App() {
             />
 
           </Routes>
-
         </main>
       </MobileMenuProvider>
     </LiveMatchProvider>

@@ -142,66 +142,69 @@ export default function JoinTournament() {
      SUBMIT PLAYER REGISTRATION
   ========================================================= */
 
-  async function handleSubmit(event) {
-    event.preventDefault();
+ async function handleSubmit(event) {
+  event.preventDefault();
 
-    if (!selected) return;
+  if (!selected) return;
 
-    setSubmitting(true);
+  setSubmitting(true);
+  setMessage("");
+  setSuccess(false);
+
+  try {
+    const result = await apiRequest(
+      "/tournaments/join-public",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tournamentId: selected.id,
+          ...form,
+        }),
+      }
+    );
+
+    // Update registered player count
+    setTournaments((current) =>
+      current.map((tournament) =>
+        tournament.id === selected.id
+          ? {
+              ...tournament,
+              registered_players:
+                Number(
+                  tournament.registered_players || 0
+                ) + 1,
+              joined: true,
+            }
+          : tournament
+      )
+    );
+
+    // Close the form after successful registration
+    setSelected(null);
+
+    // Clear the form
+    setForm({
+      name: "",
+      gender: "",
+      cFlatNumber: "",
+      mobile: "",
+    });
+
     setMessage("");
     setSuccess(false);
 
-    try {
-      const result = await apiRequest(
-        "/tournaments/join-public",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            tournamentId: selected.id,
-            ...form,
-          }),
-        }
-      );
-
-      setSuccess(true);
-
-      setMessage(
-        result.message ||
-          "You have joined the tournament successfully."
-      );
-
-      setTournaments((current) =>
-        current.map((tournament) =>
-          tournament.id === selected.id
-            ? {
-                ...tournament,
-                registered_players:
-                  Number(
-                    tournament.registered_players || 0
-                  ) + 1,
-              }
-            : tournament
-        )
-      );
-
-      setForm({
-        name: "",
-        gender: "",
-        cFlatNumber: "",
-        mobile: "",
-      });
-    } catch (error) {
-      setMessage(
-        error.message ||
-          "Unable to join tournament."
-      );
-    } finally {
-      setSubmitting(false);
-    }
+  } catch (error) {
+    setMessage(
+      error.message ||
+        "Unable to join tournament."
+    );
+  } finally {
+    setSubmitting(false);
   }
+}
 
   /* =========================================================
      RENDER
@@ -393,8 +396,11 @@ export default function JoinTournament() {
                     );
 
                     const isFull =
-                      max > 0 &&
-                      registered >= max;
+  max > 0 &&
+  registered >= max;
+
+const isJoined =
+  tournament.joined === true;
 
                     return (
                       <article
@@ -508,21 +514,31 @@ export default function JoinTournament() {
                         {/* ACTION */}
 
                         <button
-                          type="button"
-                          className="join-card-button"
-                          disabled={isFull}
-                          onClick={() =>
-                            openForm(tournament)
-                          }
-                        >
-                          {isFull
-                            ? "Tournament Full"
-                            : "Join Tournament"}
+  type="button"
+  className={
+    isJoined
+      ? "join-card-button joined"
+      : "join-card-button"
+  }
+  disabled={isFull || isJoined}
+  onClick={() =>
+    openForm(tournament)
+  }
+>
+  {isFull
+    ? "Tournament Full"
+    : isJoined
+    ? "Joined"
+    : "Join Tournament"}
 
-                          {!isFull && (
-                            <ArrowRight size={16} />
-                          )}
-                        </button>
+  {!isFull && !isJoined && (
+    <ArrowRight size={16} />
+  )}
+
+  {isJoined && (
+    <CheckCircle2 size={16} />
+  )}
+</button>
 
                       </article>
                     );
