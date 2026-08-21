@@ -3151,13 +3151,9 @@ const minimumParticipants =
                             Gender
                           </th>
 
-                          <th>
-                            Flat Number
-                          </th>
-
-                          <th>
-                            Registered
-                          </th>
+                          <th>Flat Number</th>
+                          <th>Transaction ID</th>
+                          <th>Registered</th>
 
                         </tr>
 
@@ -3219,12 +3215,16 @@ const minimumParticipants =
                               </td>
 
                               <td>
-                                {participant.c_flat_number || "-"}
-                              </td>
+  {participant.c_flat_number || "-"}
+</td>
 
-                              <td>
-                                {formatRegistrationDate(participant.registered_at)}
-                              </td>
+<td>
+  {participant.transaction_id || "-"}
+</td>
+
+<td>
+  {formatRegistrationDate(participant.registered_at)}
+</td>
 
                             </tr>
 
@@ -4886,7 +4886,7 @@ const minimumParticipants =
 
                   <textarea
                     rows={4}
-                    maxLength={300}
+                    maxLength={1000}
                     value={
                       editForm.description
                     }

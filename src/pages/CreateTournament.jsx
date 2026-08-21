@@ -1110,7 +1110,7 @@ export default function CreateTournament() {
                     )
                   }
                   rows={4}
-                  maxLength={300}
+                  maxLength={1000}
                 />
 
               </div>

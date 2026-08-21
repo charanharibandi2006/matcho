@@ -44,7 +44,8 @@ export default function JoinTournament() {
     gender: "",
     cFlatNumber: "",
     mobile: "",
-  });
+    transactionId: "",
+});
 
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
@@ -127,6 +128,7 @@ export default function JoinTournament() {
       gender: "",
       cFlatNumber: "",
       mobile: "",
+      transactionId: "",
     });
   };
 
@@ -191,6 +193,7 @@ export default function JoinTournament() {
       gender: "",
       cFlatNumber: "",
       mobile: "",
+      transactionId: "",
     });
 
     setMessage("");
@@ -691,7 +694,29 @@ const isJoined =
               />
 
 
+{/* TRANSACTION ID */}
+
+<label className="auth-label">
+  Transaction ID
+</label>
+
+<input
+  className="auth-input"
+  type="text"
+  placeholder="Enter payment transaction ID"
+  value={form.transactionId}
+  onChange={(event) =>
+    update(
+      "transactionId",
+      event.target.value
+    )
+  }
+  required
+/>
+
               {/* MESSAGE */}
+
+              
 
               {message && (
                 <div
