@@ -79,21 +79,24 @@ const sendRegistrationOTP = async (req, res) => {
         // Check existing account
         // ------------------------------------------
 
-        const existingUser =
-            await pool.query(
-                `
-                SELECT id, email, phone, role
-                FROM users
-                WHERE
-                    LOWER(email) = $1
-                    OR phone = $2
-                LIMIT 1
-                `,
-                [
-                    normalizedEmail,
-                    normalizedPhone
-                ]
-            );
+       const existingUser =
+    await pool.query(
+        `
+        SELECT id, email, phone, role
+        FROM users
+        WHERE
+            (
+                LOWER(email) = $1
+                OR phone = $2
+            )
+            AND role = 'Organizer'
+        LIMIT 1
+        `,
+        [
+            normalizedEmail,
+            normalizedPhone
+        ]
+    );
 
         if (existingUser.rows.length > 0) {
 
@@ -101,27 +104,21 @@ const sendRegistrationOTP = async (req, res) => {
                 existingUser.rows[0];
 
             if (
-                existing.email &&
-                existing.email.toLowerCase() ===
-                    normalizedEmail
-            ) {
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        "Email is already registered"
-                });
-            }
+    existing.email &&
+    existing.email.toLowerCase() === normalizedEmail
+) {
+    return res.status(400).json({
+        success: false,
+        message: "Email is already registered as an Organizer"
+    });
+}
 
-            if (
-                existing.phone ===
-                normalizedPhone
-            ) {
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        "Phone number is already registered"
-                });
-            }
+if (existing.phone === normalizedPhone) {
+    return res.status(400).json({
+        success: false,
+        message: "Phone number is already registered as an Organizer"
+    });
+}
         }
 
         // ------------------------------------------
