@@ -13,11 +13,48 @@ export default function SignUp() {
 
   const SIGNUP_DRAFT_KEY = "matcho_signup_draft";
 
-  const [fullName, setFullName] = useState("");
+  // =====================================================
+  // LOAD SAVED SIGNUP DATA
+  // =====================================================
 
-  const [email, setEmail] = useState("");
+  const getSavedDraft = () => {
+    try {
+      const savedDraft = sessionStorage.getItem(
+        SIGNUP_DRAFT_KEY
+      );
 
-  const [phoneNumber, setPhoneNumber] = useState("");
+      if (!savedDraft) {
+        return {};
+      }
+
+      return JSON.parse(savedDraft);
+    } catch (error) {
+      console.error(
+        "Failed to read signup draft:",
+        error
+      );
+
+      return {};
+    }
+  };
+
+  const savedDraft = getSavedDraft();
+
+  // =====================================================
+  // FORM STATE
+  // =====================================================
+
+  const [fullName, setFullName] = useState(
+    savedDraft.fullName || ""
+  );
+
+  const [email, setEmail] = useState(
+    savedDraft.email || ""
+  );
+
+  const [phoneNumber, setPhoneNumber] = useState(
+    savedDraft.phoneNumber || ""
+  );
 
   const [password, setPassword] = useState("");
 
@@ -34,47 +71,13 @@ export default function SignUp() {
   const [showConfirmPassword, setShowConfirmPassword] =
     useState(false);
 
-  const [agree, setAgree] = useState(false);
-
-  // =====================================================
-  // RESTORE SIGNUP DRAFT
-  // =====================================================
-
-  useEffect(() => {
-    const savedDraft = sessionStorage.getItem(
-      SIGNUP_DRAFT_KEY
-    );
-
-    if (!savedDraft) {
-      return;
-    }
-
-    try {
-      const draft = JSON.parse(savedDraft);
-
-      setFullName(draft.fullName || "");
-
-      setEmail(draft.email || "");
-
-      setPhoneNumber(draft.phoneNumber || "");
-
-      setAgree(Boolean(draft.agree));
-    } catch (error) {
-      console.error(
-        "Failed to restore signup draft:",
-        error
-      );
-
-      sessionStorage.removeItem(
-        SIGNUP_DRAFT_KEY
-      );
-    }
-  }, []);
+  const [agree, setAgree] = useState(
+    Boolean(savedDraft.agree)
+  );
 
   // =====================================================
   // SAVE SIGNUP DRAFT
   //
-  // IMPORTANT:
   // Passwords are intentionally NOT stored.
   // =====================================================
 
@@ -121,8 +124,7 @@ export default function SignUp() {
     }
 
     // -----------------------------
-    // CONVERT FRONTEND ROLE
-    // TO BACKEND ROLE
+    // BACKEND ROLE
     // -----------------------------
 
     const backendRole = "Organizer";
@@ -142,19 +144,14 @@ export default function SignUp() {
           method: "POST",
 
           headers: {
-            "Content-Type":
-              "application/json",
+            "Content-Type": "application/json",
           },
 
           body: JSON.stringify({
             name: fullName.trim(),
-
             email: email.trim(),
-
             phone: phoneNumber.trim(),
-
             password,
-
             role: backendRole,
           }),
         }
@@ -207,6 +204,10 @@ export default function SignUp() {
       setLoading(false);
     }
   }
+
+  // =====================================================
+  // UI
+  // =====================================================
 
   return (
     <section
