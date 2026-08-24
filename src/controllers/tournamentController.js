@@ -53,7 +53,8 @@ const createTournament = async (req, res, next) => {
             location,
             maxParticipants,
             description,
-            format
+            format,
+            icon_url
         } = req.body;
 
 
@@ -175,8 +176,6 @@ const createTournament = async (req, res, next) => {
         const cleanedFormat =
             String(format).trim();
 
-        // Either one of our standard formats
-        // OR a custom format description.
         const isStandardFormat =
             standardFormats.includes(
                 cleanedFormat
@@ -215,6 +214,7 @@ const createTournament = async (req, res, next) => {
                 sport,
                 category,
                 description,
+                icon_url,
                 format,
                 fixture_type,
                 venue,
@@ -242,7 +242,8 @@ const createTournament = async (req, res, next) => {
                 $12,
                 $13,
                 $14,
-                $15
+                $15,
+                $16
             )
             RETURNING *
             `,
@@ -259,7 +260,8 @@ const createTournament = async (req, res, next) => {
                     ? description.trim()
                     : null,
 
-                // IMPORTANT:
+                icon_url || null,
+
                 // Save the format selected
                 // by the organizer.
                 cleanedFormat,
@@ -314,23 +316,62 @@ const createTournament = async (req, res, next) => {
 // No login required.
 // ==========================================
 
-const getPublicRegistrationTournaments = async (req, res, next) => {
+const getPublicRegistrationTournaments = async (
+    req,
+    res,
+    next
+) => {
+
     try {
-        const result = await pool.query(`
+
+        const result = await pool.query(
+            `
             SELECT
-                t.id, t.name, t.sport, t.category, t.format, t.venue,
-                t.start_date, t.end_date, t.max_players, t.status, t.description,
+                t.id,
+                t.name,
+                t.sport,
+                t.category,
+                t.format,
+                t.venue,
+                t.start_date,
+                t.end_date,
+                t.max_players,
+                t.status,
+                t.description,
+                t.icon_url,
                 u.full_name AS organizer_name,
-                (SELECT COUNT(*)::int FROM public.tournament_registrations tr
-                 WHERE tr.tournament_id = t.id) AS registered_players
+
+                (
+                    SELECT COUNT(*)::int
+                    FROM public.tournament_registrations tr
+                    WHERE tr.tournament_id = t.id
+                ) AS registered_players
+
             FROM public.tournaments t
-            JOIN public.users u ON u.id = t.organizer_id
+
+            JOIN public.users u
+                ON u.id = t.organizer_id
+
             WHERE t.status = 'Registration Open'
-            ORDER BY t.start_date ASC NULLS LAST, t.id DESC
-        `);
-        return res.status(200).json({ success: true, tournaments: result.rows });
+
+            ORDER BY
+                t.start_date ASC NULLS LAST,
+                t.id DESC
+            `
+        );
+
+        return res.status(200).json({
+            success: true,
+            tournaments: result.rows
+        });
+
     } catch (error) {
-        console.error("Get Public Registration Tournaments Error:", error);
+
+        console.error(
+            "Get Public Registration Tournaments Error:",
+            error
+        );
+
         next(error);
     }
 };
@@ -500,7 +541,8 @@ const updateTournament = async (
             location,
             maxParticipants,
             format,
-            status
+            status,
+            icon_url
         } = req.body;
 
 
@@ -551,39 +593,41 @@ const updateTournament = async (
         // ------------------------------------------
 
         const result = await pool.query(
-    `
-    UPDATE tournaments
-    SET
-        name = COALESCE($1, name),
-        sport = COALESCE($2, sport),
-        category = COALESCE($3, category),
-        description = COALESCE($4, description),
-        venue = COALESCE($5, venue),
-        start_date = COALESCE($6, start_date),
-        end_date = COALESCE($7, end_date),
-        max_players = COALESCE($8, max_players),
-        status = COALESCE($9, status),
-        format = COALESCE($10, format),
-        updated_at = CURRENT_TIMESTAMP
-    WHERE id = $11
-    AND organizer_id = $12
-    RETURNING *
-    `,
-    [
-        name || null,
-        sport || null,
-        category || null,
-        description || null,
-        location || null,
-        startDate || null,
-        endDate || null,
-        maxParticipants || null,
-        status || null,
-        format || null,
-        id,
-        organizerId
-    ]
-);
+            `
+            UPDATE tournaments
+            SET
+                name = COALESCE($1, name),
+                sport = COALESCE($2, sport),
+                category = COALESCE($3, category),
+                description = COALESCE($4, description),
+                icon_url = COALESCE($5, icon_url),
+                venue = COALESCE($6, venue),
+                start_date = COALESCE($7, start_date),
+                end_date = COALESCE($8, end_date),
+                max_players = COALESCE($9, max_players),
+                status = COALESCE($10, status),
+                format = COALESCE($11, format),
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = $12
+            AND organizer_id = $13
+            RETURNING *
+            `,
+            [
+                name || null,
+                sport || null,
+                category || null,
+                description || null,
+                icon_url || null,
+                location || null,
+                startDate || null,
+                endDate || null,
+                maxParticipants || null,
+                status || null,
+                format || null,
+                id,
+                organizerId
+            ]
+        );
 
 
         if (
@@ -703,24 +747,34 @@ const deleteTournament = async (
     }
 };
 
+
+// ==========================================
+// GET TOURNAMENT BY REGISTRATION CODE
+// ==========================================
+
 const getTournamentByRegistrationCode = async (
     req,
     res,
     next
 ) => {
+
     try {
+
         const code = String(
             req.params.code || ""
         )
             .trim()
             .toUpperCase();
 
+
         if (!code) {
             return res.status(400).json({
                 success: false,
-                message: "Registration code is required"
+                message:
+                    "Registration code is required"
             });
         }
+
 
         const result = await pool.query(
             `
@@ -736,7 +790,10 @@ const getTournamentByRegistrationCode = async (
             [code]
         );
 
-        if (result.rows.length === 0) {
+
+        if (
+            result.rows.length === 0
+        ) {
             return res.status(404).json({
                 success: false,
                 message:
@@ -744,9 +801,13 @@ const getTournamentByRegistrationCode = async (
             });
         }
 
+
         const tournament = result.rows[0];
 
-        if (tournament.status === "Completed") {
+
+        if (
+            tournament.status === "Completed"
+        ) {
             return res.status(400).json({
                 success: false,
                 message:
@@ -754,12 +815,14 @@ const getTournamentByRegistrationCode = async (
             });
         }
 
+
         return res.status(200).json({
             success: true,
             tournament
         });
 
     } catch (error) {
+
         console.error(
             "Get Tournament By Registration Code Error:",
             error
@@ -769,12 +832,19 @@ const getTournamentByRegistrationCode = async (
     }
 };
 
+
 // ==========================================
 // GET MY TOURNAMENTS
 // ==========================================
 
-const getMyTournaments = async (req, res, next) => {
+const getMyTournaments = async (
+    req,
+    res,
+    next
+) => {
+
     try {
+
         const organizerId = req.user.id;
 
         const result = await pool.query(
@@ -801,12 +871,14 @@ const getMyTournaments = async (req, res, next) => {
             [organizerId]
         );
 
+
         return res.status(200).json({
             success: true,
             tournaments: result.rows
         });
 
     } catch (error) {
+
         console.error(
             "Get My Tournaments Error:",
             error
