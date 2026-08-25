@@ -28,12 +28,15 @@ import {
   Pencil,
   X,
   UserPlus,
-  Trash2
+  Trash2,
+  Download
 } from "lucide-react";
 
 import RoleSidebar from "../components/RoleSidebar";
 
 import { apiRequest } from "../services/api";
+
+import { uploadTournamentIcon } from "../services/supabase";
 
 import "./OrganizerDashboard.css";
 import "./StatsDashboard.css";
@@ -535,6 +538,25 @@ const [fixtureFilter, setFixtureFilter] =
     format: "",
     status: "",
   });
+
+  // =======================================================
+// EDIT TOURNAMENT ICON
+// =======================================================
+
+const [
+  editIconFile,
+  setEditIconFile,
+] = useState(null);
+
+const [
+  editIconPreview,
+  setEditIconPreview,
+] = useState("");
+
+const [
+  uploadingEditIcon,
+  setUploadingEditIcon,
+] = useState(false);
 
 
   // =======================================================
@@ -1967,126 +1989,192 @@ const minimumParticipants =
   // SHARE TOURNAMENT
   // =======================================================
 
-  async function shareTournament() {
+ async function shareTournament() {
+  if (!tournament?.registrationCode) {
+    return;
+  }
 
-    if (
-      !tournament?.registrationCode
-    ) {
+  const code = tournament.registrationCode;
+
+  const shareUrl =
+    `${window.location.origin}/join-tournament?code=${encodeURIComponent(
+      code
+    )}`;
+
+  const shareText =
+    `Join my ${tournament.name} tournament on Matcho.\n\nRegistration Code: ${code}`;
+
+  try {
+    if (navigator.share) {
+      await navigator.share({
+        title: tournament.name,
+        text: shareText,
+        url: shareUrl,
+      });
+
       return;
     }
 
-    const code =
-      tournament.registrationCode;
+    await navigator.clipboard.writeText(
+      `${shareText}\n\n${shareUrl}`
+    );
 
-    const shareUrl =
-      `${window.location.origin}/join-tournament?code=${encodeURIComponent(
-        code
-      )}`;
-
-    const shareText =
-      `Join my ${tournament.name} tournament on Matcho.\n\nRegistration Code: ${code}\n\nJoin here: ${shareUrl}`;
-
-    try {
-
-      if (
-        navigator.share
-      ) {
-
-        await navigator.share({
-          title:
-            tournament.name,
-          text:
-            shareText,
-          url:
-            shareUrl,
-        });
-
-        return;
-      }
-
-      await navigator.clipboard.writeText(
-        shareText
-      );
-
-      setMessage(
-        "Tournament share link copied!"
-      );
-
-    } catch (error) {
-
-      if (
-        error?.name ===
-        "AbortError"
-      ) {
-        return;
-      }
-
-      console.error(
-        "Share tournament error:",
-        error
-      );
+    setMessage(
+      "Tournament share link copied!"
+    );
+  } catch (error) {
+    if (error?.name === "AbortError") {
+      return;
     }
+
+    console.error(
+      "Share tournament error:",
+      error
+    );
   }
+}
 
 
   // =======================================================
   // OPEN EDIT TOURNAMENT
   // =======================================================
 
-  function openEditTournament() {
+function openEditTournament() {
+  if (!tournament) {
+    return;
+  }
 
-    if (!tournament) {
-      return;
-    }
+  setEditForm({
+    name:
+      tournament.name ||
+      "",
 
-    setEditForm({
-      name:
-        tournament.name ||
-        "",
+    category:
+      tournament.category ||
+      "",
 
-      category:
-        tournament.category ||
-        "",
+    startDate:
+      tournament.start_date ||
+      "",
 
-      startDate:
-        tournament.start_date ||
-        "",
+    endDate:
+      tournament.end_date ||
+      "",
 
-      endDate:
-        tournament.end_date ||
-        "",
+    location:
+      tournament.venue ||
+      "",
 
-      location:
-        tournament.venue ||
-        "",
+    maxParticipants:
+      tournament.max_players ||
+      "",
 
-      maxParticipants:
-        tournament.max_players ||
-        "",
+    description:
+      tournament.description ||
+      "",
 
-      description:
-        tournament.description ||
-        "",
+    format:
+      String(
+        tournament.format || ""
+      ).toLowerCase() === "singles"
+        ? "Singles"
+        : "Doubles",
 
-      format:
-  String(
-    tournament.format || ""
-  ).toLowerCase() === "singles"
-    ? "Singles"
-    : "Doubles",
+    status:
+      tournament.status ||
+      "Registration Open",
+  });
 
-      status:
-        tournament.status ||
-        "Registration Open",
-    });
+  // Load existing tournament icon
+  setEditIconFile(null);
 
-    setEditError("");
+  setEditIconPreview(
+    tournament.icon_url ||
+      ""
+  );
 
-    setIsEditingTournament(
-      true
+  setEditError("");
+
+  setIsEditingTournament(
+    true
+  );
+}
+
+function handleEditIconChange(event) {
+  const file =
+    event.target.files?.[0];
+
+  if (!file) {
+    return;
+  }
+
+  // Validate file type
+  if (
+    ![
+      "image/jpeg",
+      "image/png",
+    ].includes(file.type)
+  ) {
+    setEditError(
+      "Only JPG and PNG images are allowed."
+    );
+
+    event.target.value = "";
+    return;
+  }
+
+  // Validate file size
+  if (
+    file.size >
+    5 * 1024 * 1024
+  ) {
+    setEditError(
+      "Tournament icon must be less than 5MB."
+    );
+
+    event.target.value = "";
+    return;
+  }
+
+  // Revoke previous temporary preview
+  if (
+    editIconPreview &&
+    editIconPreview.startsWith("blob:")
+  ) {
+    URL.revokeObjectURL(
+      editIconPreview
     );
   }
 
+  const previewUrl =
+    URL.createObjectURL(file);
+
+  setEditIconFile(file);
+
+  setEditIconPreview(
+    previewUrl
+  );
+
+  setEditError("");
+
+  // Allow selecting the same file again
+  event.target.value = "";
+}
+
+function removeEditIcon() {
+  if (
+    editIconPreview &&
+    editIconPreview.startsWith("blob:")
+  ) {
+    URL.revokeObjectURL(
+      editIconPreview
+    );
+  }
+
+  setEditIconFile(null);
+  setEditIconPreview("");
+  setEditError("");
+}
 
   // =======================================================
   // SAVE EDITED TOURNAMENT
@@ -2207,16 +2295,56 @@ const minimumParticipants =
     }
 
 
-    try {
+   try {
+  setEditLoading(true);
 
-      setEditLoading(
+  const token =
+    localStorage.getItem(
+      "matcho_token"
+    );
+
+  if (!token) {
+    setEditError(
+      "Please login as an organizer."
+    );
+    return;
+  }
+
+  // ==========================================
+  // UPLOAD NEW TOURNAMENT ICON
+  // ==========================================
+
+  let iconUrl =
+    editIconPreview || null;
+
+  if (editIconFile) {
+    try {
+      setUploadingEditIcon(
         true
       );
 
-      const token =
-        localStorage.getItem(
-          "matcho_token"
+      iconUrl =
+        await uploadTournamentIcon(
+          editIconFile
         );
+    } catch (uploadError) {
+      console.error(
+        "Tournament icon upload error:",
+        uploadError
+      );
+
+      setEditError(
+        uploadError?.message ||
+          "Failed to upload tournament icon."
+      );
+
+      return;
+    } finally {
+      setUploadingEditIcon(
+        false
+      );
+    }
+  }
 
       if (!token) {
 
@@ -2243,33 +2371,37 @@ const minimumParticipants =
             },
 
             body:
-              JSON.stringify({
-                name:
-                  editForm.name.trim(),
+  JSON.stringify({
+    name:
+      editForm.name.trim(),
 
-                category:
-                  editForm.category,
+    category:
+      editForm.category,
 
-                startDate:
-                  editForm.startDate,
+    startDate:
+      editForm.startDate,
 
-                endDate:
-                  editForm.endDate,
+    endDate:
+      editForm.endDate,
 
-                location:
-                  editForm.location.trim(),
+    location:
+      editForm.location.trim(),
 
-                maxParticipants,
+    maxParticipants,
 
-                description:
-                  editForm.description.trim(),
+    description:
+      editForm.description.trim(),
 
-                format:
-                  editForm.format,
+    format:
+      editForm.format,
 
-                status:
-                  editForm.status,
-              }),
+    status:
+      editForm.status,
+
+    // IMPORTANT
+    icon_url:
+      iconUrl,
+  }),
           }
         );
 
@@ -2401,6 +2533,88 @@ const minimumParticipants =
       dateValue
     );
   }
+
+  function downloadParticipantsCSV() {
+  if (!participants.length) {
+    return;
+  }
+
+  const headers = [
+    "#",
+    "Participant",
+    "Email",
+    "Phone",
+    "Gender",
+    "Flat Number",
+    "Transaction ID",
+    "Registered",
+  ];
+
+  const escapeCSV = (value) => {
+    const text = String(value ?? "");
+
+    return `"${text.replace(/"/g, '""')}"`;
+  };
+
+  const rows = participants.map(
+    (participant, index) => [
+      index + 1,
+      participant.participant_name ||
+        participant.name ||
+        "Unnamed Player",
+      participant.email || "-",
+      participant.phone || "-",
+      participant.gender || "-",
+      participant.c_flat_number || "-",
+      participant.transaction_id || "-",
+      formatRegistrationDate(
+        participant.registered_at
+      ),
+    ]
+  );
+
+  const csv = [
+    headers.map(escapeCSV).join(","),
+    ...rows.map((row) =>
+      row.map(escapeCSV).join(",")
+    ),
+  ].join("\n");
+
+  const blob = new Blob(
+    [csv],
+    {
+      type: "text/csv;charset=utf-8;",
+    }
+  );
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const link =
+    document.createElement("a");
+
+  link.href = url;
+
+  const tournamentName =
+    tournament?.name ||
+    "tournament";
+
+  const safeName =
+    tournamentName
+      .replace(/[^a-z0-9]+/gi, "_")
+      .replace(/^_+|_+$/g, "");
+
+  link.download =
+    `${safeName}_participants.csv`;
+
+  document.body.appendChild(link);
+
+  link.click();
+
+  document.body.removeChild(link);
+
+  URL.revokeObjectURL(url);
+}
 
 
   // =======================================================
@@ -2787,73 +3001,65 @@ const minimumParticipants =
 
                 <div className="tm-section-top">
 
-                  <div className="tm-card-heading">
+  <div className="tm-card-heading">
 
-                    <div className="tm-heading-icon">
+    <div className="tm-heading-icon">
+      <Users size={20} />
+    </div>
 
-                      <Trophy
-                        size={20}
-                      />
+    <div>
+      <h3>
+        Registered Participants
+      </h3>
 
-                    </div>
+      <p>
+        Players who have joined this
+        tournament.
+      </p>
+    </div>
 
+  </div>
 
-                    <div>
+  <div className="tm-participant-actions">
 
-                      <h3>
-                        {tournament.name}
-                      </h3>
+   <div className="tm-participant-actions">
 
-                      <p>
-                        {
-                          tournament.category ||
-                          "Tournament"
-                        }
+  <span className="tm-count-badge">
+    {participants.length}
+    {" / "}
+    {tournament.max_players || "-"}
+  </span>
 
-                        {" • "}
+  <button
+    type="button"
+    className="tm-download-btn"
+    onClick={downloadParticipantsCSV}
+    disabled={participants.length === 0}
+  >
+    <Download size={15} />
+    <span>Download</span>
+  </button>
 
-                        {
-                          tournament.format ||
-                          "Format not set"
-                        }
-                      </p>
+</div>
 
-                    </div>
+    <button
+      type="button"
+      className="tm-download-btn"
+      onClick={downloadParticipantsCSV}
+      disabled={participants.length === 0}
+      title={
+        participants.length === 0
+          ? "No participants to download"
+          : "Download participant list"
+      }
+    >
+      <Download size={15} />
+      <span>Download</span>
+    </button>
 
-                  </div>
+  </div>
 
-
-                  <div className="tm-overview-actions">
-
-                    <button
-                      type="button"
-                      className="tm-outline-btn"
-                      onClick={
-                        openEditTournament
-                      }
-                    >
-
-                      <Pencil
-                        size={14}
-                      />
-
-                      Edit Tournament
-
-                    </button>
-
-
-                    <span className="tm-sport-badge">
-
-                      {
-                        tournament.sportName ||
-                        "Badminton"
-                      }
-
-                    </span>
-
-                  </div>
-
-                </div>
+</div>
 
 
                 <div className="tm-overview-grid">
@@ -3125,7 +3331,7 @@ const minimumParticipants =
 
                   <div className="tm-table-wrap">
 
-                    <table className="tm-table">
+                    <table className="tm-table tm-participants-table">
 
                       <thead>
 
@@ -4599,6 +4805,96 @@ const minimumParticipants =
 
               <div className="tm-edit-grid">
 
+                {/* ==========================================
+    TOURNAMENT ICON
+========================================== */}
+
+<div className="tm-edit-field full">
+
+  <label>
+    Tournament Icon
+  </label>
+
+  <div className="tm-edit-icon-upload">
+
+    {editIconPreview ? (
+      <div className="tm-edit-icon-preview-wrapper">
+
+        <img
+          src={editIconPreview}
+          alt="Tournament icon"
+          className="tm-edit-icon-preview"
+        />
+
+        <button
+          type="button"
+          className="tm-remove-icon-btn"
+          onClick={
+            removeEditIcon
+          }
+          disabled={
+            editLoading ||
+            uploadingEditIcon
+          }
+        >
+          <X size={14} />
+          Remove Icon
+        </button>
+
+      </div>
+    ) : (
+      <div className="tm-edit-icon-placeholder">
+
+        <Trophy
+          size={28}
+        />
+
+        <span>
+          No tournament icon
+        </span>
+
+      </div>
+    )}
+
+    <div className="tm-edit-icon-actions">
+
+      <label
+        className="tm-choose-icon-btn"
+      >
+
+        <Trophy
+          size={15}
+        />
+
+        {editIconPreview
+          ? "Change Icon"
+          : "Choose Image"}
+
+        <input
+          type="file"
+          accept="image/png,image/jpeg"
+          hidden
+          onChange={
+            handleEditIconChange
+          }
+          disabled={
+            editLoading ||
+            uploadingEditIcon
+          }
+        />
+
+      </label>
+
+      <small>
+        JPG or PNG • Maximum 5MB
+      </small>
+
+    </div>
+
+  </div>
+
+</div>
+
 
                 {/* NAME */}
 
@@ -4928,16 +5224,19 @@ const minimumParticipants =
 
 
                 <button
-                  type="submit"
-                  className="tm-primary-btn"
-                  disabled={
-                    editLoading
-                  }
-                >
-                  {editLoading
-                    ? "Saving..."
-                    : "Save Changes"}
-                </button>
+  type="submit"
+  className="tm-primary-btn"
+  disabled={
+    editLoading ||
+    uploadingEditIcon
+  }
+>
+  {uploadingEditIcon
+    ? "Uploading Icon..."
+    : editLoading
+      ? "Saving..."
+      : "Save Changes"}
+</button>
 
               </div>
 

@@ -162,3 +162,70 @@
   border-color: #6c3dff;
   background: #ece5ff;
 }
+
+/* ==========================================
+   TOURNAMENT ICON UPLOAD
+========================================== */
+
+.tm-icon-upload {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px;
+  border: 1px solid #e7e7e7;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.tm-icon-preview,
+.tm-icon-placeholder {
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.tm-icon-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f1ff;
+  color: #6c3dff;
+}
+
+.tm-icon-upload-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tm-icon-upload-content strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.tm-icon-upload-content span {
+  font-size: 12px;
+  color: #777;
+}
+
+.tm-icon-upload-btn {
+  width: fit-content;
+  margin-top: 5px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: #6c3dff;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.tm-icon-upload-btn:hover {
+  opacity: 0.9;
+}

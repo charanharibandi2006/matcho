@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import {
   CalendarDays,
   MapPin,
@@ -416,8 +419,12 @@ const isJoined =
                         <div className="join-card-top">
 
                           <div className="join-card-sport-icon">
-                            <Trophy size={21} />
-                          </div>
+  <span className="join-card-sport-emoji">
+    {tournament.sport === "badminton"
+      ? "🏸"
+      : "🏆"}
+  </span>
+</div>
 
                           <span
                             className={
@@ -455,6 +462,12 @@ const isJoined =
 
                         </div>
 
+                        {tournament.description && (
+  <p className="join-card-description">
+    {tournament.description}
+  </p>
+)}
+
 
                         {/* DETAILS */}
 
@@ -484,18 +497,7 @@ const isJoined =
                             </span>
                           </div>
 
-                          <div>
-                            <Users size={16} />
-
-                            <span>
-                              {registered}
-
-                              {max
-                                ? ` / ${max}`
-                                : ""}{" "}
-                              players registered
-                            </span>
-                          </div>
+  
 
                         </div>
 

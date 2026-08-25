@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { apiRequest } from "../services/api";
+import { uploadTournamentIcon } from "../services/supabase";
 import {
   useNavigate,
   useLocation,
@@ -33,6 +34,14 @@ const SPORT_OPTIONS = [
     icon: "🏸",
   },
 ];
+
+function getSportIcon(sportId) {
+  return (
+    SPORT_OPTIONS.find(
+      (sport) => sport.id === sportId
+    )?.icon || "🏆"
+  );
+}
 
 // ==========================================
 // RECOMMENDED FORMAT
@@ -99,6 +108,9 @@ export default function CreateTournament() {
 
   const [loading, setLoading] =
     useState(false);
+
+    const [iconFile, setIconFile] = useState(null);
+const [iconPreview, setIconPreview] = useState("");
 
   // ==========================================
   // DROPDOWN STATE
@@ -632,8 +644,8 @@ export default function CreateTournament() {
                   >
 
                     <span className="dropdown-icon">
-                      🏸
-                    </span>
+  {getSportIcon(form.sport)}
+</span>
 
                     <span className="dropdown-value">
                       Badminton

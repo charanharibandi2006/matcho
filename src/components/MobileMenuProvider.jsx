@@ -7,7 +7,11 @@ const MobileMenuContext = createContext(null);
 
 export function MobileMenuProvider({ children }) {
   const [open, setOpen] = useState(false);
-  const location = useLocation();
+const location = useLocation();
+
+const hideMobileMenu =
+  location.pathname === "/signup" ||
+  location.pathname === "/signin";
 
   // Close the drawer whenever navigation changes.
   useEffect(() => {
@@ -27,37 +31,48 @@ export function MobileMenuProvider({ children }) {
     };
   }, [open]);
 
-  return (
-    <MobileMenuContext.Provider
-      value={{
-        open,
-        openMenu: () => setOpen(true),
-        closeMenu: () => setOpen(false),
-        toggleMenu: () => setOpen((value) => !value),
-      }}
+ return (
+  <MobileMenuContext.Provider
+    value={{
+      open,
+      openMenu: () => setOpen(true),
+      closeMenu: () => setOpen(false),
+      toggleMenu: () =>
+        setOpen((value) => !value),
+    }}
+  >
+    <div
+      className={`mobile-menu-root ${
+        open ? "is-open" : ""
+      }`}
     >
-      <div className={`mobile-menu-root ${open ? "is-open" : ""}`}>
-        {children}
+      {children}
 
-        <button
-          type="button"
-          className="mobile-menu-trigger"
-          aria-label={open ? "Close navigation menu" : "Open navigation menu"}
-          aria-expanded={open}
-          onClick={() => setOpen((value) => !value)}
-        >
-          {open ? <X size={22} /> : <Menu size={22} />}
-        </button>
-
-        <button
-          type="button"
-          className="mobile-menu-backdrop"
-          aria-label="Close navigation menu"
-          onClick={() => setOpen(false)}
-        />
-      </div>
-    </MobileMenuContext.Provider>
-  );
+      {location.pathname !== "/join-tournament" &&
+        !hideMobileMenu && (
+          <button
+            type="button"
+            className="mobile-menu-trigger"
+            aria-label={
+              open
+                ? "Close navigation menu"
+                : "Open navigation menu"
+            }
+            aria-expanded={open}
+            onClick={() =>
+              setOpen((value) => !value)
+            }
+          >
+            {open ? (
+              <X size={22} />
+            ) : (
+              <Menu size={22} />
+            )}
+          </button>
+        )}
+    </div>
+  </MobileMenuContext.Provider>
+);
 }
 
 export function useMobileMenu() {

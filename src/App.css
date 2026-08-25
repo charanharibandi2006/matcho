@@ -43,8 +43,8 @@
 @media (min-width: 640px) {
   .splash {
     max-width: 460px;
-    min-height: min(100svh, 844px);
-    margin: 32px 0;
+    min-height: auto;
+    margin: 20px 0;
   }
 }
 
@@ -1358,5 +1358,64 @@
       flex-basis: 42px;
       font-size: 18px;
     }
+  }
+}
+
+/* =========================================================
+   AUTH PAGE - REMOVE EXCESS BOTTOM GAP
+   Tablet / desktop-mode screens
+========================================================= */
+
+@media (min-width: 640px) and (max-width: 899px) {
+  .splash {
+    min-height: auto;
+    margin: 0;
+    padding-bottom: 20px;
+  }
+
+  .signup-login {
+    min-height: auto;
+    margin: 0;
+    padding-bottom: 20px;
+  }
+
+  .signup-text {
+    margin-bottom: 0;
+  }
+}
+
+/* =========================================================
+   MATCHO AUTH - FIX TABLET / DESKTOP-MODE BOTTOM GAP
+========================================================= */
+
+@media (min-width: 641px) and (max-width: 899px) {
+
+  .app-shell {
+    place-items: start center !important;
+    min-height: 100svh;
+  }
+
+  .splash {
+    width: 100% !important;
+    max-width: 460px !important;
+
+    min-height: 0 !important;
+    height: auto !important;
+
+    margin: 0 !important;
+
+    padding-top: 20px !important;
+    padding-bottom: 8px !important;
+
+    box-sizing: border-box;
+  }
+
+  .signup-text {
+    margin-top: 10px !important;
+    margin-bottom: 0 !important;
+  }
+
+  .auth-form {
+    margin-bottom: 0 !important;
   }
 }

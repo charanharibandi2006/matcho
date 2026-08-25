@@ -18,7 +18,7 @@
   display: none;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   html,
   body,
   #root {
@@ -237,4 +237,497 @@
     width: 86vw;
     min-width: 86vw;
   }
+}
+
+/* =========================================================
+   MATCHO - TABLET / SMALL DESKTOP RESPONSIVE FIX
+   Handles laptops, tablets and desktop-mode tablets
+   without changing the existing mobile design.
+========================================================= */
+
+
+/* ---------------------------------------------------------
+   1200px and below
+--------------------------------------------------------- */
+
+@media (max-width: 1200px) {
+
+  /* CREATE / REGISTER PAGES */
+
+  .reg-main {
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+
+  .reg-layout {
+    gap: 20px;
+  }
+
+  .reg-card {
+    padding: 28px;
+  }
+
+
+  /* JOIN TOURNAMENT */
+
+  .join-tournament-page .reg-main {
+    width: calc(100% - 40px);
+  }
+
+  .join-tournament-page .reg-layout {
+    grid-template-columns:
+      minmax(0, 1fr)
+      300px;
+
+    gap: 20px;
+  }
+
+  .join-tournament-page .reg-card {
+    padding: 30px;
+  }
+
+  .join-tournament-grid {
+    grid-template-columns:
+      repeat(
+        auto-fit,
+        minmax(260px, 1fr)
+      );
+  }
+}
+
+
+/* ---------------------------------------------------------
+   1100px - TABLET / SMALL LAPTOP
+--------------------------------------------------------- */
+
+@media (max-width: 1100px) {
+
+  /* Prevent every page from creating horizontal overflow */
+
+  .reg-shell,
+  .join-tournament-page,
+  .tm-page,
+  .org-layout,
+  .mobile-menu-root {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+
+  /* CREATE TOURNAMENT */
+
+  .reg-main {
+    width: 100%;
+    max-width: 100%;
+    padding: 28px 24px 50px;
+  }
+
+  .reg-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .reg-card {
+    width: 100%;
+    min-width: 0;
+    padding: 26px;
+  }
+
+  .reg-side {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .reg-row {
+    gap: 18px;
+  }
+
+
+  /* JOIN TOURNAMENT */
+
+  .join-tournament-page .reg-main {
+    width: calc(100% - 40px);
+    max-width: 100%;
+  }
+
+  .join-tournament-page .reg-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .join-tournament-page .reg-card {
+    width: 100%;
+    min-width: 0;
+    padding: 28px;
+  }
+
+  .join-tournament-page .reg-side {
+    width: 100%;
+  }
+
+  .join-tournament-grid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+
+  /* JOIN CARDS */
+
+  .join-tournament-card {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .join-card-title-area h3 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+
+  /* TOURNAMENT MANAGEMENT */
+
+  .tm-page {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .tm-content {
+    width: calc(100% - 40px);
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .tm-selection-row {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .tm-fixtures-grid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .tm-generator {
+    min-width: 0;
+  }
+
+  .tm-generator > * {
+    min-width: 0;
+  }
+
+
+  /* LONG TEXT */
+
+  .tm-card,
+  .tm-fixture-card,
+  .tm-points-card,
+  .tm-generator,
+  .tm-selection-row {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   950px - SMALL TABLET
+--------------------------------------------------------- */
+
+@media (max-width: 950px) {
+
+  /* FORM ROWS */
+
+  .reg-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .reg-field {
+    min-width: 0;
+  }
+
+
+  /* JOIN */
+
+  .join-tournament-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .join-tournament-card {
+    padding: 17px;
+  }
+
+  .join-card-title-area h3 {
+    font-size: 16px;
+  }
+
+
+  /* TOURNAMENT MANAGEMENT */
+
+  .tm-selection-row {
+    grid-template-columns: 1fr;
+  }
+
+  .tm-fixtures-grid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .tm-section-top {
+    gap: 12px;
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   900px - TABLET / MOBILE MENU AREA
+--------------------------------------------------------- */
+
+@media (max-width: 900px) {
+
+  /*
+     MobileMenuProvider already changes the sidebar
+     into a drawer at this breakpoint.
+  */
+
+  .mobile-menu-root .org-main,
+  .mobile-menu-root .stat-main,
+  .mobile-menu-root .tm-main {
+
+    width: 100% !important;
+
+    max-width: 100%;
+
+    min-width: 0;
+
+    margin-left: 0 !important;
+
+    box-sizing: border-box;
+  }
+
+
+  .mobile-menu-root .org-content {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+
+  .mobile-menu-root .tm-main {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+
+  /* Prevent cards from overflowing */
+
+  .mobile-menu-root .tm-content,
+  .mobile-menu-root .org-content {
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+
+  /* Tables scroll inside themselves */
+
+  .tm-table-wrap,
+  .tm-points-table-wrap {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+
+  /* Filters can scroll horizontally */
+
+  .tm-filter-tabs,
+  .tm-fixture-filters,
+  .tm-section-tabs {
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tm-filter-tabs::-webkit-scrollbar,
+  .tm-fixture-filters::-webkit-scrollbar,
+  .tm-section-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   768px - LARGE MOBILE / SMALL TABLET
+--------------------------------------------------------- */
+
+@media (max-width: 768px) {
+
+  .reg-main {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+
+  .reg-card {
+    padding: 22px;
+  }
+
+
+  .join-tournament-page .reg-main {
+    width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+
+  .join-tournament-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .join-section-heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+
+  .tm-fixtures-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .tm-standings-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .tm-selection-row {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   600px - MOBILE
+--------------------------------------------------------- */
+
+@media (max-width: 600px) {
+
+  .reg-main {
+    padding: 20px 14px 40px;
+  }
+
+  .reg-card {
+    padding: 20px 16px;
+  }
+
+
+  .reg-layout {
+    gap: 14px;
+  }
+
+
+  .reg-actions {
+    flex-direction: column;
+  }
+
+  .reg-actions button {
+    width: 100%;
+  }
+
+
+  .join-tournament-page .reg-main {
+    width: 100%;
+    padding: 20px 14px 40px;
+  }
+
+
+  .join-tournament-page .reg-card {
+    padding: 20px 16px;
+  }
+
+
+  .join-tournament-card {
+    padding: 16px;
+  }
+
+
+  .join-card-top {
+    gap: 8px;
+  }
+
+
+  .join-card-title-area h3 {
+    font-size: 16px;
+    white-space: normal;
+  }
+
+
+  .tm-content {
+    width: 100%;
+  }
+
+
+  .tm-card {
+    padding: 16px;
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   UNIVERSAL SAFETY
+--------------------------------------------------------- */
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+
+input,
+select,
+textarea,
+button {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+
+* {
+  min-width: 0;
+}
+
+
+html,
+body,
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
