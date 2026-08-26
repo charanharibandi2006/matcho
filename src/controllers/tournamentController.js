@@ -53,8 +53,7 @@ const createTournament = async (req, res, next) => {
             location,
             maxParticipants,
             description,
-            format,
-            icon_url
+            format, 
         } = req.body;
 
 
@@ -214,7 +213,6 @@ const createTournament = async (req, res, next) => {
                 sport,
                 category,
                 description,
-                icon_url,
                 format,
                 fixture_type,
                 venue,
@@ -260,7 +258,6 @@ const createTournament = async (req, res, next) => {
                     ? description.trim()
                     : null,
 
-                icon_url || null,
 
                 // Save the format selected
                 // by the organizer.
@@ -338,7 +335,6 @@ const getPublicRegistrationTournaments = async (
                 t.max_players,
                 t.status,
                 t.description,
-                t.icon_url,
                 u.full_name AS organizer_name,
 
                 (
@@ -353,6 +349,7 @@ const getPublicRegistrationTournaments = async (
                 ON u.id = t.organizer_id
 
             WHERE t.status = 'Registration Open'
+            AND t.is_publi = TRUE
 
             ORDER BY
                 t.start_date ASC NULLS LAST,
@@ -541,8 +538,7 @@ const updateTournament = async (
             location,
             maxParticipants,
             format,
-            status,
-            icon_url
+            status, 
         } = req.body;
 
 
@@ -600,7 +596,6 @@ const updateTournament = async (
                 sport = COALESCE($2, sport),
                 category = COALESCE($3, category),
                 description = COALESCE($4, description),
-                icon_url = COALESCE($5, icon_url),
                 venue = COALESCE($6, venue),
                 start_date = COALESCE($7, start_date),
                 end_date = COALESCE($8, end_date),
@@ -617,7 +612,6 @@ const updateTournament = async (
                 sport || null,
                 category || null,
                 description || null,
-                icon_url || null,
                 location || null,
                 startDate || null,
                 endDate || null,

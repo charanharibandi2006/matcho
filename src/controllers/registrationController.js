@@ -42,6 +42,21 @@ const publicRegisterForTournament = async (req, res, next) => {
         const cleanGender =
             String(gender || "").trim();
 
+            const normalizedGender =
+    cleanGender.toLowerCase();
+
+if (
+    !["male", "female"].includes(
+        normalizedGender
+    )
+) {
+    return res.status(400).json({
+        success: false,
+        message:
+            "Please select a valid gender."
+    });
+}
+
         const cleanFlat =
             String(cFlatNumber || "").trim();
 
@@ -152,6 +167,37 @@ const publicRegisterForTournament = async (req, res, next) => {
 
         const tournament =
             tournamentResult.rows[0];
+
+            // =====================================================
+// GENDER VALIDATION FOR DOUBLES
+// =====================================================
+
+const tournamentCategory =
+    String(tournament.category || "")
+        .trim()
+        .toLowerCase();
+
+if (
+    tournamentCategory === "men's doubles" &&
+    cleanGender.toLowerCase() !== "male"
+) {
+    return res.status(400).json({
+        success: false,
+        message:
+            "Only male players can register for Men's Doubles tournaments."
+    });
+}
+
+if (
+    tournamentCategory === "women's doubles" &&
+    cleanGender.toLowerCase() !== "female"
+) {
+    return res.status(400).json({
+        success: false,
+        message:
+            "Only female players can register for Women's Doubles tournaments."
+    });
+}
 
         // =====================================================
         // CHECK REGISTRATION STATUS
