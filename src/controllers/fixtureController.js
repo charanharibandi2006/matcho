@@ -739,11 +739,7 @@ COALESCE(
 
 f.player_a_score,
 f.player_b_score,
-
-COALESCE(
-    f.game_scores,
-    '[]'::jsonb
-) AS game_scores,
+f.game_scores,
 
 f.serving_side,
 
@@ -868,11 +864,6 @@ const updateFixtureScore = async (req, res, next) => {
             });
         }
 
-        const nextGameScores =
-            Array.isArray(gameScores)
-                ? gameScores
-                : [];
-
         const fixtureResult = await pool.query(
             `
             SELECT *
@@ -896,6 +887,13 @@ const updateFixtureScore = async (req, res, next) => {
             servingSide !== undefined
                 ? servingSide
                 : fixture.serving_side || null;
+
+        const nextGameScores =
+            gameScores !== undefined
+                ? gameScores
+                : Array.isArray(fixture.game_scores)
+                    ? fixture.game_scores
+                    : [];
 
         if (fixture.status === "Completed") {
             return res.status(400).json({
