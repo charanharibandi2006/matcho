@@ -6,6 +6,7 @@ const {
     generateRandomFixtures,
     getFixturesByTournament,
     updateFixtureScore,
+    swapUpcomingFixtureSides,
     generateNextRound,
     generateFinal
 } = require("../controllers/fixtureController");
@@ -16,11 +17,9 @@ const authenticateUser =
 const authorizeRoles =
     require("../middleware/authorizeRoles");
 
-
 // ==========================================
 // GENERATE RANDOM FIXTURES
 // ==========================================
-
 router.post(
     "/random/:tournamentId",
     authenticateUser,
@@ -28,21 +27,17 @@ router.post(
     generateRandomFixtures
 );
 
-
 // ==========================================
 // GET TOURNAMENT FIXTURES
 // ==========================================
-
 router.get(
     "/:tournamentId",
     getFixturesByTournament
 );
 
-
 // ==========================================
 // UPDATE FIXTURE SCORE
 // ==========================================
-
 router.put(
     "/score/:id",
     authenticateUser,
@@ -50,11 +45,19 @@ router.put(
     updateFixtureScore
 );
 
+// ==========================================
+// SWAP UPCOMING FIXTURE OPPONENTS
+// ==========================================
+router.post(
+    "/swap",
+    authenticateUser,
+    authorizeRoles("Organizer", "Admin"),
+    swapUpcomingFixtureSides
+);
 
 // ==========================================
 // GENERATE NEXT ROUND
 // ==========================================
-
 router.post(
     "/next-round/:tournamentId",
     authenticateUser,
@@ -62,17 +65,14 @@ router.post(
     generateNextRound
 );
 
-
 // ==========================================
 // GENERATE FINAL
 // ==========================================
-
 router.post(
     "/final/:tournamentId",
     authenticateUser,
     authorizeRoles("Organizer", "Admin"),
     generateFinal
 );
-
 
 module.exports = router;

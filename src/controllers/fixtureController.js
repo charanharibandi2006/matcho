@@ -1643,10 +1643,297 @@ const generateFinal = async (req, res, next) => {
     }
 };
 
+
+// =========================================================
+// SWAP UPCOMING FIXTURE OPPONENTS
+// =========================================================
+
+const swapUpcomingFixtureSides = async (req, res, next) => {
+    const client = await pool.connect();
+
+    try {
+        const {
+            fixtureId,
+            fixtureSide,
+            swapFixtureId,
+            swapSide,
+        } = req.body;
+
+        const firstFixtureId = Number(fixtureId);
+        const secondFixtureId = Number(swapFixtureId);
+
+        if (
+            !Number.isInteger(firstFixtureId) ||
+            !Number.isInteger(secondFixtureId) ||
+            firstFixtureId === secondFixtureId
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Two different fixture IDs are required.",
+            });
+        }
+
+        if (
+            !["A", "B"].includes(fixtureSide) ||
+            !["A", "B"].includes(swapSide)
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "fixtureSide and swapSide must be A or B.",
+            });
+        }
+
+        await client.query("BEGIN");
+
+        const fixtureResult = await client.query(
+            `
+            SELECT
+                id,
+                tournament_id,
+                stage,
+                pool_name,
+                status,
+                player_a_id,
+                player_b_id,
+                team_a_id,
+                team_b_id
+            FROM public.fixtures
+            WHERE id = ANY($1::int[])
+            ORDER BY id
+            FOR UPDATE
+            `,
+            [[firstFixtureId, secondFixtureId]]
+        );
+
+        if (fixtureResult.rows.length !== 2) {
+            throw new Error(
+                "One or both fixtures could not be found."
+            );
+        }
+
+        const first =
+            fixtureResult.rows.find(
+                (fixture) =>
+                    Number(fixture.id) === firstFixtureId
+            );
+
+        const second =
+            fixtureResult.rows.find(
+                (fixture) =>
+                    Number(fixture.id) === secondFixtureId
+            );
+
+        if (
+            first.status !== "Upcoming" ||
+            second.status !== "Upcoming"
+        ) {
+            throw new Error(
+                "Only upcoming fixtures can be swapped."
+            );
+        }
+
+        if (
+            Number(first.tournament_id) !==
+            Number(second.tournament_id)
+        ) {
+            throw new Error(
+                "Fixtures must belong to the same tournament."
+            );
+        }
+
+        if (first.stage !== second.stage) {
+            throw new Error(
+                "Fixtures must belong to the same stage."
+            );
+        }
+
+        if (
+            String(first.stage || "").toLowerCase() ===
+            "pool" &&
+            String(first.pool_name || "") !==
+            String(second.pool_name || "")
+        ) {
+            throw new Error(
+                "Pool fixtures can only be swapped within the same pool."
+            );
+        }
+
+        const isDoubles =
+            first.team_a_id !== null ||
+            first.team_b_id !== null ||
+            second.team_a_id !== null ||
+            second.team_b_id !== null;
+
+        const firstA =
+            isDoubles
+                ? first.team_a_id
+                : first.player_a_id;
+
+        const firstB =
+            isDoubles
+                ? first.team_b_id
+                : first.player_b_id;
+
+        const secondA =
+            isDoubles
+                ? second.team_a_id
+                : second.player_a_id;
+
+        const secondB =
+            isDoubles
+                ? second.team_b_id
+                : second.player_b_id;
+
+        const firstSelected =
+            fixtureSide === "A"
+                ? firstA
+                : firstB;
+
+        const secondSelected =
+            swapSide === "A"
+                ? secondA
+                : secondB;
+
+        const firstOther =
+            fixtureSide === "A"
+                ? firstB
+                : firstA;
+
+        const secondOther =
+            swapSide === "A"
+                ? secondB
+                : secondA;
+
+        if (
+            firstSelected === null ||
+            firstSelected === undefined ||
+            secondSelected === null ||
+            secondSelected === undefined
+        ) {
+            throw new Error(
+                "Both selected sides must contain a player or team."
+            );
+        }
+
+        if (
+            String(firstSelected) ===
+            String(secondSelected)
+        ) {
+            throw new Error(
+                "The selected opponents are already the same."
+            );
+        }
+
+        if (
+            String(secondSelected) ===
+            String(firstOther)
+        ) {
+            throw new Error(
+                "This swap would create a duplicate opponent in the first fixture."
+            );
+        }
+
+        if (
+            String(firstSelected) ===
+            String(secondOther)
+        ) {
+            throw new Error(
+                "This swap would create a duplicate opponent in the second fixture."
+            );
+        }
+
+        if (isDoubles) {
+            const firstColumn =
+                fixtureSide === "A"
+                    ? "team_a_id"
+                    : "team_b_id";
+
+            const secondColumn =
+                swapSide === "A"
+                    ? "team_a_id"
+                    : "team_b_id";
+
+            await client.query(
+                `
+                UPDATE public.fixtures
+                SET ${firstColumn} = $1
+                WHERE id = $2
+                `,
+                [secondSelected, firstFixtureId]
+            );
+
+            await client.query(
+                `
+                UPDATE public.fixtures
+                SET ${secondColumn} = $1
+                WHERE id = $2
+                `,
+                [firstSelected, secondFixtureId]
+            );
+        } else {
+            const firstColumn =
+                fixtureSide === "A"
+                    ? "player_a_id"
+                    : "player_b_id";
+
+            const secondColumn =
+                swapSide === "A"
+                    ? "player_a_id"
+                    : "player_b_id";
+
+            await client.query(
+                `
+                UPDATE public.fixtures
+                SET ${firstColumn} = $1
+                WHERE id = $2
+                `,
+                [secondSelected, firstFixtureId]
+            );
+
+            await client.query(
+                `
+                UPDATE public.fixtures
+                SET ${secondColumn} = $1
+                WHERE id = $2
+                `,
+                [firstSelected, secondFixtureId]
+            );
+        }
+
+        await client.query("COMMIT");
+
+        return res.status(200).json({
+            success: true,
+            message: "Upcoming fixture opponents swapped successfully.",
+            fixtureIds: [
+                firstFixtureId,
+                secondFixtureId,
+            ],
+        });
+    } catch (error) {
+        await client.query("ROLLBACK");
+
+        console.error(
+            "Swap Upcoming Fixtures Error:",
+            error
+        );
+
+        return res.status(400).json({
+            success: false,
+            message:
+                error.message ||
+                "Unable to swap upcoming fixture opponents.",
+        });
+    } finally {
+        client.release();
+    }
+};
+
 module.exports = {
     generateRandomFixtures,
     getFixturesByTournament,
     updateFixtureScore,
+    swapUpcomingFixtureSides,
     generateNextRound,
     generateFinal,
 };
