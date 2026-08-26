@@ -740,6 +740,11 @@ COALESCE(
 f.player_a_score,
 f.player_b_score,
 
+COALESCE(
+    f.game_scores,
+    '[]'::jsonb
+) AS game_scores,
+
 f.serving_side,
 
                 f.winner_player_id,
@@ -805,7 +810,8 @@ const updateFixtureScore = async (req, res, next) => {
             playerAScore,
             playerBScore,
             status,
-            servingSide
+            servingSide,
+            gameScores
         } = req.body;
 
         if (!Number.isInteger(fixtureId)) {
@@ -850,6 +856,22 @@ const updateFixtureScore = async (req, res, next) => {
                 message: "servingSide must be A or B.",
             });
         }
+
+        if (
+            gameScores !== undefined &&
+            gameScores !== null &&
+            !Array.isArray(gameScores)
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "gameScores must be an array.",
+            });
+        }
+
+        const nextGameScores =
+            Array.isArray(gameScores)
+                ? gameScores
+                : [];
 
         const fixtureResult = await pool.query(
             `
@@ -968,8 +990,9 @@ const updateFixtureScore = async (req, res, next) => {
                 winner_player_id = $3,
                 winner_team_id = $4,
                 status = $5,
-                serving_side = $6
-            WHERE id = $7
+                serving_side = $6,
+                game_scores = $7
+            WHERE id = $8
             RETURNING *
             `,
             [
@@ -979,6 +1002,7 @@ const updateFixtureScore = async (req, res, next) => {
                 winnerTeamId,
                 status,
                 nextServingSide,
+                JSON.stringify(nextGameScores),
                 fixtureId,
             ]
         );
@@ -1837,6 +1861,59 @@ const swapUpcomingFixtureSides = async (req, res, next) => {
             String(firstSelected) ===
             String(secondOther)
         ) {
+            throw new Error(
+                "This swap would create a duplicate opponent in the second fixture."
+            );
+        }
+
+        // Make sure the new pairings do not already exist elsewhere
+        // in this tournament/stage. This keeps swaps from creating
+        // duplicate opponents later in the schedule.
+        const participantColumnA = isDoubles
+            ? "team_a_id"
+            : "player_a_id";
+        const participantColumnB = isDoubles
+            ? "team_b_id"
+            : "player_b_id";
+
+        const pairingResult = await client.query(
+            `
+            SELECT
+                id,
+                ${participantColumnA} AS participant_a,
+                ${participantColumnB} AS participant_b
+            FROM public.fixtures
+            WHERE tournament_id = $1
+              AND stage = $2
+              AND id NOT IN ($3, $4)
+            `,
+            [
+                first.tournament_id,
+                first.stage,
+                firstFixtureId,
+                secondFixtureId,
+            ]
+        );
+
+        const hasPair = (a, b) =>
+            pairingResult.rows.some((row) =>
+                row.participant_a != null &&
+                row.participant_b != null &&
+                ((String(row.participant_a) === String(a) &&
+                    String(row.participant_b) === String(b)) ||
+                    (String(row.participant_a) === String(b) &&
+                        String(row.participant_b) === String(a)))
+            );
+
+        // After the swap: firstOther vs secondSelected,
+        // and secondOther vs firstSelected.
+        if (hasPair(firstOther, secondSelected)) {
+            throw new Error(
+                "This swap would create a duplicate opponent in the first fixture."
+            );
+        }
+
+        if (hasPair(secondOther, firstSelected)) {
             throw new Error(
                 "This swap would create a duplicate opponent in the second fixture."
             );
