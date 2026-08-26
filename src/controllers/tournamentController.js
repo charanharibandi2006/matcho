@@ -589,39 +589,39 @@ const updateTournament = async (
         // ------------------------------------------
 
         const result = await pool.query(
-            `
-            UPDATE tournaments
-            SET
-                name = COALESCE($1, name),
-                sport = COALESCE($2, sport),
-                category = COALESCE($3, category),
-                description = COALESCE($4, description),
-                venue = COALESCE($6, venue),
-                start_date = COALESCE($7, start_date),
-                end_date = COALESCE($8, end_date),
-                max_players = COALESCE($9, max_players),
-                status = COALESCE($10, status),
-                format = COALESCE($11, format),
-                updated_at = CURRENT_TIMESTAMP
-            WHERE id = $12
-            AND organizer_id = $13
-            RETURNING *
-            `,
-            [
-                name || null,
-                sport || null,
-                category || null,
-                description || null,
-                location || null,
-                startDate || null,
-                endDate || null,
-                maxParticipants || null,
-                status || null,
-                format || null,
-                id,
-                organizerId
-            ]
-        );
+    `
+    UPDATE tournaments
+    SET
+        name = COALESCE($1, name),
+        sport = COALESCE($2, sport),
+        category = COALESCE($3, category),
+        description = COALESCE($4, description),
+        venue = COALESCE($5, venue),
+        start_date = COALESCE($6, start_date),
+        end_date = COALESCE($7, end_date),
+        max_players = COALESCE($8, max_players),
+        status = COALESCE($9, status),
+        format = COALESCE($10, format),
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id = $11
+      AND organizer_id = $12
+    RETURNING *
+    `,
+    [
+        name || null,
+        sport || null,
+        category || null,
+        description || null,
+        location || null,
+        startDate || null,
+        endDate || null,
+        maxParticipants || null,
+        status || null,
+        format || null,
+        id,
+        organizerId
+    ]
+);
 
 
         if (
