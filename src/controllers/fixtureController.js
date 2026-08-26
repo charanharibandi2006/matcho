@@ -740,6 +740,8 @@ COALESCE(
 f.player_a_score,
 f.player_b_score,
 
+f.serving_side,
+
                 f.winner_player_id,
                 f.winner_team_id,
 
@@ -803,6 +805,7 @@ const updateFixtureScore = async (req, res, next) => {
             playerAScore,
             playerBScore,
             status,
+            servingSide
         } = req.body;
 
         if (!Number.isInteger(fixtureId)) {
@@ -836,6 +839,18 @@ const updateFixtureScore = async (req, res, next) => {
             });
         }
 
+        if (
+            servingSide !== undefined &&
+            servingSide !== null &&
+            servingSide !== "A" &&
+            servingSide !== "B"
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "servingSide must be A or B.",
+            });
+        }
+
         const fixtureResult = await pool.query(
             `
             SELECT *
@@ -854,6 +869,11 @@ const updateFixtureScore = async (req, res, next) => {
         }
 
         const fixture = fixtureResult.rows[0];
+
+        const nextServingSide =
+            servingSide !== undefined
+                ? servingSide
+                : fixture.serving_side || null;
 
         if (fixture.status === "Completed") {
             return res.status(400).json({
@@ -947,8 +967,9 @@ const updateFixtureScore = async (req, res, next) => {
                 player_b_score = $2,
                 winner_player_id = $3,
                 winner_team_id = $4,
-                status = $5
-            WHERE id = $6
+                status = $5,
+                serving_side = $6
+            WHERE id = $7
             RETURNING *
             `,
             [
@@ -957,6 +978,7 @@ const updateFixtureScore = async (req, res, next) => {
                 winnerPlayerId,
                 winnerTeamId,
                 status,
+                nextServingSide,
                 fixtureId,
             ]
         );
