@@ -682,13 +682,63 @@ const getFixturesByTournament = async (req, res, next) => {
                 ub.full_name AS player_b_name,
 
                 f.team_a_id,
-                ta.team_name AS team_a_name,
+ta.team_name AS team_a_name,
 
-                f.team_b_id,
-                tb.team_name AS team_b_name,
+COALESCE(
+    (
+        SELECT JSON_AGG(
+            JSON_BUILD_OBJECT(
+                'id', tm.player_id,
+                'name',
+                COALESCE(
+                    u.full_name,
+                    tr.participant_name,
+                    'Player'
+                )
+            )
+            ORDER BY tm.id
+        )
+        FROM public.team_members tm
+        LEFT JOIN public.tournament_registrations tr
+            ON tr.tournament_id = f.tournament_id
+           AND tr.player_id = tm.player_id
+        LEFT JOIN public.users u
+            ON u.id = tm.player_id
+        WHERE tm.team_id = f.team_a_id
+    ),
+    '[]'::json
+) AS team_a_members,
 
-                f.player_a_score,
-                f.player_b_score,
+f.team_b_id,
+tb.team_name AS team_b_name,
+
+COALESCE(
+    (
+        SELECT JSON_AGG(
+            JSON_BUILD_OBJECT(
+                'id', tm.player_id,
+                'name',
+                COALESCE(
+                    u.full_name,
+                    tr.participant_name,
+                    'Player'
+                )
+            )
+            ORDER BY tm.id
+        )
+        FROM public.team_members tm
+        LEFT JOIN public.tournament_registrations tr
+            ON tr.tournament_id = f.tournament_id
+           AND tr.player_id = tm.player_id
+        LEFT JOIN public.users u
+            ON u.id = tm.player_id
+        WHERE tm.team_id = f.team_b_id
+    ),
+    '[]'::json
+) AS team_b_members,
+
+f.player_a_score,
+f.player_b_score,
 
                 f.winner_player_id,
                 f.winner_team_id,
