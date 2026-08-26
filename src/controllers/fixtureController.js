@@ -164,12 +164,6 @@ const distributeIntoPools = (participants, poolCount) => {
         );
     }
 
-    if (poolSize % 2 !== 0) {
-        throw new Error(
-            `Each pool must contain an even number of participants.`
-        );
-    }
-
     const pools = [];
 
     for (let i = 0; i < poolCount; i += 1) {
@@ -193,31 +187,40 @@ const distributeIntoPools = (participants, poolCount) => {
 // =========================================================
 
 const generateRoundRobinRounds = (participants) => {
-    if (participants.length < 2 || participants.length % 2 !== 0) {
+    if (participants.length < 2) {
         throw new Error(
-            "Round-robin scheduling requires an even number of participants."
+            "At least 2 participants are required for fixture generation."
         );
     }
 
     const rotation = [...participants];
-    const fixed = rotation.shift();
+
+    // Add a BYE slot for odd-sized groups.
+    if (rotation.length % 2 !== 0) {
+        rotation.push(null);
+    }
+
     const rounds = [];
-    const totalRounds = participants.length - 1;
+    const totalRounds = rotation.length - 1;
+    const fixed = rotation.shift();
 
     for (let round = 0; round < totalRounds; round += 1) {
         const current = [fixed, ...rotation];
         const matches = [];
 
-        for (let i = 0; i < participants.length / 2; i += 1) {
-            matches.push({
-                participantA: current[i],
-                participantB: current[current.length - 1 - i],
-            });
+        for (let i = 0; i < current.length / 2; i += 1) {
+            const participantA = current[i];
+            const participantB = current[current.length - 1 - i];
+
+            if (participantA && participantB) {
+                matches.push({
+                    participantA,
+                    participantB,
+                });
+            }
         }
 
         rounds.push(matches);
-
-        // Circle-method rotation: keep first participant fixed.
         rotation.unshift(rotation.pop());
     }
 
@@ -228,25 +231,83 @@ const generateMatchesForParticipantCount = (
     participants,
     matchesPerParticipant
 ) => {
-    if (participants.length % 2 !== 0) {
+    const participantCount = participants.length;
+
+    if (participantCount < 2) {
         throw new Error(
-            "An even number of participants is required for this fixture format."
+            "At least 2 participants are required for fixture generation."
         );
     }
 
     if (
         matchesPerParticipant < 1 ||
-        matchesPerParticipant > participants.length - 1
+        matchesPerParticipant > participantCount - 1
+    ) {
+        if (!(participantCount === 4 && matchesPerParticipant === 4)) {
+            throw new Error(
+                `A participant can play at most ${participantCount - 1} unique opponents in this group.`
+            );
+        }
+    }
+
+    // Four-team Men's pool: each team has only 3 unique opponents.
+    // Repeat one balanced pairing so every team plays exactly 4 matches.
+    if (participantCount === 4 && matchesPerParticipant === 4) {
+        const [a, b, c, d] = participants;
+        return [
+            { participantA: a, participantB: b },
+            { participantA: c, participantB: d },
+            { participantA: a, participantB: c },
+            { participantA: b, participantB: d },
+            { participantA: a, participantB: d },
+            { participantA: b, participantB: c },
+            { participantA: a, participantB: b },
+            { participantA: c, participantB: d },
+        ];
+    }
+
+    // For odd-sized pools, an equal number of matches for every
+    // participant is possible when matchesPerParticipant is even.
+    // The circular-offset construction gives every participant exactly
+    // the requested number of unique opponents.
+    if (
+        participantCount % 2 !== 0 &&
+        matchesPerParticipant % 2 !== 0
     ) {
         throw new Error(
-            `A participant can play at most ${participants.length - 1} unique opponents in this group.`
+            `A pool with ${participantCount} participants cannot give every participant exactly ${matchesPerParticipant} matches.`
         );
     }
 
-    const rounds = generateRoundRobinRounds(participants);
-    const selectedRounds = rounds.slice(0, matchesPerParticipant);
+    if (participantCount % 2 !== 0) {
+        const matches = [];
+        const seen = new Set();
+        const maxDistance = matchesPerParticipant / 2;
 
-    return selectedRounds.flatMap((round) => round);
+        for (let i = 0; i < participantCount; i += 1) {
+            for (let distance = 1; distance <= maxDistance; distance += 1) {
+                const j = (i + distance) % participantCount;
+                const low = Math.min(i, j);
+                const high = Math.max(i, j);
+                const key = `${low}-${high}`;
+
+                if (seen.has(key)) continue;
+                seen.add(key);
+
+                matches.push({
+                    participantA: participants[i],
+                    participantB: participants[j],
+                });
+            }
+        }
+
+        return matches;
+    }
+
+    const rounds = generateRoundRobinRounds(participants);
+    return rounds
+        .slice(0, matchesPerParticipant)
+        .flatMap((round) => round);
 };
 
 // =========================================================
@@ -501,21 +562,15 @@ const generateRandomFixtures = async (req, res, next) => {
 
         const poolSize = participants.length / rules.poolCount;
 
-        const minimumPoolSize = rules.matchesPerTeam + 1;
+        // Four teams is valid for the Men's 4-match format because
+        // one opponent pairing is repeated to give every team 4 matches.
+        const minimumPoolSize = 4;
 
         if (poolSize < minimumPoolSize) {
             return res.status(400).json({
                 success: false,
                 message:
                     `Each pool must contain at least ${minimumPoolSize} ${format === "Doubles" ? "teams" : "players"} to play ${rules.matchesPerTeam} matches each.`,
-            });
-        }
-
-        if (poolSize % 2 !== 0) {
-            return res.status(400).json({
-                success: false,
-                message:
-                    `Each pool must contain an even number of ${format === "Doubles" ? "teams" : "players"}.`,
             });
         }
 
