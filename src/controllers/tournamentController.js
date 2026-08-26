@@ -349,7 +349,7 @@ const getPublicRegistrationTournaments = async (
                 ON u.id = t.organizer_id
 
             WHERE t.status = 'Registration Open'
-            AND t.is_publi = TRUE
+            AND t.is_public = TRUE
 
             ORDER BY
                 t.start_date ASC NULLS LAST,
