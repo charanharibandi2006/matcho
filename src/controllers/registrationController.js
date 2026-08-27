@@ -175,28 +175,16 @@ if (
 const tournamentCategory =
     String(tournament.category || "")
         .trim()
-        .toLowerCase();
+        .toLowerCase()
+        .replace(/[’‘]/g, "'")
+        .replace(/\s+/g, " " );
 
-if (
-    tournamentCategory === "men's doubles" &&
-    cleanGender.toLowerCase() !== "male"
-) {
-    return res.status(400).json({
-        success: false,
-        message:
-            "Only male players can register for Men's Doubles tournaments."
-    });
-}
+let finalGender = cleanGender;
 
-if (
-    tournamentCategory === "women's doubles" &&
-    cleanGender.toLowerCase() !== "female"
-) {
-    return res.status(400).json({
-        success: false,
-        message:
-            "Only female players can register for Women's Doubles tournaments."
-    });
+if (tournamentCategory.includes("women")) {
+    finalGender = "Female";
+} else if (tournamentCategory.includes("men")) {
+    finalGender = "Male";
 }
 
         // =====================================================
@@ -434,7 +422,7 @@ if (
                     tournament.id,
                     playerId,
                     cleanName,
-                    cleanGender,
+                    finalGender,
                     cleanFlat,
                     cleanMobile,
                     cleanTransactionId
