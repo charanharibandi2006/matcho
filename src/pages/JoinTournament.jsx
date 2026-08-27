@@ -691,7 +691,25 @@ const isJoined =
   </select>
 )}
 
+{/* C-FLAT NUMBER */}
 
+<label className="auth-label">
+  C-Flat Number (eg: C-101)
+</label>
+
+<input
+  className="auth-input"
+  type="text"
+  placeholder="Enter C-flat number"
+  value={form.cFlatNumber}
+  onChange={(event) =>
+    update(
+      "cFlatNumber",
+      event.target.value
+    )
+  }
+  required
+/>
               {/* MOBILE */}
 
               <label className="auth-label">
