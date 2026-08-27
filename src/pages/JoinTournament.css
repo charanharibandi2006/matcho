@@ -1062,3 +1062,26 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+.join-card-sport-icon {
+  width: 64px;
+  height: 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+  border-radius: 0;
+
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.join-card-matcho-logo {
+  width: 58px;
+  height: 58px;
+
+  object-fit: contain;
+  display: block;
+}

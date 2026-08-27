@@ -9,6 +9,8 @@ import { socket } from "../services/socket";
 
 import { getRole } from "../utils/auth";
 
+import matchoLogo from "../assets/images/logo.png";
+
 import {
   useNavigate,
   useSearchParams,
@@ -29,14 +31,17 @@ import {
   X,
   UserPlus,
   Trash2,
-  Download
+  Download,
+  FileDown,
+  FileText
 } from "lucide-react";
+
+import jsPDF from "jspdf";
 
 import RoleSidebar from "../components/RoleSidebar";
 
 import { apiRequest } from "../services/api";
 
-import { uploadTournamentIcon } from "../services/supabase";
 
 import "./OrganizerDashboard.css";
 import "./StatsDashboard.css";
@@ -479,6 +484,24 @@ const [selectedFixture, setSelectedFixture] = useState(null);
 const [fixtureFilter, setFixtureFilter] =
   useState("all");
 
+const [readyModalOpen, setReadyModalOpen] =
+  useState(false);
+const [readyFixture, setReadyFixture] =
+  useState(null);
+const [readySideA, setReadySideA] =
+  useState(false);
+const [readySideB, setReadySideB] =
+  useState(false);
+
+const [swapModalOpen, setSwapModalOpen] =
+  useState(false);
+const [swapFromSide, setSwapFromSide] =
+  useState(null);
+const [swapTarget, setSwapTarget] =
+  useState(null);
+const [swapSaving, setSwapSaving] =
+  useState(false);
+
   const filteredFixtures = useMemo(() => {
   switch (fixtureFilter) {
     case "group":
@@ -539,25 +562,91 @@ const [fixtureFilter, setFixtureFilter] =
     status: "",
   });
 
-  // =======================================================
-// EDIT TOURNAMENT ICON
-// =======================================================
+  async function imageUrlToDataUrl(url) {
+  if (!url) return null;
 
-const [
-  editIconFile,
-  setEditIconFile,
-] = useState(null);
+  try {
+    const resolvedUrl = new URL(
+      String(url),
+      window.location.origin
+    ).href;
 
-const [
-  editIconPreview,
-  setEditIconPreview,
-] = useState("");
+    const response = await fetch(
+      resolvedUrl,
+      {
+        mode: "cors",
+        cache: "no-store",
+      }
+    );
 
-const [
-  uploadingEditIcon,
-  setUploadingEditIcon,
-] = useState(false);
+    if (!response.ok) {
+      throw new Error(
+        `Unable to load tournament logo (${response.status})`
+      );
+    }
 
+    const blob = await response.blob();
+
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        resolve(reader.result);
+      };
+
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  } catch (error) {
+    console.error(
+      "Tournament logo PDF error:",
+      error
+    );
+
+    return null;
+  }
+}
+
+async function getTournamentLogoDataUrl() {
+  let logoUrl =
+    tournament?.icon_url || "";
+
+  // If the selected tournament object does not contain icon_url,
+  // fetch the complete tournament record from the backend.
+  if (!logoUrl && tournament?.id) {
+    try {
+      const token =
+        localStorage.getItem("matcho_token");
+
+      const result = await apiRequest(
+        `/tournaments/${tournament.id}`,
+        {
+          method: "GET",
+          headers: token
+            ? {
+                Authorization:
+                  `Bearer ${token}`,
+              }
+            : undefined,
+        }
+      );
+
+      logoUrl =
+        result?.tournament?.icon_url || "";
+    } catch (error) {
+      console.error(
+        "Unable to fetch tournament logo URL:",
+        error
+      );
+    }
+  }
+
+  if (!logoUrl) {
+    return null;
+  }
+
+  return imageUrlToDataUrl(logoUrl);
+}
 
   // =======================================================
   // LOAD ORGANIZER TOURNAMENTS
@@ -881,8 +970,8 @@ async function openFixtureScoring(match) {
 
     // Open scoring for this exact fixture
     navigate(
-  `/score-update?fixtureId=${match.id}&tournamentId=${tournamentId}`
-);
+      `/score-update?fixtureId=${match.id}&tournamentId=${tournamentId}`
+    );
 
   } catch (error) {
     console.error(
@@ -902,6 +991,248 @@ async function openFixtureScoring(match) {
 
 function openMatchSummary(match) {
   setSelectedFixture(match);
+}
+
+function handleOpenScoring(match) {
+  if (match.status === "Upcoming") {
+    openReadyModal(match);
+    return;
+  }
+
+  openFixtureScoring(match);
+}
+
+function openReadyModal(match) {
+  setSelectedFixture(null);
+  setReadyFixture(match);
+  setReadySideA(false);
+  setReadySideB(false);
+  setSwapFromSide(null);
+  setSwapTarget(null);
+  setSwapModalOpen(false);
+  setReadyModalOpen(true);
+}
+
+function closeReadyModal() {
+  setReadyModalOpen(false);
+  setReadyFixture(null);
+  setReadySideA(false);
+  setReadySideB(false);
+  setSwapFromSide(null);
+  setSwapTarget(null);
+  setSwapModalOpen(false);
+}
+
+function getSwapCandidates(match) {
+  if (!match || !swapFromSide) {
+    return [];
+  }
+
+  const getSideId = (fixture, side) =>
+    isDoubles
+      ? (side === "A" ? fixture.team_a_id : fixture.team_b_id)
+      : (side === "A" ? fixture.player_a_id : fixture.player_b_id);
+
+  const samePair = (leftA, leftB, rightA, rightB) =>
+    leftA != null &&
+    leftB != null &&
+    ((String(leftA) === String(rightA) && String(leftB) === String(rightB)) ||
+      (String(leftA) === String(rightB) && String(leftB) === String(rightA)));
+
+  const existingPairings = fixtures.filter((fixture) =>
+    String(fixture.id) !== String(match.id)
+  );
+
+  const currentA = getSideId(match, "A");
+  const currentB = getSideId(match, "B");
+
+  return fixtures
+    .filter((fixture) => {
+      if (String(fixture.id) === String(match.id)) return false;
+      if (String(fixture.tournament_id) !== String(match.tournament_id)) return false;
+      if (fixture.status !== "Upcoming") return false;
+      if (fixture.stage !== match.stage) return false;
+
+      // Pool swaps stay inside the same pool.
+      if (
+        String(match.stage || "").toLowerCase() === "pool" &&
+        String(fixture.pool_name || "") !== String(match.pool_name || "")
+      ) {
+        return false;
+      }
+
+      return true;
+    })
+    .flatMap((fixture) => {
+      const results = [];
+      const candidateA = getSideId(fixture, "A");
+      const candidateB = getSideId(fixture, "B");
+
+      ([
+        ["A", candidateA, candidateB],
+        ["B", candidateB, candidateA],
+      ]).forEach(([side, candidateSelected, candidateOther]) => {
+        if (candidateSelected == null || candidateOther == null) return;
+
+        // The selected opponent cannot already be the other participant
+        // in the current fixture or the candidate fixture.
+        const duplicateInCurrentFixture =
+          String(candidateSelected) === String(currentA) ||
+          String(candidateSelected) === String(currentB);
+
+        const duplicateWithCurrentOther =
+          side === "A"
+            ? String(candidateOther) === String(currentA) ||
+              String(candidateOther) === String(currentB)
+            : false;
+
+        if (duplicateInCurrentFixture || duplicateWithCurrentOther) {
+          return;
+        }
+
+        // After swapping, the new pairings would be:
+        // currentOther vs candidateSelected
+        // candidateOther vs currentSelected
+        const currentSelected =
+          swapFromSide === "A" ? currentA : currentB;
+        const currentOther =
+          swapFromSide === "A" ? currentB : currentA;
+
+        if (currentSelected == null || currentOther == null) return;
+
+        const createsExistingPair = existingPairings.some((otherFixture) => {
+          if (String(otherFixture.id) === String(fixture.id)) return false;
+
+          const otherA = getSideId(otherFixture, "A");
+          const otherB = getSideId(otherFixture, "B");
+
+          return (
+            samePair(currentOther, candidateSelected, otherA, otherB) ||
+            samePair(candidateOther, currentSelected, otherA, otherB)
+          );
+        });
+
+        if (createsExistingPair) return;
+
+        results.push({
+          fixture,
+          side,
+          name:
+            isDoubles
+              ? (side === "A" ? fixture.team_a_name : fixture.team_b_name) || "TBD"
+              : (side === "A" ? fixture.player_a_name : fixture.player_b_name) || "TBD",
+          members:
+            isDoubles
+              ? getTeamMembers(candidateSelected)
+              : [],
+        });
+      });
+
+      return results;
+    });
+}
+
+function openSwapModal(side) {
+  if (!readyFixture) {
+    return;
+  }
+
+  setSwapFromSide(side);
+  setSwapTarget(null);
+  setSwapModalOpen(true);
+}
+
+async function confirmSwap() {
+  if (
+    !readyFixture ||
+    !swapFromSide ||
+    !swapTarget
+  ) {
+    return;
+  }
+
+  try {
+    setSwapSaving(true);
+    setFixtureError("");
+    setMessage("");
+
+    const token =
+      localStorage.getItem("matcho_token");
+
+    if (!token) {
+      throw new Error(
+        "Please login as an organizer."
+      );
+    }
+
+    const result =
+      await apiRequest(
+        "/fixtures/swap",
+        {
+          method: "POST",
+          headers: {
+            Authorization:
+              `Bearer ${token}`,
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            fixtureId:
+              readyFixture.id,
+            fixtureSide:
+              swapFromSide,
+            swapFixtureId:
+              swapTarget.fixture.id,
+            swapSide:
+              swapTarget.side,
+          }),
+        }
+      );
+
+    if (!result?.success) {
+      throw new Error(
+        result?.message ||
+          "Unable to swap opponents."
+      );
+    }
+
+    const refreshedFixtures =
+      await loadFixtures(tournamentId);
+
+    const refreshedFixture =
+      refreshedFixtures.find(
+        (fixture) =>
+          String(fixture.id) ===
+          String(readyFixture.id)
+      );
+
+    setSwapModalOpen(false);
+    setSwapTarget(null);
+    setReadySideA(false);
+    setReadySideB(false);
+
+    if (refreshedFixture) {
+      setReadyFixture(
+        refreshedFixture
+      );
+    }
+
+    setMessage(
+      "Opponents swapped successfully."
+    );
+  } catch (error) {
+    console.error(
+      "Swap Fixture Error:",
+      error
+    );
+
+    setFixtureError(
+      error.message ||
+        "Unable to swap opponents."
+    );
+  } finally {
+    setSwapSaving(false);
+  }
 }
 
 async function saveTeam(event) {
@@ -1186,9 +1517,6 @@ if (!Number.isInteger(playerAId) || !Number.isInteger(playerBId)) {
       tournamentId
     );
 
-    setMessage(
-      `${shuffledPlayers.length / 2} random pairs generated successfully.`
-    );
   } catch (error) {
     console.error(
       "Auto Generate Teams Error:",
@@ -1214,6 +1542,30 @@ if (!Number.isInteger(playerAId) || !Number.isInteger(playerBId)) {
         String(item.id) ===
         String(tournamentId)
     ) || null;
+
+    function getTeamMembers(teamId) {
+  if (!isDoubles || !teamId) {
+    return [];
+  }
+
+  const team = teams.find(
+    (item) => String(item.id) === String(teamId)
+  );
+
+  if (!team || !Array.isArray(team.players)) {
+    return [];
+  }
+
+  return team.players
+    .map(
+      (player) =>
+        player.full_name ||
+        player.name ||
+        player.participant_name ||
+        ""
+    )
+    .filter(Boolean);
+}
   // =======================================================
   // LOAD PARTICIPANTS
   // =======================================================
@@ -1387,11 +1739,14 @@ if (!Number.isInteger(playerAId) || !Number.isInteger(playerBId)) {
         }
       );
 
-      setFixtures(
+      const rows =
         Array.isArray(result?.fixtures)
           ? result.fixtures
-          : []
-      );
+          : [];
+
+      setFixtures(rows);
+
+      return rows;
     } catch (err) {
       console.error("Load fixtures error:", err);
       setFixtureError(
@@ -1607,7 +1962,11 @@ const poolCount =
     ? 2
     : 4;
 
-const matchesPerTeam = 3;
+const matchesPerTeam = !isWomen
+  ? 4
+  : largeWomensFormat
+    ? 4
+    : 3;
 const qualifiersPerPool = 2;
 
 const hasSuper8Format =
@@ -1839,9 +2198,7 @@ const minimumParticipants =
       }
 
       await loadFixtures(tournamentId);
-      setMessage(
-        result.message || "Fixtures generated successfully."
-      );
+      
       setActiveSection("fixtures");
     } catch (error) {
       console.error("Generate Fixtures Error:", error);
@@ -1989,50 +2346,66 @@ const minimumParticipants =
   // SHARE TOURNAMENT
   // =======================================================
 
- async function shareTournament() {
-  if (!tournament?.registrationCode) {
-    return;
-  }
+  async function shareTournament() {
 
-  const code = tournament.registrationCode;
-
-  const shareUrl =
-    `${window.location.origin}/join-tournament?code=${encodeURIComponent(
-      code
-    )}`;
-
-  const shareText =
-    `Join my ${tournament.name} tournament on Matcho.\n\nRegistration Code: ${code}`;
-
-  try {
-    if (navigator.share) {
-      await navigator.share({
-        title: tournament.name,
-        text: shareText,
-        url: shareUrl,
-      });
-
+    if (
+      !tournament?.registrationCode
+    ) {
       return;
     }
 
-    await navigator.clipboard.writeText(
-      `${shareText}\n\n${shareUrl}`
-    );
+    const code =
+      tournament.registrationCode;
 
-    setMessage(
-      "Tournament share link copied!"
-    );
-  } catch (error) {
-    if (error?.name === "AbortError") {
-      return;
+    const shareUrl =
+      `${window.location.origin}/join-tournament?code=${encodeURIComponent(
+        code
+      )}`;
+
+    const shareText =
+      `Join my ${tournament.name} tournament on Matcho.\n\nRegistration Code: ${code}\n\nJoin here: ${shareUrl}`;
+
+    try {
+
+      if (
+        navigator.share
+      ) {
+
+        await navigator.share({
+          title:
+            tournament.name,
+          text:
+            shareText,
+          url:
+            shareUrl,
+        });
+
+        return;
+      }
+
+      await navigator.clipboard.writeText(
+        shareText
+      );
+
+      setMessage(
+        "Tournament share link copied!"
+      );
+
+    } catch (error) {
+
+      if (
+        error?.name ===
+        "AbortError"
+      ) {
+        return;
+      }
+
+      console.error(
+        "Share tournament error:",
+        error
+      );
     }
-
-    console.error(
-      "Share tournament error:",
-      error
-    );
   }
-}
 
 
   // =======================================================
@@ -2085,98 +2458,14 @@ function openEditTournament() {
       "Registration Open",
   });
 
-  // Load existing tournament icon
-  setEditIconFile(null);
-
-  setEditIconPreview(
-    tournament.icon_url ||
-      ""
-  );
-
-  setEditError("");
+setEditError("");
 
   setIsEditingTournament(
     true
   );
 }
 
-function handleEditIconChange(event) {
-  const file =
-    event.target.files?.[0];
-
-  if (!file) {
-    return;
-  }
-
-  // Validate file type
-  if (
-    ![
-      "image/jpeg",
-      "image/png",
-    ].includes(file.type)
-  ) {
-    setEditError(
-      "Only JPG and PNG images are allowed."
-    );
-
-    event.target.value = "";
-    return;
-  }
-
-  // Validate file size
-  if (
-    file.size >
-    5 * 1024 * 1024
-  ) {
-    setEditError(
-      "Tournament icon must be less than 5MB."
-    );
-
-    event.target.value = "";
-    return;
-  }
-
-  // Revoke previous temporary preview
-  if (
-    editIconPreview &&
-    editIconPreview.startsWith("blob:")
-  ) {
-    URL.revokeObjectURL(
-      editIconPreview
-    );
-  }
-
-  const previewUrl =
-    URL.createObjectURL(file);
-
-  setEditIconFile(file);
-
-  setEditIconPreview(
-    previewUrl
-  );
-
-  setEditError("");
-
-  // Allow selecting the same file again
-  event.target.value = "";
-}
-
-function removeEditIcon() {
-  if (
-    editIconPreview &&
-    editIconPreview.startsWith("blob:")
-  ) {
-    URL.revokeObjectURL(
-      editIconPreview
-    );
-  }
-
-  setEditIconFile(null);
-  setEditIconPreview("");
-  setEditError("");
-}
-
-  // =======================================================
+// =======================================================
   // SAVE EDITED TOURNAMENT
   // =======================================================
 
@@ -2310,42 +2599,6 @@ function removeEditIcon() {
     return;
   }
 
-  // ==========================================
-  // UPLOAD NEW TOURNAMENT ICON
-  // ==========================================
-
-  let iconUrl =
-    editIconPreview || null;
-
-  if (editIconFile) {
-    try {
-      setUploadingEditIcon(
-        true
-      );
-
-      iconUrl =
-        await uploadTournamentIcon(
-          editIconFile
-        );
-    } catch (uploadError) {
-      console.error(
-        "Tournament icon upload error:",
-        uploadError
-      );
-
-      setEditError(
-        uploadError?.message ||
-          "Failed to upload tournament icon."
-      );
-
-      return;
-    } finally {
-      setUploadingEditIcon(
-        false
-      );
-    }
-  }
-
       if (!token) {
 
         setEditError(
@@ -2397,11 +2650,7 @@ function removeEditIcon() {
 
     status:
       editForm.status,
-
-    // IMPORTANT
-    icon_url:
-      iconUrl,
-  }),
+}),
           }
         );
 
@@ -2534,88 +2783,1807 @@ function removeEditIcon() {
     );
   }
 
-  function downloadParticipantsCSV() {
-  if (!participants.length) {
-    return;
+
+  // =======================================================
+  // TOURNAMENT PDF REPORT
+  // =======================================================
+
+  async function buildTournamentPdf() {
+    if (!tournament) {
+      throw new Error(
+        "Please select a tournament first."
+      );
+    }
+
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+    });
+
+    const pageWidth =
+      pdf.internal.pageSize.getWidth();
+
+    const pageHeight =
+      pdf.internal.pageSize.getHeight();
+
+    const margin = 18;
+
+    const contentWidth =
+      pageWidth - margin * 2;
+
+    let y = 18;
+
+    const addPageIfNeeded = (
+      height = 10
+    ) => {
+      if (
+        y + height >
+        pageHeight - 18
+      ) {
+        pdf.addPage();
+        y = 20;
+      }
+    };
+
+    // =======================================================
+    // MATCHO LOGO - TOP CENTER
+    // =======================================================
+
+    pdf.addImage(
+      matchoLogo,
+      "PNG",
+      pageWidth / 2 - 18,
+      y,
+      36,
+      18
+    );
+
+    y += 27;
+
+    // =======================================================
+    // REPORT TITLE
+    // =======================================================
+
+    pdf.setTextColor(
+      25,
+      25,
+      40
+    );
+
+    pdf.setFont(
+      "helvetica",
+      "bold"
+    );
+
+    pdf.setFontSize(20);
+
+    pdf.text(
+      "Teams & Pairs",
+      pageWidth / 2,
+      y,
+      {
+        align: "center",
+      }
+    );
+
+    y += 13;
+
+    // =======================================================
+    // TOURNAMENT/APT LOGO + TOURNAMENT NAME
+    // =======================================================
+
+    const tournamentLogo =
+      await getTournamentLogoDataUrl();
+
+    const logoSize = 24;
+
+    const nameX =
+      tournamentLogo
+        ? margin + logoSize + 8
+        : margin;
+
+    addPageIfNeeded(32);
+
+    if (tournamentLogo) {
+      const imageFormat =
+        String(tournamentLogo)
+          .toLowerCase()
+          .startsWith(
+            "data:image/jpeg"
+          )
+          ? "JPEG"
+          : "PNG";
+
+      pdf.addImage(
+        tournamentLogo,
+        imageFormat,
+        margin,
+        y - 4,
+        logoSize,
+        logoSize
+      );
+    }
+
+    pdf.setTextColor(
+      35,
+      35,
+      50
+    );
+
+    pdf.setFont(
+      "helvetica",
+      "bold"
+    );
+
+    pdf.setFontSize(14);
+
+    const tournamentName =
+      tournament?.name ||
+      "Tournament";
+
+    const titleLines =
+      pdf.splitTextToSize(
+        tournamentName,
+        contentWidth -
+          (nameX - margin)
+      );
+
+    pdf.text(
+      titleLines,
+      nameX,
+      y + 7
+    );
+
+    y += Math.max(
+      28,
+      titleLines.length * 6 + 14
+    );
+
+    // =======================================================
+    // TOTAL TEAMS
+    // =======================================================
+
+    addPageIfNeeded(25);
+
+    pdf.setFillColor(
+      246,
+      243,
+      255
+    );
+
+    pdf.roundedRect(
+      margin,
+      y - 5,
+      contentWidth,
+      18,
+      3,
+      3,
+      "F"
+    );
+
+    pdf.setFont(
+      "helvetica",
+      "bold"
+    );
+
+    pdf.setFontSize(11);
+
+    pdf.setTextColor(
+      99,
+      60,
+      255
+    );
+
+    pdf.text(
+      `Total Teams: ${teams.length}`,
+      margin + 5,
+      y + 6
+    );
+
+    y += 28;
+
+    // =======================================================
+    // TEAMS ONLY
+    // =======================================================
+
+    if (!teams.length) {
+      pdf.setFont(
+        "helvetica",
+        "normal"
+      );
+
+      pdf.setFontSize(11);
+
+      pdf.setTextColor(
+        80,
+        80,
+        95
+      );
+
+      pdf.text(
+        "No teams or pairs have been created yet.",
+        margin,
+        y
+      );
+    } else {
+      teams.forEach(
+        (team, index) => {
+          const teamPlayers =
+            Array.isArray(
+              team.players
+            )
+              ? team.players
+              : [];
+
+          const cardHeight =
+            Math.max(
+              34,
+              20 +
+                teamPlayers.length *
+                  10
+            );
+
+          addPageIfNeeded(
+            cardHeight + 8
+          );
+
+          pdf.setDrawColor(
+            226,
+            222,
+            242
+          );
+
+          pdf.setFillColor(
+            252,
+            251,
+            255
+          );
+
+          pdf.roundedRect(
+            margin,
+            y,
+            contentWidth,
+            cardHeight,
+            3,
+            3,
+            "FD"
+          );
+
+          pdf.setFont(
+            "helvetica",
+            "bold"
+          );
+
+          pdf.setFontSize(8);
+
+          pdf.setTextColor(
+            125,
+            118,
+            150
+          );
+
+          pdf.text(
+            `TEAM ${index + 1}`,
+            margin + 6,
+            y + 8
+          );
+
+          pdf.setFontSize(12);
+
+          pdf.setTextColor(
+            30,
+            30,
+            45
+          );
+
+          pdf.text(
+            team.team_name ||
+              `Team ${index + 1}`,
+            margin + 6,
+            y + 15
+          );
+
+          let playerY =
+            y + 25;
+
+          if (
+            !teamPlayers.length
+          ) {
+            pdf.setFont(
+              "helvetica",
+              "normal"
+            );
+
+            pdf.setFontSize(9.5);
+
+            pdf.setTextColor(
+              115,
+              115,
+              130
+            );
+
+            pdf.text(
+              "No players assigned.",
+              margin + 8,
+              playerY
+            );
+          } else {
+            teamPlayers.forEach(
+              (
+                player,
+                playerIndex
+              ) => {
+                const playerName =
+                  player.name ||
+                  `Player ${player.id}`;
+
+                pdf.setFillColor(
+                  238,
+                  233,
+                  255
+                );
+
+                pdf.circle(
+                  margin + 10,
+                  playerY - 1.5,
+                  3.5,
+                  "F"
+                );
+
+                pdf.setFont(
+                  "helvetica",
+                  "bold"
+                );
+
+                pdf.setFontSize(8);
+
+                pdf.setTextColor(
+                  99,
+                  60,
+                  255
+                );
+
+                pdf.text(
+                  String(
+                    playerIndex + 1
+                  ),
+                  margin + 8.5,
+                  playerY + 1
+                );
+
+                pdf.setFont(
+                  "helvetica",
+                  "normal"
+                );
+
+                pdf.setFontSize(10);
+
+                pdf.setTextColor(
+                  45,
+                  45,
+                  60
+                );
+
+                pdf.text(
+                  playerName,
+                  margin + 17,
+                  playerY + 1
+                );
+
+                playerY += 10;
+              }
+            );
+          }
+
+          y +=
+            cardHeight + 8;
+        }
+      );
+    }
+
+    // =======================================================
+    // FOOTER
+    // =======================================================
+
+    const totalPages =
+      pdf.getNumberOfPages();
+
+    for (
+      let page = 1;
+      page <= totalPages;
+      page += 1
+    ) {
+      pdf.setPage(page);
+
+      pdf.setDrawColor(
+        225,
+        225,
+        235
+      );
+
+      pdf.line(
+        margin,
+        pageHeight - 12,
+        pageWidth - margin,
+        pageHeight - 12
+      );
+
+      pdf.setFont(
+        "helvetica",
+        "normal"
+      );
+
+      pdf.setFontSize(7.5);
+
+      pdf.setTextColor(
+        130,
+        130,
+        145
+      );
+
+      pdf.text(
+        "MATCHO • Teams & Pairs",
+        margin,
+        pageHeight - 6
+      );
+
+      pdf.text(
+        `Page ${page} of ${totalPages}`,
+        pageWidth - margin,
+        pageHeight - 6,
+        {
+          align: "right",
+        }
+      );
+    }
+
+    return pdf;
   }
 
-  const headers = [
-    "#",
-    "Participant",
-    "Email",
-    "Phone",
-    "Gender",
-    "Flat Number",
-    "Transaction ID",
-    "Registered",
-  ];
+  function getTournamentPdfFileName() {
+    const safeName = (tournament?.name || "Matcho-Tournament")
+      .replace(/[^a-z0-9]+/gi, "-")
+      .replace(/^-+|-+$/g, "");
 
-  const escapeCSV = (value) => {
-    const text = String(value ?? "");
+    return `${safeName || "Matcho-Tournament"}-Teams-Pairs.pdf`;
+  }
 
-    return `"${text.replace(/"/g, '""')}"`;
-  };
-
-  const rows = participants.map(
-    (participant, index) => [
-      index + 1,
-      participant.participant_name ||
-        participant.name ||
-        "Unnamed Player",
-      participant.email || "-",
-      participant.phone || "-",
-      participant.gender || "-",
-      participant.c_flat_number || "-",
-      participant.transaction_id || "-",
-      formatRegistrationDate(
-        participant.registered_at
-      ),
-    ]
-  );
-
-  const csv = [
-    headers.map(escapeCSV).join(","),
-    ...rows.map((row) =>
-      row.map(escapeCSV).join(",")
-    ),
-  ].join("\n");
-
-  const blob = new Blob(
-    [csv],
-    {
-      type: "text/csv;charset=utf-8;",
+  async function downloadTournamentPdf() {
+    try {
+      const pdf =
+        await buildTournamentPdf();
+      pdf.save(getTournamentPdfFileName());
+      setMessage("Teams & Pairs PDF downloaded successfully.");
+    } catch (error) {
+      console.error("Teams & Pairs PDF download error:", error);
+      setTeamError(
+        error.message || "Unable to generate Teams & Pairs PDF."
+      );
     }
-  );
+  }
 
-  const url =
-    URL.createObjectURL(blob);
+  async function shareTournamentPdf() {
+    try {
+      const pdf = await buildTournamentPdf();
+      const blob = pdf.output("blob");
+      const file = new File(
+        [blob],
+        getTournamentPdfFileName(),
+        { type: "application/pdf" }
+      );
 
-  const link =
-    document.createElement("a");
+      if (
+        navigator.share &&
+        navigator.canShare &&
+        navigator.canShare({ files: [file] })
+      ) {
+        await navigator.share({
+          title: `${tournament?.name || "Tournament"} - Teams & Pairs`,
+          text: "Teams & Pairs PDF",
+          files: [file],
+        });
+        return;
+      }
 
-  link.href = url;
+      pdf.save(getTournamentPdfFileName());
+      setMessage(
+        "PDF downloaded. Direct file sharing is not supported by this browser."
+      );
+    } catch (error) {
+      if (error?.name === "AbortError") {
+        return;
+      }
 
-  const tournamentName =
-    tournament?.name ||
-    "tournament";
+      console.error("Teams & Pairs PDF share error:", error);
+      setTeamError(
+        error.message || "Unable to share Teams & Pairs PDF."
+      );
+    }
+  }
 
-  const safeName =
-    tournamentName
-      .replace(/[^a-z0-9]+/gi, "_")
-      .replace(/^_+|_+$/g, "");
 
-  link.download =
-    `${safeName}_participants.csv`;
+  // =======================================================
+  // FIXTURES PDF REPORT
+  // =======================================================
 
-  document.body.appendChild(link);
+  async function buildFixturesPdf() {
+    if (!tournament) {
+      throw new Error("Please select a tournament first.");
+    }
 
-  link.click();
+    if (!fixtures.length) {
+      throw new Error("No fixtures are available to export.");
+    }
 
-  document.body.removeChild(link);
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+    });
 
-  URL.revokeObjectURL(url);
-}
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 16;
+    const contentWidth = pageWidth - margin * 2;
+    let y = 18;
 
+    const addPageIfNeeded = (height = 10) => {
+      if (y + height > pageHeight - 18) {
+        pdf.addPage();
+        y = 18;
+      }
+    };
+
+    // =====================================================
+    // MATCHO LOGO
+    // =====================================================
+
+    pdf.addImage(
+      matchoLogo,
+      "PNG",
+      pageWidth / 2 - 18,
+      y,
+      36,
+      18
+    );
+
+    y += 27;
+
+    // =====================================================
+    // TITLE
+    // =====================================================
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(20);
+    pdf.setTextColor(25, 25, 40);
+
+    pdf.text(
+      "Fixtures",
+      pageWidth / 2,
+      y,
+      { align: "center" }
+    );
+
+    y += 13;
+
+    // =====================================================
+    // TOURNAMENT LOGO + NAME
+    // =====================================================
+
+    const tournamentLogo =
+      await getTournamentLogoDataUrl();
+
+    const logoSize = 24;
+    const nameX = tournamentLogo
+      ? margin + logoSize + 8
+      : margin;
+
+    addPageIfNeeded(32);
+
+    if (tournamentLogo) {
+      const imageFormat = String(tournamentLogo)
+        .toLowerCase()
+        .startsWith("data:image/jpeg")
+        ? "JPEG"
+        : "PNG";
+
+      pdf.addImage(
+        tournamentLogo,
+        imageFormat,
+        margin,
+        y - 4,
+        logoSize,
+        logoSize
+      );
+    }
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(14);
+    pdf.setTextColor(35, 35, 50);
+
+    const tournamentName =
+      tournament?.name || "Tournament";
+
+    const titleLines = pdf.splitTextToSize(
+      tournamentName,
+      contentWidth - (nameX - margin)
+    );
+
+    pdf.text(titleLines, nameX, y + 7);
+
+    y += Math.max(28, titleLines.length * 6 + 14);
+
+    // =====================================================
+    // SUMMARY
+    // =====================================================
+
+    addPageIfNeeded(25);
+
+    pdf.setFillColor(246, 243, 255);
+    pdf.roundedRect(
+      margin,
+      y - 5,
+      contentWidth,
+      18,
+      3,
+      3,
+      "F"
+    );
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(11);
+    pdf.setTextColor(99, 60, 255);
+
+    pdf.text(
+      `Total Fixtures: ${fixtures.length}`,
+      margin + 5,
+      y + 6
+    );
+
+    y += 28;
+
+    // =====================================================
+    // GROUP FIXTURES BY STAGE
+    // =====================================================
+
+    const stageOrder = [
+      "Pool",
+      "Super 8",
+      "Semi Final",
+      "Final",
+    ];
+
+    const stageMeta = {
+      Pool: {
+        eyebrow: "GROUP STAGE",
+        title: "Group Stage",
+      },
+      "Super 8": {
+        eyebrow: "KNOCKOUT STAGE",
+        title: "Super 8",
+      },
+      "Semi Final": {
+        eyebrow: "KNOCKOUT STAGE",
+        title: "Semi Finals",
+      },
+      Final: {
+        eyebrow: "CHAMPIONSHIP",
+        title: "Final",
+      },
+    };
+
+    const orderedStages = stageOrder
+      .map((stage) => ({
+        stage,
+        items: fixtures.filter(
+          (fixture) => fixture.stage === stage
+        ),
+      }))
+      .filter((group) => group.items.length > 0);
+
+    // Preserve any unexpected stage values at the end.
+    const knownStageSet = new Set(stageOrder);
+
+    const extraStages = fixtures
+      .map((fixture) => fixture.stage)
+      .filter(Boolean)
+      .filter((stage, index, list) =>
+        !knownStageSet.has(stage) &&
+        list.indexOf(stage) === index
+      );
+
+    extraStages.forEach((stage) => {
+      orderedStages.push({
+        stage,
+        items: fixtures.filter(
+          (fixture) => fixture.stage === stage
+        ),
+      });
+    });
+
+    orderedStages.forEach(({ stage, items }) => {
+      const meta =
+        stageMeta[stage] || {
+          eyebrow: "FIXTURES",
+          title: stage || "Fixtures",
+        };
+
+      addPageIfNeeded(28);
+
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(8);
+      pdf.setTextColor(125, 118, 150);
+
+      pdf.text(
+        meta.eyebrow,
+        margin,
+        y
+      );
+
+      y += 6;
+
+      pdf.setFontSize(15);
+      pdf.setTextColor(35, 35, 50);
+
+      pdf.text(
+        `${meta.title} (${items.length})`,
+        margin,
+        y
+      );
+
+      y += 10;
+
+      // Pool-group the pool stage.
+      const groups =
+        stage === "Pool"
+          ? poolNames
+              .map((poolName) => ({
+                label: poolName,
+                items: items.filter(
+                  (fixture) =>
+                    fixture.pool_name === poolName
+                ),
+              }))
+              .filter((group) => group.items.length > 0)
+          : [
+              {
+                label: meta.title,
+                items,
+              },
+            ];
+
+      groups.forEach((group) => {
+        if (stage === "Pool") {
+          addPageIfNeeded(14);
+
+          pdf.setFont("helvetica", "bold");
+          pdf.setFontSize(11);
+          pdf.setTextColor(99, 60, 255);
+
+          pdf.text(
+            group.label,
+            margin,
+            y
+          );
+
+          y += 8;
+        }
+
+        group.items.forEach((match) => {
+          const sideA = isDoubles
+            ? match.team_a_name || "TBD"
+            : match.player_a_name || "TBD";
+
+          const sideB = isDoubles
+            ? match.team_b_name || "TBD"
+            : match.player_b_name || "TBD";
+
+          const scoreA =
+            Number(match.player_a_score) || 0;
+
+          const scoreB =
+            Number(match.player_b_score) || 0;
+
+          const status =
+            match.status || "Upcoming";
+
+          const winnerId = isDoubles
+            ? match.winner_team_id
+            : match.winner_player_id;
+
+          const sideAId = isDoubles
+            ? match.team_a_id
+            : match.player_a_id;
+
+          const sideBId = isDoubles
+            ? match.team_b_id
+            : match.player_b_id;
+
+          const winnerName =
+            winnerId != null &&
+            String(winnerId) === String(sideAId)
+              ? sideA
+              : winnerId != null &&
+                  String(winnerId) === String(sideBId)
+                ? sideB
+                : "Not declared";
+
+          const matchLabel =
+            match.match_number != null
+              ? `Match ${match.match_number}`
+              : match.round || "Match";
+
+          const subLabel = [
+            match.pool_name,
+            match.round,
+          ]
+            .filter(Boolean)
+            .filter(
+              (value, index, array) =>
+                array.indexOf(value) === index
+            )
+            .join(" • ");
+
+          const cardHeight =
+            status === "Completed"
+              ? 42
+              : 35;
+
+          addPageIfNeeded(cardHeight + 7);
+
+          pdf.setDrawColor(226, 222, 242);
+          pdf.setFillColor(252, 251, 255);
+
+          pdf.roundedRect(
+            margin,
+            y,
+            contentWidth,
+            cardHeight,
+            3,
+            3,
+            "FD"
+          );
+
+          pdf.setFont("helvetica", "bold");
+          pdf.setFontSize(8);
+          pdf.setTextColor(125, 118, 150);
+
+          pdf.text(
+            matchLabel,
+            margin + 6,
+            y + 8
+          );
+
+          if (subLabel) {
+            pdf.setFont("helvetica", "normal");
+            pdf.setFontSize(8);
+            pdf.setTextColor(145, 140, 155);
+
+            pdf.text(
+              subLabel,
+              pageWidth - margin - 6,
+              y + 8,
+              { align: "right" }
+            );
+          }
+
+          pdf.setFont("helvetica", "bold");
+          pdf.setFontSize(10.5);
+          pdf.setTextColor(40, 40, 55);
+
+          pdf.text(
+            sideA,
+            margin + 8,
+            y + 18
+          );
+
+          pdf.text(
+            sideB,
+            margin + 8,
+            y + 27
+          );
+
+          pdf.setFontSize(11);
+          pdf.setTextColor(99, 60, 255);
+
+          pdf.text(
+            `${scoreA} - ${scoreB}`,
+            pageWidth - margin - 8,
+            y + 22,
+            { align: "right" }
+          );
+
+          pdf.setFont("helvetica", "normal");
+          pdf.setFontSize(8.5);
+          pdf.setTextColor(
+            status === "Completed"
+              ? 55
+              : status === "Live"
+                ? 99
+                : 115,
+            status === "Completed"
+              ? 120
+              : status === "Live"
+                ? 60
+                : 115,
+            status === "Completed"
+              ? 90
+              : status === "Live"
+                ? 255
+                : 130
+          );
+
+          pdf.text(
+            status,
+            pageWidth - margin - 8,
+            y + 31,
+            { align: "right" }
+          );
+
+          if (status === "Completed") {
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(8);
+            pdf.setTextColor(45, 45, 60);
+
+            pdf.text(
+              `Winner: ${winnerName}`,
+              margin + 8,
+              y + 36
+            );
+          }
+
+          y += cardHeight + 7;
+        });
+      });
+    });
+
+    // =====================================================
+    // FOOTER
+    // =====================================================
+
+    const totalPages = pdf.getNumberOfPages();
+
+    for (
+      let page = 1;
+      page <= totalPages;
+      page += 1
+    ) {
+      pdf.setPage(page);
+
+      pdf.setDrawColor(225, 225, 235);
+      pdf.line(
+        margin,
+        pageHeight - 12,
+        pageWidth - margin,
+        pageHeight - 12
+      );
+
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(7.5);
+      pdf.setTextColor(130, 130, 145);
+
+      pdf.text(
+        "MATCHO • Fixtures",
+        margin,
+        pageHeight - 6
+      );
+
+      pdf.text(
+        `Page ${page} of ${totalPages}`,
+        pageWidth - margin,
+        pageHeight - 6,
+        { align: "right" }
+      );
+    }
+
+    return pdf;
+  }
+
+  function getFixturesPdfFileName() {
+    const safeName = (
+      tournament?.name || "Matcho-Tournament"
+    )
+      .replace(/[^a-z0-9]+/gi, "-")
+      .replace(/^-+|-+$/g, "");
+
+    return `${
+      safeName || "Matcho-Tournament"
+    }-Fixtures.pdf`;
+  }
+
+  async function downloadFixturesPdf() {
+    try {
+      const pdf = await buildFixturesPdf();
+
+      pdf.save(
+        getFixturesPdfFileName()
+      );
+
+      setMessage(
+        "Fixtures PDF downloaded successfully."
+      );
+    } catch (error) {
+      console.error(
+        "Fixtures PDF download error:",
+        error
+      );
+
+      setFixtureError(
+        error.message ||
+          "Unable to generate fixtures PDF."
+      );
+    }
+  }
+
+  async function shareFixturesPdf() {
+    try {
+      const pdf = await buildFixturesPdf();
+      const blob = pdf.output("blob");
+
+      const file = new File(
+        [blob],
+        getFixturesPdfFileName(),
+        { type: "application/pdf" }
+      );
+
+      if (
+        navigator.share &&
+        navigator.canShare &&
+        navigator.canShare({ files: [file] })
+      ) {
+        await navigator.share({
+          title: `${
+            tournament?.name || "Tournament"
+          } - Fixtures`,
+          text: "Tournament Fixtures PDF",
+          files: [file],
+        });
+
+        return;
+      }
+
+      pdf.save(
+        getFixturesPdfFileName()
+      );
+
+      setMessage(
+        "Fixtures PDF downloaded. Direct file sharing is not supported by this browser."
+      );
+    } catch (error) {
+      if (error?.name === "AbortError") {
+        return;
+      }
+
+      console.error(
+        "Fixtures PDF share error:",
+        error
+      );
+
+      setFixtureError(
+        error.message ||
+          "Unable to share fixtures PDF."
+      );
+    }
+  }
+
+  // =======================================================
+  // STANDINGS PDF REPORT
+  // =======================================================
+
+  async function buildStandingsPdf() {
+    if (!tournament) {
+      throw new Error("Please select a tournament first.");
+    }
+
+    const hasPoolStandings =
+      poolNames.some(
+        (poolName) =>
+          Array.isArray(poolStandings[poolName]) &&
+          poolStandings[poolName].length > 0
+      );
+
+    const hasSuper8Standings =
+      hasSuper8Format &&
+      Array.isArray(super8Standings) &&
+      super8Standings.length > 0;
+
+    if (!hasPoolStandings && !hasSuper8Standings) {
+      throw new Error("Standings are not available yet.");
+    }
+
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+    });
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 16;
+    const contentWidth = pageWidth - margin * 2;
+    let y = 18;
+
+    const addPageIfNeeded = (height = 10) => {
+      if (y + height > pageHeight - 18) {
+        pdf.addPage();
+        y = 18;
+      }
+    };
+
+    // =====================================================
+    // MATCHO LOGO
+    // =====================================================
+
+    pdf.addImage(
+      matchoLogo,
+      "PNG",
+      pageWidth / 2 - 18,
+      y,
+      36,
+      18
+    );
+
+    y += 27;
+
+    // =====================================================
+    // TITLE
+    // =====================================================
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(20);
+    pdf.setTextColor(25, 25, 40);
+
+    pdf.text(
+      "Standings",
+      pageWidth / 2,
+      y,
+      { align: "center" }
+    );
+
+    y += 13;
+
+    // =====================================================
+    // TOURNAMENT LOGO + NAME
+    // =====================================================
+
+    const tournamentLogo =
+      await getTournamentLogoDataUrl();
+
+    const logoSize = 24;
+    const nameX = tournamentLogo
+      ? margin + logoSize + 8
+      : margin;
+
+    addPageIfNeeded(32);
+
+    if (tournamentLogo) {
+      const imageFormat =
+        String(tournamentLogo)
+          .toLowerCase()
+          .startsWith("data:image/jpeg")
+          ? "JPEG"
+          : "PNG";
+
+      pdf.addImage(
+        tournamentLogo,
+        imageFormat,
+        margin,
+        y - 4,
+        logoSize,
+        logoSize
+      );
+    }
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(14);
+    pdf.setTextColor(35, 35, 50);
+
+    const tournamentName =
+      tournament?.name || "Tournament";
+
+    const titleLines = pdf.splitTextToSize(
+      tournamentName,
+      contentWidth - (nameX - margin)
+    );
+
+    pdf.text(titleLines, nameX, y + 7);
+
+    y += Math.max(28, titleLines.length * 6 + 14);
+
+    // =====================================================
+    // SUMMARY
+    // =====================================================
+
+    const totalTables =
+      poolNames.filter(
+        (poolName) =>
+          Array.isArray(poolStandings[poolName]) &&
+          poolStandings[poolName].length > 0
+      ).length +
+      (hasSuper8Standings ? 1 : 0);
+
+    addPageIfNeeded(25);
+
+    pdf.setFillColor(246, 243, 255);
+    pdf.roundedRect(
+      margin,
+      y - 5,
+      contentWidth,
+      18,
+      3,
+      3,
+      "F"
+    );
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(11);
+    pdf.setTextColor(99, 60, 255);
+
+    pdf.text(
+      `Points Tables: ${totalTables}`,
+      margin + 5,
+      y + 6
+    );
+
+    y += 28;
+
+    // =====================================================
+    // RENDER STANDINGS TABLE
+    // =====================================================
+
+    const renderTable = (title, rows) => {
+      addPageIfNeeded(45);
+
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(14);
+      pdf.setTextColor(35, 35, 50);
+      pdf.text(title, margin, y);
+
+      y += 8;
+
+      const colX = {
+        rank: margin + 2,
+        name: margin + 16,
+        played: pageWidth - 73,
+        won: pageWidth - 58,
+        lost: pageWidth - 45,
+        points: pageWidth - 31,
+        diff: pageWidth - 15,
+      };
+
+      pdf.setFillColor(246, 243, 255);
+      pdf.roundedRect(
+        margin,
+        y - 4,
+        contentWidth,
+        9,
+        2,
+        2,
+        "F"
+      );
+
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(7.5);
+      pdf.setTextColor(110, 105, 130);
+
+      pdf.text("#", colX.rank, y + 2);
+      pdf.text("PLAYER / TEAM", colX.name, y + 2);
+      pdf.text("P", colX.played, y + 2, { align: "center" });
+      pdf.text("W", colX.won, y + 2, { align: "center" });
+      pdf.text("L", colX.lost, y + 2, { align: "center" });
+      pdf.text("PTS", colX.points, y + 2, { align: "center" });
+      pdf.text("DIFF", colX.diff, y + 2, { align: "center" });
+
+      y += 10;
+
+      rows.forEach((row, index) => {
+        addPageIfNeeded(10);
+
+        if (index % 2 === 0) {
+          pdf.setFillColor(252, 251, 255);
+          pdf.rect(
+            margin,
+            y - 5,
+            contentWidth,
+            9,
+            "F"
+          );
+        }
+
+        pdf.setFont("helvetica", "bold");
+        pdf.setFontSize(8.5);
+        pdf.setTextColor(
+          index < 2 ? 99 : 70,
+          index < 2 ? 60 : 70,
+          index < 2 ? 255 : 80
+        );
+        pdf.text(
+          String(index + 1),
+          colX.rank,
+          y + 1
+        );
+
+        pdf.setFont("helvetica", index < 2 ? "bold" : "normal");
+        pdf.setFontSize(9);
+        pdf.setTextColor(45, 45, 60);
+
+        const name = String(row.name || "-");
+        const nameLines = pdf.splitTextToSize(
+          name,
+          colX.played - colX.name - 5
+        );
+
+        pdf.text(
+          nameLines.slice(0, 2),
+          colX.name,
+          y + 1
+        );
+
+        pdf.text(
+          String(row.played ?? 0),
+          colX.played,
+          y + 1,
+          { align: "center" }
+        );
+        pdf.text(
+          String(row.won ?? 0),
+          colX.won,
+          y + 1,
+          { align: "center" }
+        );
+        pdf.text(
+          String(row.lost ?? 0),
+          colX.lost,
+          y + 1,
+          { align: "center" }
+        );
+
+        pdf.setFont("helvetica", "bold");
+        pdf.setTextColor(99, 60, 255);
+        pdf.text(
+          String(row.points ?? 0),
+          colX.points,
+          y + 1,
+          { align: "center" }
+        );
+
+        const diff = Number(row.difference) || 0;
+        pdf.setFont("helvetica", "normal");
+        pdf.setTextColor(
+          diff > 0 ? 35 : diff < 0 ? 190 : 80,
+          diff > 0 ? 130 : diff < 0 ? 60 : 80,
+          diff > 0 ? 80 : diff < 0 ? 60 : 80
+        );
+        pdf.text(
+          `${diff > 0 ? "+" : ""}${diff}`,
+          colX.diff,
+          y + 1,
+          { align: "center" }
+        );
+
+        y += 9;
+      });
+
+      y += 8;
+    };
+
+    poolNames.forEach((poolName) => {
+      const rows = poolStandings[poolName] || [];
+      if (rows.length > 0) {
+        renderTable(`${poolName} Points Table`, rows);
+      }
+    });
+
+    if (hasSuper8Standings) {
+      renderTable("Super 8 Points Table", super8Standings);
+    }
+
+    // =====================================================
+    // FOOTER
+    // =====================================================
+
+    const totalPages = pdf.getNumberOfPages();
+
+    for (let page = 1; page <= totalPages; page += 1) {
+      pdf.setPage(page);
+
+      pdf.setDrawColor(225, 225, 235);
+      pdf.line(
+        margin,
+        pageHeight - 12,
+        pageWidth - margin,
+        pageHeight - 12
+      );
+
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(7.5);
+      pdf.setTextColor(130, 130, 145);
+
+      pdf.text(
+        "MATCHO • Standings",
+        margin,
+        pageHeight - 6
+      );
+
+      pdf.text(
+        `Page ${page} of ${totalPages}`,
+        pageWidth - margin,
+        pageHeight - 6,
+        { align: "right" }
+      );
+    }
+
+    return pdf;
+  }
+
+  function getStandingsPdfFileName() {
+    const safeName = (
+      tournament?.name || "Matcho-Tournament"
+    )
+      .replace(/[^a-z0-9]+/gi, "-")
+      .replace(/^-+|-+$/g, "");
+
+    return `${safeName || "Matcho-Tournament"}-Standings.pdf`;
+  }
+
+  async function downloadStandingsPdf() {
+    try {
+      const pdf = await buildStandingsPdf();
+
+      pdf.save(
+        getStandingsPdfFileName()
+      );
+
+      setMessage(
+        "Standings PDF downloaded successfully."
+      );
+    } catch (error) {
+      console.error(
+        "Standings PDF download error:",
+        error
+      );
+
+      setMessage(
+        error.message ||
+          "Unable to generate standings PDF."
+      );
+    }
+  }
+
+  async function shareStandingsPdf() {
+    try {
+      const pdf = await buildStandingsPdf();
+      const blob = pdf.output("blob");
+
+      const file = new File(
+        [blob],
+        getStandingsPdfFileName(),
+        { type: "application/pdf" }
+      );
+
+      if (
+        navigator.share &&
+        navigator.canShare &&
+        navigator.canShare({ files: [file] })
+      ) {
+        await navigator.share({
+          title: `${
+            tournament?.name || "Tournament"
+          } - Standings`,
+          text: "Tournament Standings PDF",
+          files: [file],
+        });
+
+        return;
+      }
+
+      pdf.save(
+        getStandingsPdfFileName()
+      );
+
+      setMessage(
+        "Standings PDF downloaded. Direct file sharing is not supported by this browser."
+      );
+    } catch (error) {
+      if (error?.name === "AbortError") {
+        return;
+      }
+
+      console.error(
+        "Standings PDF share error:",
+        error
+      );
+
+      setMessage(
+        error.message ||
+          "Unable to share standings PDF."
+      );
+    }
+  }
+
+
+  // =======================================================
+  // PARTICIPANTS PDF REPORT
+  // =======================================================
+
+  async function buildParticipantsPdf() {
+    if (!tournament) {
+      throw new Error("Please select a tournament first.");
+    }
+
+    if (!participants.length) {
+      throw new Error("No participants are available to export.");
+    }
+
+    // Landscape is used here because the participant report
+    // contains several columns and must not overflow the page.
+    const pdf = new jsPDF({
+      orientation: "landscape",
+      unit: "mm",
+      format: "a4",
+    });
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 10;
+    const contentWidth = pageWidth - margin * 2;
+    let y = 16;
+
+    const addPageIfNeeded = (height = 10) => {
+      if (y + height > pageHeight - 18) {
+        pdf.addPage();
+        y = 16;
+      }
+    };
+
+    // Matcho logo
+    pdf.addImage(
+      matchoLogo,
+      "PNG",
+      pageWidth / 2 - 18,
+      y,
+      36,
+      18
+    );
+
+    y += 26;
+
+    // Title
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(19);
+    pdf.setTextColor(25, 25, 40);
+    pdf.text(
+      "Registered Participants",
+      pageWidth / 2,
+      y,
+      { align: "center" }
+    );
+
+    y += 11;
+
+    // APT / tournament logo + tournament name
+    const tournamentLogo = await getTournamentLogoDataUrl();
+    const logoSize = 22;
+    const nameX = tournamentLogo ? margin + logoSize + 7 : margin;
+
+    addPageIfNeeded(30);
+
+    if (tournamentLogo) {
+      const imageFormat = String(tournamentLogo)
+        .toLowerCase()
+        .startsWith("data:image/jpeg")
+        ? "JPEG"
+        : "PNG";
+
+      pdf.addImage(
+        tournamentLogo,
+        imageFormat,
+        margin,
+        y - 5,
+        logoSize,
+        logoSize
+      );
+    }
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(13.5);
+    pdf.setTextColor(35, 35, 50);
+
+    const tournamentName = tournament.name || "Tournament";
+    const titleLines = pdf.splitTextToSize(
+      tournamentName,
+      contentWidth - (nameX - margin)
+    );
+
+    pdf.text(titleLines, nameX, y + 7);
+    y += Math.max(25, titleLines.length * 6 + 12);
+
+    // Summary
+    pdf.setFillColor(246, 243, 255);
+    pdf.roundedRect(margin, y, contentWidth, 18, 3, 3, "F");
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(10.5);
+    pdf.setTextColor(99, 60, 255);
+    pdf.text(
+      `Participants: ${participants.length} / ${tournament.max_players || "-"}`,
+      margin + 5,
+      y + 7
+    );
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(8.5);
+    pdf.setTextColor(100, 95, 120);
+    pdf.text(
+      `Generated: ${new Date().toLocaleString("en-IN")}`,
+      margin + 5,
+      y + 13
+    );
+    y += 27;
+
+    // Column widths are explicitly sized so their total is exactly
+    // the available page width. This prevents Transaction ID text
+    // from being drawn outside the page.
+    const cols = [
+      { label: "#", x: margin, width: 8 },
+      { label: "Participant", x: margin + 8, width: 40 },
+      { label: "Email", x: margin + 48, width: 74 },
+      { label: "Phone", x: margin + 122, width: 28 },
+      { label: "Gender", x: margin + 150, width: 24 },
+      { label: "Flat", x: margin + 174, width: 20 },
+      { label: "Transaction ID", x: margin + 194, width: 50 },
+      { label: "Registered", x: margin + 244, width: 33 },
+    ];
+
+    const drawTableHeader = () => {
+      pdf.setFillColor(99, 60, 255);
+      pdf.roundedRect(margin, y, contentWidth, 10, 2, 2, "F");
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(7.2);
+      pdf.setTextColor(255, 255, 255);
+
+      cols.forEach((col) => {
+        pdf.text(col.label, col.x + 2, y + 6.5);
+      });
+
+      y += 13;
+    };
+
+    drawTableHeader();
+
+    participants.forEach((participant, index) => {
+      const participantName =
+        participant.participant_name ||
+        participant.name ||
+        "Unnamed Player";
+      const email = participant.email || "-";
+      const phone = participant.phone || "-";
+      const gender = participant.gender || "-";
+      const flat = participant.c_flat_number || "-";
+      const transaction = participant.transaction_id || "-";
+      const registered = formatRegistrationDate(
+        participant.registered_at
+      );
+
+      const nameLines = pdf.splitTextToSize(
+        String(participantName),
+        cols[1].width - 4
+      );
+      const emailLines = pdf.splitTextToSize(
+        String(email),
+        cols[2].width - 4
+      );
+      const transactionLines = pdf.splitTextToSize(
+        String(transaction),
+        cols[6].width - 4
+      );
+      const registeredLines = pdf.splitTextToSize(
+        String(registered),
+        cols[7].width - 4
+      );
+
+      const rowLines = Math.max(
+        nameLines.length,
+        emailLines.length,
+        transactionLines.length,
+        registeredLines.length,
+        1
+      );
+      const rowHeight = Math.max(13, rowLines * 4 + 5);
+
+      if (y + rowHeight > pageHeight - 18) {
+        pdf.addPage();
+        y = 16;
+        drawTableHeader();
+      }
+
+      pdf.setFillColor(
+        index % 2 === 0 ? 252 : 247,
+        index % 2 === 0 ? 251 : 249,
+        255
+      );
+      pdf.roundedRect(
+        margin,
+        y,
+        contentWidth,
+        rowHeight,
+        1.5,
+        1.5,
+        "F"
+      );
+
+      pdf.setDrawColor(230, 227, 238);
+      pdf.roundedRect(
+        margin,
+        y,
+        contentWidth,
+        rowHeight,
+        1.5,
+        1.5,
+        "S"
+      );
+
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(7.2);
+      pdf.setTextColor(45, 45, 60);
+      pdf.text(String(index + 1), cols[0].x + 2, y + 7);
+
+      pdf.setFont("helvetica", "bold");
+      pdf.text(nameLines, cols[1].x + 2, y + 6);
+
+      pdf.setFont("helvetica", "normal");
+      pdf.text(emailLines, cols[2].x + 2, y + 6);
+      pdf.text(String(phone), cols[3].x + 2, y + 7);
+      pdf.text(String(gender), cols[4].x + 2, y + 7);
+      pdf.text(String(flat), cols[5].x + 2, y + 7);
+      pdf.text(transactionLines, cols[6].x + 2, y + 6);
+      pdf.text(registeredLines, cols[7].x + 2, y + 6);
+
+      y += rowHeight + 3;
+    });
+
+    const totalPages = pdf.getNumberOfPages();
+    for (let page = 1; page <= totalPages; page += 1) {
+      pdf.setPage(page);
+      pdf.setDrawColor(225, 225, 235);
+      pdf.line(
+        margin,
+        pageHeight - 12,
+        pageWidth - margin,
+        pageHeight - 12
+      );
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(7.5);
+      pdf.setTextColor(130, 130, 145);
+      pdf.text(
+        "MATCHO • Registered Participants",
+        margin,
+        pageHeight - 6
+      );
+      pdf.text(
+        `Page ${page} of ${totalPages}`,
+        pageWidth - margin,
+        pageHeight - 6,
+        { align: "right" }
+      );
+    }
+
+    return pdf;
+  }
+
+  async function downloadParticipantsPdf() {
+    try {
+      const pdf = await buildParticipantsPdf();
+      const safeName = (tournament?.name || "Matcho-Tournament")
+        .replace(/[^a-z0-9]+/gi, "-")
+        .replace(/^-+|-+$/g, "");
+      pdf.save(`${safeName || "Matcho-Tournament"}-Participants.pdf`);
+    } catch (error) {
+      console.error("Participants PDF download error:", error);
+      setParticipantError(
+        error.message || "Unable to generate participants PDF."
+      );
+    }
+  }
 
   // =======================================================
   // UI
@@ -3020,41 +4988,15 @@ function removeEditIcon() {
 
   </div>
 
-  <div className="tm-participant-actions">
-
-   <div className="tm-participant-actions">
-
-  <span className="tm-count-badge">
-    {participants.length}
-    {" / "}
-    {tournament.max_players || "-"}
-  </span>
-
-  <button
-    type="button"
-    className="tm-download-btn"
-    onClick={downloadParticipantsCSV}
-    disabled={participants.length === 0}
-  >
-    <Download size={15} />
-    <span>Download</span>
-  </button>
-
-</div>
+  <div className="tm-overview-actions">
 
     <button
       type="button"
-      className="tm-download-btn"
-      onClick={downloadParticipantsCSV}
-      disabled={participants.length === 0}
-      title={
-        participants.length === 0
-          ? "No participants to download"
-          : "Download participant list"
-      }
+      className="tm-outline-btn"
+      onClick={openEditTournament}
     >
-      <Download size={15} />
-      <span>Download</span>
+      <Pencil size={14} />
+      Edit Tournament
     </button>
 
   </div>
@@ -3273,18 +5215,37 @@ function removeEditIcon() {
                   </div>
 
 
-                  <span className="tm-count-badge">
+                  <div className="tm-participant-actions">
 
-                    {participants.length}
+                    <span className="tm-count-badge">
 
-                    {" / "}
+                      {participants.length}
 
-                    {
-                      tournament.max_players ||
-                      "-"
-                    }
+                      {" / "}
 
-                  </span>
+                      {
+                        tournament.max_players ||
+                        "-"
+                      }
+
+                    </span>
+
+                    <button
+                      type="button"
+                      className="tm-download-btn"
+                      onClick={downloadParticipantsPdf}
+                      disabled={participants.length === 0}
+                      title={
+                        participants.length === 0
+                          ? "No participants to download"
+                          : "Download participant PDF"
+                      }
+                    >
+                      <Download size={15} />
+                      <span>Download PDF</span>
+                    </button>
+
+                  </div>
 
                 </div>
 
@@ -3476,6 +5437,24 @@ function removeEditIcon() {
                 </div>
 
            <div className="tm-team-header-actions">
+
+  <button
+    type="button"
+    className="tm-pdf-btn"
+    onClick={downloadTournamentPdf}
+  >
+    <FileDown size={16} />
+    Download PDF
+  </button>
+
+  <button
+    type="button"
+    className="tm-pdf-share-btn"
+    onClick={shareTournamentPdf}
+  >
+    <Share2 size={16} />
+    Share PDF
+  </button>
 
   <button
     type="button"
@@ -3774,6 +5753,39 @@ function removeEditIcon() {
                     </div>
 
                   </div>
+
+                  <div className="tm-fixture-pdf-actions">
+                    <button
+                      type="button"
+                      className="tm-pdf-btn"
+                      onClick={downloadFixturesPdf}
+                      disabled={fixtures.length === 0}
+                      title={
+                        fixtures.length === 0
+                          ? "No fixtures to download"
+                          : "Download fixtures PDF"
+                      }
+                    >
+                      <FileDown size={16} />
+                      Download PDF
+                    </button>
+
+                    <button
+                      type="button"
+                      className="tm-pdf-share-btn"
+                      onClick={shareFixturesPdf}
+                      disabled={fixtures.length === 0}
+                      title={
+                        fixtures.length === 0
+                          ? "No fixtures to share"
+                          : "Share fixtures PDF"
+                      }
+                    >
+                      <Share2 size={16} />
+                      Share PDF
+                    </button>
+                  </div>
+
                 </div>
 
                 {loadingFixtures ? (
@@ -3966,6 +5978,14 @@ function removeEditIcon() {
                                       ? match.team_b_name
                                       : match.player_b_name;
 
+                                      const sideAMembers = isDoubles
+  ? getTeamMembers(match.team_a_id)
+  : [];
+
+const sideBMembers = isDoubles
+  ? getTeamMembers(match.team_b_id)
+  : [];
+
                                     const winnerId = isDoubles
                                       ? match.winner_team_id
                                       : match.winner_player_id;
@@ -4012,50 +6032,66 @@ function removeEditIcon() {
 
                        <div className="tm-matchup">
 
-                        {/* TEAM A */}
-                        <div className="tm-side tm-side-left">
+  {/* TEAM A */}
+  <div className="tm-side tm-side-left">
 
-                          <div className="tm-team-score-row">
+    <div className="tm-team-name">
+      {sideA}
+    </div>
 
-                            <strong>
-                              {sideA}
-                            </strong>
+    {isDoubles &&
+      sideAMembers.length > 0 && (
+        <div className="tm-team-members">
+          {sideAMembers.map((member, index) => (
+            <span key={`${member}-${index}`}>
+              {member}
+            </span>
+          ))}
+        </div>
+      )}
 
-                            <span className="tm-side-score">
-                              {Number(
-                                match.player_a_score
-                              ) || 0}
-                            </span>
+  </div>
 
-                          </div>
 
-                        </div>
+  {/* CENTER SCORE */}
+  <div className="tm-center-score">
 
-                        {/* VS */}
-                        <span className="tm-vs">
-                          VS
-                        </span>
+    <span className="tm-center-score-number">
+      {Number(match.player_a_score) || 0}
+    </span>
 
-                        {/* TEAM B */}
-                        <div className="tm-side tm-side-right">
+    <span className="tm-center-vs">
+      VS
+    </span>
 
-                          <div className="tm-team-score-row">
+    <span className="tm-center-score-number">
+      {Number(match.player_b_score) || 0}
+    </span>
 
-                            <span className="tm-side-score">
-                              {Number(
-                                match.player_b_score
-                              ) || 0}
-                            </span>
+  </div>
 
-                            <strong>
-                              {sideB}
-                            </strong>
 
-                          </div>
+  {/* TEAM B */}
+  <div className="tm-side tm-side-right">
 
-                        </div>
+    <div className="tm-team-name">
+      {sideB}
+    </div>
 
-                      </div>
+    {isDoubles &&
+      sideBMembers.length > 0 && (
+        <div className="tm-team-members tm-team-members-right">
+          {sideBMembers.map((member, index) => (
+            <span key={`${member}-${index}`}>
+              {member}
+            </span>
+          ))}
+        </div>
+      )}
+
+  </div>
+
+</div>
 
 <div className="tm-fixture-bottom">
 
@@ -4087,7 +6123,7 @@ function removeEditIcon() {
                                                 className="tm-score-match-btn"
                                                 onClick={(event) => {
                                                   event.stopPropagation();
-                                                  openFixtureScoring(
+                                                  handleOpenScoring(
                                                     match
                                                   );
                                                 }}
@@ -4104,28 +6140,64 @@ function removeEditIcon() {
                                           </div>
                                         </div>
 
-                                        {match.status ===
-                                          "Completed" && (
-                                          <div className="tm-fixture-result">
+                                       {match.status === "Completed" && (
+  <div className="tm-fixture-result">
 
-                                            <span className="tm-fixture-scoreline">
-                                              Final:{" "}
-                                              {Number(
-                                                match.player_a_score
-                                              ) || 0}
-                                              {" - "}
-                                              {Number(
-                                                match.player_b_score
-                                              ) || 0}
-                                            </span>
+    <div className="tm-fixture-result-left">
+      <span className="tm-fixture-scoreline">
+        Final:{" "}
+        {Number(match.player_a_score) || 0}
+        {" - "}
+        {Number(match.player_b_score) || 0}
+      </span>
 
-                                            <strong>
-                                              Winner:{" "}
-                                              {winnerName}
-                                            </strong>
+      {(match.stage === "Semi Final" ||
+        match.stage === "Final") &&
+        Array.isArray(match.game_scores) &&
+        match.game_scores.length > 0 && (
+          <div className="tm-game-scores">
+            {match.game_scores.map((game) => (
+              <span
+                key={game.game}
+                className="tm-game-score"
+              >
+                G{game.game}{" "}
+                <strong>
+                  {game.a}–{game.b}
+                </strong>
+              </span>
+            ))}
+          </div>
+        )}
 
-                                          </div>
-                                        )}
+      {(match.stage === "Semi Final" ||
+        match.stage === "Final") &&
+        Array.isArray(match.game_scores) &&
+        match.game_scores.length > 0 && (
+          <div className="tm-set-summary">
+            Sets:{" "}
+            {
+              match.game_scores.filter(
+                (game) => Number(game.a) > Number(game.b)
+              ).length
+            }
+            –
+            {
+              match.game_scores.filter(
+                (game) => Number(game.b) > Number(game.a)
+              ).length
+            }
+          </div>
+        )}
+    </div>
+
+    <strong>
+      Winner:{" "}
+      {winnerName}
+    </strong>
+
+  </div>
+)}
 
                                       </div>
                                     );
@@ -4262,10 +6334,50 @@ function removeEditIcon() {
 
               <>
                 <div className="tm-standings-header">
-                  <h2>Qualification Standings</h2>
-                  <p>
-                    Current standings based on completed fixtures.
-                  </p>
+                  <div>
+                    <h2>Qualification Standings</h2>
+                    <p>
+                      Current standings based on completed fixtures.
+                    </p>
+                  </div>
+
+                  <div className="tm-standings-pdf-actions">
+                    <button
+                      type="button"
+                      className="tm-pdf-btn"
+                      onClick={downloadStandingsPdf}
+                      disabled={
+                        !poolNames.some(
+                          (poolName) =>
+                            Array.isArray(poolStandings[poolName]) &&
+                            poolStandings[poolName].length > 0
+                        ) &&
+                        !(hasSuper8Format && super8Standings.length > 0)
+                      }
+                      title="Download standings PDF"
+                    >
+                      <FileDown size={16} />
+                      Download PDF
+                    </button>
+
+                    <button
+                      type="button"
+                      className="tm-pdf-share-btn"
+                      onClick={shareStandingsPdf}
+                      disabled={
+                        !poolNames.some(
+                          (poolName) =>
+                            Array.isArray(poolStandings[poolName]) &&
+                            poolStandings[poolName].length > 0
+                        ) &&
+                        !(hasSuper8Format && super8Standings.length > 0)
+                      }
+                      title="Share standings PDF"
+                    >
+                      <Share2 size={16} />
+                      Share PDF
+                    </button>
+                  </div>
                 </div>
 
                 {poolNames.length === 0 ? (
@@ -4434,7 +6546,7 @@ function removeEditIcon() {
                   onClick={() => {
                     const match = selectedFixture;
                     setSelectedFixture(null);
-                    openFixtureScoring(match);
+                    handleOpenScoring(match);
                   }}
                 >
                   Open Scoring
@@ -4447,6 +6559,371 @@ function removeEditIcon() {
                 onClick={() => setSelectedFixture(null)}
               >
                 Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===================================================
+          READY TO START MODAL
+      =================================================== */}
+
+      {readyModalOpen && readyFixture && (
+        <div
+          className="tm-modal-overlay"
+          onClick={closeReadyModal}
+        >
+          <div
+            className="tm-match-summary-modal tm-ready-start-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="ready-match-title"
+            onClick={(event) =>
+              event.stopPropagation()
+            }
+          >
+            <div className="tm-summary-header">
+              <div>
+                <span className="tm-summary-label">
+                  {readyFixture.pool_name ||
+                    readyFixture.stage ||
+                    "Match"}
+                </span>
+
+                <h2 id="ready-match-title">
+                  Ready to Start?
+                </h2>
+
+                <p>
+                  {readyFixture.round ||
+                    `Match ${readyFixture.match_number}`}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                className="tm-summary-close"
+                onClick={closeReadyModal}
+                aria-label="Close ready dialog"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="tm-ready-note">
+              Confirm that both sides are ready before starting.
+              Need a change? Swap an opponent with another upcoming
+              fixture in the same stage.
+            </div>
+
+            <div className="tm-ready-teams">
+              {["A", "B"].map((side) => {
+                const isSideA = side === "A";
+                const teamName = isDoubles
+                  ? (isSideA
+                      ? readyFixture.team_a_name
+                      : readyFixture.team_b_name) || "TBD"
+                  : (isSideA
+                      ? readyFixture.player_a_name
+                      : readyFixture.player_b_name) || "TBD";
+
+                const members = isDoubles
+                  ? getTeamMembers(
+                      isSideA
+                        ? readyFixture.team_a_id
+                        : readyFixture.team_b_id
+                    )
+                  : [];
+
+                const isReady = isSideA
+                  ? readySideA
+                  : readySideB;
+
+                return (
+                  <div
+                    key={side}
+                    className={`tm-ready-team ${
+                      isReady
+                        ? "confirmed"
+                        : ""
+                    }`}
+                  >
+                    <div className="tm-ready-team-top">
+                      <span>
+                        {isSideA
+                          ? "SIDE A"
+                          : "SIDE B"}
+                      </span>
+
+                      <button
+                        type="button"
+                        className="tm-ready-swap-btn"
+                        onClick={() =>
+                          openSwapModal(side)
+                        }
+                      >
+                        Swap opponent
+                      </button>
+                    </div>
+
+                    <strong>
+                      {teamName}
+                    </strong>
+
+                    {members.length > 0 && (
+                      <div className="tm-ready-members">
+                        {members.map(
+                          (member, index) => (
+                            <span
+                              key={`${member}-${index}`}
+                            >
+                              {member}
+                            </span>
+                          )
+                        )}
+                      </div>
+                    )}
+
+                    <label className="tm-ready-check">
+                      <input
+                        type="checkbox"
+                        checked={isReady}
+                        onChange={(event) => {
+                          if (isSideA) {
+                            setReadySideA(
+                              event.target.checked
+                            );
+                          } else {
+                            setReadySideB(
+                              event.target.checked
+                            );
+                          }
+                        }}
+                      />
+
+                      <span>
+                        Team is ready
+                      </span>
+                    </label>
+                  </div>
+                );
+              })}
+            </div>
+
+            {fixtureError && (
+              <div className="tm-ready-error">
+                {fixtureError}
+              </div>
+            )}
+
+            {message && (
+              <div className="tm-ready-success">
+                {message}
+              </div>
+            )}
+
+            <div className="tm-summary-actions">
+              <button
+                type="button"
+                className="tm-outline-btn"
+                onClick={closeReadyModal}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                className="tm-primary-btn"
+                disabled={
+                  !readySideA ||
+                  !readySideB ||
+                  fixtureSaving
+                }
+                onClick={() => {
+                  const match =
+                    readyFixture;
+
+                  closeReadyModal();
+                  openFixtureScoring(
+                    match
+                  );
+                }}
+              >
+                {fixtureSaving
+                  ? "Starting..."
+                  : "Both Teams Ready · Start Match"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===================================================
+          SWAP OPPONENT MODAL
+      =================================================== */}
+
+      {swapModalOpen && readyFixture && (
+        <div
+          className="tm-modal-overlay"
+          onClick={() =>
+            setSwapModalOpen(false)
+          }
+        >
+          <div
+            className="tm-match-summary-modal tm-swap-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="swap-opponent-title"
+            onClick={(event) =>
+              event.stopPropagation()
+            }
+          >
+            <div className="tm-summary-header">
+              <div>
+                <span className="tm-summary-label">
+                  SWAP OPPONENT
+                </span>
+
+                <h2 id="swap-opponent-title">
+                  Choose a replacement
+                </h2>
+
+                <p>
+                  Only opponents that can be safely swapped are shown.
+                  Both fixtures will exchange those opponents.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                className="tm-summary-close"
+                onClick={() =>
+                  setSwapModalOpen(false)
+                }
+                aria-label="Close swap dialog"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="tm-swap-current">
+              <span>
+                Swapping{" "}
+                {swapFromSide === "A"
+                  ? readyFixture.team_a_name ||
+                    readyFixture.player_a_name ||
+                    "Side A"
+                  : readyFixture.team_b_name ||
+                    readyFixture.player_b_name ||
+                    "Side B"}
+              </span>
+
+              <strong>
+                Match{" "}
+                {readyFixture.match_number}
+              </strong>
+            </div>
+
+            <div className="tm-swap-list">
+              {getSwapCandidates(
+                readyFixture
+              ).map((candidate) => {
+                const selected =
+                  swapTarget &&
+                  String(
+                    swapTarget.fixture.id
+                  ) ===
+                    String(
+                      candidate.fixture.id
+                    ) &&
+                  swapTarget.side ===
+                    candidate.side;
+
+                return (
+                  <button
+                    type="button"
+                    key={`${candidate.fixture.id}-${candidate.side}`}
+                    className={`tm-swap-option ${
+                      selected
+                        ? "selected"
+                        : ""
+                    }`}
+                    onClick={() =>
+                      setSwapTarget(
+                        candidate
+                      )
+                    }
+                  >
+                    <div>
+                      <strong>
+                        {candidate.name}
+                      </strong>
+
+                      {candidate.members.length >
+                        0 && (
+                        <small>
+                          {candidate.members.join(
+                            " · "
+                          )}
+                        </small>
+                      )}
+
+                      <span>
+                        {candidate.fixture.pool_name ||
+                          candidate.fixture.stage ||
+                          "Match"}{" "}
+                        · Match{" "}
+                        {
+                          candidate.fixture
+                            .match_number
+                        }
+                      </span>
+                    </div>
+
+                    <span className="tm-swap-side-label">
+                      Side{" "}
+                      {candidate.side}
+                    </span>
+                  </button>
+                );
+              })}
+
+              {getSwapCandidates(
+                readyFixture
+              ).length === 0 && (
+                <div className="tm-empty-state">
+                  No other upcoming fixture is available
+                  for a safe swap in this stage.
+                </div>
+              )}
+            </div>
+
+            <div className="tm-summary-actions">
+              <button
+                type="button"
+                className="tm-outline-btn"
+                onClick={() =>
+                  setSwapModalOpen(false)
+                }
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                className="tm-primary-btn"
+                disabled={
+                  !swapTarget ||
+                  swapSaving
+                }
+                onClick={
+                  confirmSwap
+                }
+              >
+                {swapSaving
+                  ? "Swapping..."
+                  : "Swap Opponents"}
               </button>
             </div>
           </div>
@@ -4805,97 +7282,6 @@ function removeEditIcon() {
 
               <div className="tm-edit-grid">
 
-                {/* ==========================================
-    TOURNAMENT ICON
-========================================== */}
-
-<div className="tm-edit-field full">
-
-  <label>
-    Tournament Icon
-  </label>
-
-  <div className="tm-edit-icon-upload">
-
-    {editIconPreview ? (
-      <div className="tm-edit-icon-preview-wrapper">
-
-        <img
-          src={editIconPreview}
-          alt="Tournament icon"
-          className="tm-edit-icon-preview"
-        />
-
-        <button
-          type="button"
-          className="tm-remove-icon-btn"
-          onClick={
-            removeEditIcon
-          }
-          disabled={
-            editLoading ||
-            uploadingEditIcon
-          }
-        >
-          <X size={14} />
-          Remove Icon
-        </button>
-
-      </div>
-    ) : (
-      <div className="tm-edit-icon-placeholder">
-
-        <Trophy
-          size={28}
-        />
-
-        <span>
-          No tournament icon
-        </span>
-
-      </div>
-    )}
-
-    <div className="tm-edit-icon-actions">
-
-      <label
-        className="tm-choose-icon-btn"
-      >
-
-        <Trophy
-          size={15}
-        />
-
-        {editIconPreview
-          ? "Change Icon"
-          : "Choose Image"}
-
-        <input
-          type="file"
-          accept="image/png,image/jpeg"
-          hidden
-          onChange={
-            handleEditIconChange
-          }
-          disabled={
-            editLoading ||
-            uploadingEditIcon
-          }
-        />
-
-      </label>
-
-      <small>
-        JPG or PNG • Maximum 5MB
-      </small>
-
-    </div>
-
-  </div>
-
-</div>
-
-
                 {/* NAME */}
 
                 <div className="tm-edit-field full">
@@ -5227,15 +7613,10 @@ function removeEditIcon() {
   type="submit"
   className="tm-primary-btn"
   disabled={
-    editLoading ||
-    uploadingEditIcon
+    editLoading
   }
 >
-  {uploadingEditIcon
-    ? "Uploading Icon..."
-    : editLoading
-      ? "Saving..."
-      : "Save Changes"}
+  {editLoading ? "Saving..." : "Save Changes"}
 </button>
 
               </div>

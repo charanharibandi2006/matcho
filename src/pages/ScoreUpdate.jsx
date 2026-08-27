@@ -208,10 +208,13 @@ function defaultMatchState() {
     currentScoreA: 0,
     currentScoreB: 0,
     gameScores: [],
-    server: 1,
+    server: null,
     lastRally: null,
     locked: false,
     matchComplete: false,
+    tossCompleted: false,
+    tossWinner: null,
+    tossChoice: null,
     undoStack: [],
     ruleKey: "pool-7-0-otherwise-21",
     startedAt: Date.now(),
@@ -230,7 +233,19 @@ export default function ScoreUpdate() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [showWinnerPopup, setShowWinnerPopup] = useState(false);
   const [message, setMessage] = useState("");
+
+  const [tossState, setTossState] = useState({
+    completed: false,
+    winner: null,
+    choice: null,
+  });
+  const [teamMembers, setTeamMembers] = useState({
+    A: [],
+    B: [],
+  });
+
 
   const markPendingSync = (
     currentState,
@@ -251,6 +266,12 @@ export default function ScoreUpdate() {
             : "Live"),
         winnerId:
           payload?.winnerId || null,
+        servingSide:
+          payload?.servingSide || null,
+        gameScores:
+          Array.isArray(payload?.gameScores)
+            ? payload.gameScores
+            : currentState.gameScores || [],
       },
     };
 
@@ -305,6 +326,13 @@ export default function ScoreUpdate() {
           winnerId:
             payload.winnerId ||
             null,
+          servingSide:
+            payload.servingSide ||
+            null,
+          gameScores:
+            Array.isArray(payload.gameScores)
+              ? payload.gameScores
+              : currentState.gameScores || [],
         }),
       }
     );
@@ -404,6 +432,58 @@ export default function ScoreUpdate() {
         selected
       );
 
+      // Load the two doubles team member names for the scoring screen.
+      if (selected.team_a_id || selected.team_b_id) {
+        try {
+          const teamsResult = await apiRequest(
+            `/tournaments/${tournamentId}/teams`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          const loadedTeams = Array.isArray(teamsResult?.teams)
+            ? teamsResult.teams
+            : [];
+
+          const findMembers = (teamId) => {
+            const team = loadedTeams.find(
+              (item) => String(item.id) === String(teamId)
+            );
+
+            if (!team || !Array.isArray(team.players)) {
+              return [];
+            }
+
+            return team.players
+              .map(
+                (player) =>
+                  player.full_name ||
+                  player.name ||
+                  player.participant_name ||
+                  ""
+              )
+              .filter(Boolean);
+          };
+
+          setTeamMembers({
+            A: findMembers(selected.team_a_id),
+            B: findMembers(selected.team_b_id),
+          });
+        } catch (teamError) {
+          console.warn(
+            "Unable to load doubles team members:",
+            teamError
+          );
+          setTeamMembers({ A: [], B: [] });
+        }
+      } else {
+        setTeamMembers({ A: [], B: [] });
+      }
+
       const loadedRuleKey =
         selected.stage === "Semi Final" ||
         selected.stage === "Final"
@@ -439,6 +519,16 @@ export default function ScoreUpdate() {
         );
 
       if (!hasPendingOffline) {
+        if (
+          selected.serving_side === "A" ||
+          selected.serving_side === "B"
+        ) {
+          nextLoadedState.server =
+            selected.serving_side === "A"
+              ? 1
+              : 2;
+        }
+
         nextLoadedState.currentScoreA =
           Number(
             selected.player_a_score
@@ -449,6 +539,29 @@ export default function ScoreUpdate() {
             selected.player_b_score
           ) || 0;
 
+        const loadedGameScores =
+          Array.isArray(selected.game_scores)
+            ? selected.game_scores
+            : [];
+
+        nextLoadedState.gameScores =
+          loadedGameScores;
+
+        if (loadedGameScores.length > 0) {
+          nextLoadedState.gamesWonA =
+            loadedGameScores.filter(
+              (game) => Number(game?.a) > Number(game?.b)
+            ).length;
+
+          nextLoadedState.gamesWonB =
+            loadedGameScores.filter(
+              (game) => Number(game?.b) > Number(game?.a)
+            ).length;
+
+          nextLoadedState.currentGame =
+            loadedGameScores.length + 1;
+        }
+
         nextLoadedState.matchComplete =
           normalizeStatus(
             selected.status
@@ -457,29 +570,42 @@ export default function ScoreUpdate() {
         if (
           nextLoadedState.matchComplete
         ) {
-          const winnerSide =
-            nextLoadedState.currentScoreA >
-            nextLoadedState.currentScoreB
-              ? 1
-              : 2;
+          if (loadedGameScores.length === 0) {
+            const winnerSide =
+              nextLoadedState.currentScoreA >
+              nextLoadedState.currentScoreB
+                ? 1
+                : 2;
 
-          nextLoadedState.gamesWonA =
-            winnerSide === 1
-              ? 1
-              : 0;
+            nextLoadedState.gamesWonA =
+              winnerSide === 1
+                ? 1
+                : 0;
 
-          nextLoadedState.gamesWonB =
-            winnerSide === 2
-              ? 1
-              : 0;
+            nextLoadedState.gamesWonB =
+              winnerSide === 2
+                ? 1
+                : 0;
+          }
 
           nextLoadedState.locked =
             true;
+
+          if (loadedGameScores.length > 0) {
+            nextLoadedState.currentGame =
+              loadedGameScores.length;
+          }
         }
       }
 
       nextLoadedState.ruleKey =
         loadedRuleKey;
+
+      setTossState({
+        completed: Boolean(nextLoadedState.tossCompleted),
+        winner: nextLoadedState.tossWinner || null,
+        choice: nextLoadedState.tossChoice || null,
+      });
 
       setState(
         nextLoadedState
@@ -603,6 +729,12 @@ export default function ScoreUpdate() {
     };
   }, [fixtureId, tournamentId]);
 
+  useEffect(() => {
+  if (state.matchComplete) {
+    setShowWinnerPopup(true);
+  }
+}, [state.matchComplete]);
+
   const teamA = useMemo(
     () =>
       fixture?.team_a_name ||
@@ -633,6 +765,12 @@ export default function ScoreUpdate() {
   const ruleKey = isKnockout
     ? "bo3-21"
     : "pool-7-0-otherwise-21";
+
+  // Toss happens only once before Game 1.
+  // Game 2 and Game 3 keep the same toss result.
+  const tossRequired =
+    !state.matchComplete &&
+    !state.tossCompleted;
 
   const gameStatus = useMemo(
     () =>
@@ -678,6 +816,8 @@ export default function ScoreUpdate() {
     scoreB,
     status,
     winnerId = null,
+    servingSide = null,
+    gameScores = [],
   }) => {
     const token = localStorage.getItem("matcho_token");
     if (!token) {
@@ -695,6 +835,8 @@ export default function ScoreUpdate() {
         playerBScore: scoreB,
         status,
         winnerId,
+        servingSide,
+        gameScores,
       }),
     });
   };
@@ -705,6 +847,7 @@ export default function ScoreUpdate() {
         scoreA: 0,
         scoreB: 0,
         status: "Live",
+        gameScores: [],
       });
 
       setFixture((previous) => ({
@@ -714,14 +857,91 @@ export default function ScoreUpdate() {
     }
   };
 
-  useEffect(() => {
-    if (fixture && normalizeStatus(fixture.status) === "upcoming") {
-      startFixtureIfNeeded().catch((err) => {
-        console.error("Start fixture error:", err);
-        setError(err.message || "Unable to start the fixture.");
-      });
+  // New fixtures remain Upcoming until the organizer completes the toss.
+  // This prevents the match from starting automatically when the scoring page opens.
+  const conductToss = () => {
+    const winner = Math.random() < 0.5 ? 1 : 2;
+
+    setTossState({
+      completed: true,
+      winner,
+      choice: null,
+    });
+  };
+
+  const startMatchAfterToss = async () => {
+    if (
+      !tossState.completed ||
+      !tossState.winner ||
+      !tossState.choice
+    ) {
+      setError(
+        "Complete the toss and choose Serve or Court."
+      );
+      return;
     }
-  }, [fixture?.id]);
+
+    try {
+      setSaving(true);
+      setError("");
+      setMessage("");
+
+      // Toss is performed once before Game 1.
+      // The same toss result remains valid for Game 2 / Game 3.
+      const servingSide =
+        tossState.choice === "serve"
+          ? tossState.winner
+          : tossState.winner === 1
+            ? 2
+            : 1;
+
+      const initialState = {
+        ...defaultMatchState(),
+        server: servingSide,
+        tossCompleted: true,
+        tossWinner: tossState.winner,
+        tossChoice: tossState.choice,
+      };
+
+      await persistFixture({
+        scoreA: 0,
+        scoreB: 0,
+        status: "Live",
+        winnerId: null,
+        servingSide:
+          servingSide === 1 ? "A" : "B",
+        gameScores: [],
+      });
+
+      setState(initialState);
+
+      setFixture((previous) => ({
+        ...previous,
+        status: "Live",
+        player_a_score: 0,
+        player_b_score: 0,
+        winner_team_id: null,
+        winner_player_id: null,
+      }));
+
+      writeLocalState(
+        fixtureId,
+        initialState
+      );
+
+      setMessage(
+        `${servingSide === 1 ? teamA : teamB} starts serving.`
+      );
+    } catch (err) {
+      setError(
+        err.message ||
+        "Unable to start the match."
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handlePoint = async (side) => {
     if (
       saving ||
@@ -782,6 +1002,10 @@ export default function ScoreUpdate() {
               scoreB: nextB,
               status: "Live",
               winnerId: null,
+              servingSide:
+                side === 1 ? "A" : "B",
+              gameScores:
+                state.gameScores || [],
             }
           );
 
@@ -795,6 +1019,10 @@ export default function ScoreUpdate() {
             scoreB: nextB,
             status: "Live",
             winnerId: null,
+            servingSide:
+              side === 1 ? "A" : "B",
+            gameScores:
+              state.gameScores || [],
           });
 
           const syncedState = {
@@ -881,6 +1109,10 @@ export default function ScoreUpdate() {
           matchComplete
             ? winnerId
             : null,
+        servingSide:
+          side === 1 ? "A" : "B",
+        gameScores:
+          nextGameScores,
       };
 
       const nextState = {
@@ -987,6 +1219,11 @@ export default function ScoreUpdate() {
       locked: false,
       lastRally: null,
       undoStack: [],
+
+      // Do not conduct another toss for Game 2 or Game 3.
+      tossCompleted: true,
+      tossWinner: state.tossWinner,
+      tossChoice: state.tossChoice,
     };
 
     pushLocalState(nextState);
@@ -1049,6 +1286,8 @@ export default function ScoreUpdate() {
               : "Live",
           winnerId:
             restoredWinnerId,
+          servingSide:
+            restored.server === 1 ? "A" : "B",
         }
       );
 
@@ -1072,6 +1311,8 @@ export default function ScoreUpdate() {
             : "Live",
         winnerId:
           restoredWinnerId,
+        gameScores:
+          restored.gameScores || [],
       });
 
       const syncedState = {
@@ -1142,6 +1383,8 @@ export default function ScoreUpdate() {
           scoreB: 0,
           status: "Live",
           winnerId: null,
+          servingSide:
+            state.server === 1 ? "A" : "B",
         }
       );
 
@@ -1159,6 +1402,10 @@ export default function ScoreUpdate() {
         scoreB: 0,
         status: "Live",
         winnerId: null,
+        servingSide:
+          state.server === 1 ? "A" : "B",
+        gameScores:
+          state.gameScores || [],
       });
 
       const syncedState = {
@@ -1305,12 +1552,14 @@ export default function ScoreUpdate() {
               </div>
 
               <div className="score-header-right">
-                <span className="score-live-pill">
-                  <span className="score-live-dot" />
-                  {state.matchComplete
-                    ? "COMPLETED"
-                    : "LIVE"}
-                </span>
+                <span
+  className={`score-live-pill ${
+    state.matchComplete ? "completed" : "live"
+  }`}
+>
+  <span className="score-live-dot" />
+  {state.matchComplete ? "COMPLETED" : "LIVE"}
+</span>
 
                 <button
                   type="button"
@@ -1321,6 +1570,7 @@ export default function ScoreUpdate() {
                   <RefreshCw size={15} />
                   Refresh
                 </button>
+
               </div>
             </header>
 
@@ -1346,23 +1596,122 @@ export default function ScoreUpdate() {
                     {statusBanner}
                   </strong>
                 </div>
+<div className="score-game-counter">
+  <span>
+    {teamA}
+    <b>{state.gamesWonA}</b>
+  </span>
 
-                <div className="score-game-counter">
-                  <span>
-                    {teamA}
-                    <b>{state.gamesWonA}</b>
-                  </span>
-                  <span className="score-game-vs">
-                    -
-                  </span>
-                  <span>
-                    <b>{state.gamesWonB}</b>
-                    {teamB}
-                  </span>
-                </div>
+  <span className="score-game-vs">
+    -
+  </span>
+
+  <span>
+    <b>{state.gamesWonB}</b>
+    {teamB}
+  </span>
+
+  {isKnockout && (
+    <small className="score-final-set-summary">
+      Sets: {state.gamesWonA}–{state.gamesWonB}
+    </small>
+  )}
+</div>
               </div>
 
-              <div className="score-main-board">
+              {tossRequired && (
+                <section className="score-toss-card">
+                  <span className="score-toss-kicker">
+                    MATCH TOSS
+                  </span>
+
+                  <h2>Start the match with a toss</h2>
+
+                  {!tossState.completed ? (
+                    <>
+                      <p>
+                        Conduct the toss before Game 1.
+                        The toss happens only once for this match.
+                      </p>
+
+                      <button
+                        type="button"
+                        className="score-primary-btn score-toss-btn"
+                        onClick={conductToss}
+                        disabled={saving}
+                      >
+                        <Trophy size={16} />
+                        Conduct Toss
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <p className="score-toss-result">
+                        <strong>
+                          {tossState.winner === 1 ? teamA : teamB}
+                        </strong>{" "}
+                        won the toss.
+                      </p>
+
+                      <div className="score-toss-options">
+
+  <button
+    type="button"
+    className={`score-toss-option ${
+      tossState.choice === "serve"
+        ? "selected"
+        : ""
+    }`}
+    onClick={() =>
+      setTossState((previous) => ({
+        ...previous,
+        choice: "serve",
+      }))
+    }
+  >
+    Serve
+  </button>
+
+  <button
+    type="button"
+    className={`score-toss-option ${
+      tossState.choice === "court"
+        ? "selected"
+        : ""
+    }`}
+    onClick={() =>
+      setTossState((previous) => ({
+        ...previous,
+        choice: "court",
+      }))
+    }
+  >
+    Choose Court
+  </button>
+
+</div>
+
+                      <button
+                        type="button"
+                        className="score-primary-btn score-start-match-btn"
+                        onClick={startMatchAfterToss}
+                        disabled={!tossState.choice || saving}
+                      >
+                        Start Match
+                      </button>
+                    </>
+                  )}
+                </section>
+              )}
+
+              <div
+                className={`score-main-board ${
+                  tossRequired ||
+                  normalizeStatus(fixture?.status) !== "live"
+                    ? "score-board-locked"
+                    : ""
+                }`}
+              >
                 <div className="score-team">
                   <div className="score-team-side">
                     <span className="score-team-tag">
@@ -1370,6 +1719,14 @@ export default function ScoreUpdate() {
                     </span>
 
                     <h2>{teamA}</h2>
+
+                    {teamMembers.A.length > 0 && (
+                      <div className="score-team-members">
+                        {teamMembers.A.map((member, index) => (
+                          <span key={`a-${index}`}>{member}</span>
+                        ))}
+                      </div>
+                    )}
 
                     {state.server === 1 && (
                       <span className="score-server-pill">
@@ -1384,35 +1741,37 @@ export default function ScoreUpdate() {
                   </div>
 
                   <div className="score-point-actions">
-                    <button
-                      type="button"
-                      className="score-point-btn minus"
-                      onClick={undoPoint}
-                      disabled={
-                        !state.undoStack.length ||
-                        saving
-                      }
-                      aria-label="Undo last rally"
-                    >
-                      <Undo2 size={18} />
-                    </button>
+  <button
+    type="button"
+    className="score-point-btn minus"
+    onClick={undoPoint}
+    disabled={
+      !state.undoStack.length ||
+      saving
+    }
+    aria-label="Undo last rally"
+  >
+    <Undo2 size={18} />
+  </button>
 
-                    <button
-                      type="button"
-                      className="score-point-btn plus"
-                      onClick={() =>
-                        handlePoint(1)
-                      }
-                      disabled={
-                        saving ||
-                        state.locked ||
-                        state.matchComplete
-                      }
-                    >
-                      <Plus size={23} />
-                      <span>Point</span>
-                    </button>
-                  </div>
+  <button
+    type="button"
+    className="score-point-btn plus"
+    onClick={() =>
+      handlePoint(1)
+    }
+    disabled={
+      saving ||
+      state.locked ||
+      state.matchComplete ||
+      tossRequired ||
+      normalizeStatus(fixture?.status) !== "live"
+    }
+  >
+    <Plus size={23} />
+    <span>Point</span>
+  </button>
+</div>
                 </div>
 
                 <div className="score-vs-column">
@@ -1427,37 +1786,41 @@ export default function ScoreUpdate() {
                   </span>
 
                   <div className="score-set-progress">
-                    {Array.from({ length: bestOf }, (_, index) => index + 1).map((game) => {
-                      const completed =
-                        state.gameScores.find(
-                          (item) =>
-                            item.game === game
-                        );
+  {Array.from(
+    { length: bestOf },
+    (_, index) => index + 1
+  ).map((game) => {
+    const completed =
+      state.gameScores.find(
+        (item) => item.game === game
+      );
 
-                      const active =
-                        game === state.currentGame &&
-                        !state.matchComplete;
+    const active =
+      game === state.currentGame &&
+      !state.matchComplete;
 
-                      return (
-                        <div
-                          key={game}
-                          className={`score-set-dot ${
-                            completed
-                              ? "done"
-                              : ""
-                          } ${
-                            active
-                              ? "active"
-                              : ""
-                          }`}
-                        >
-                          {completed
-                            ? `${completed.a}-${completed.b}`
-                            : `G${game}`}
-                        </div>
-                      );
-                    })}
-                  </div>
+    return (
+      <div
+        key={game}
+        className={`score-set-item ${
+          completed ? "done" : ""
+        } ${active ? "active" : ""}`}
+      >
+        <span className="score-set-label">
+          G{game}
+        </span>
+
+        <strong className="score-set-score">
+          {completed
+            ? `${completed.a}–${completed.b}`
+            : active
+              ? `${state.currentScoreA}–${state.currentScoreB}`
+              : "—"}
+        </strong>
+      </div>
+    );
+  })}
+</div>
                 </div>
 
                 <div className="score-team">
@@ -1467,6 +1830,14 @@ export default function ScoreUpdate() {
                     </span>
 
                     <h2>{teamB}</h2>
+
+                    {teamMembers.B.length > 0 && (
+                      <div className="score-team-members">
+                        {teamMembers.B.map((member, index) => (
+                          <span key={`b-${index}`}>{member}</span>
+                        ))}
+                      </div>
+                    )}
 
                     {state.server === 2 && (
                       <span className="score-server-pill">
@@ -1490,7 +1861,9 @@ export default function ScoreUpdate() {
                       disabled={
                         saving ||
                         state.locked ||
-                        state.matchComplete
+                        state.matchComplete ||
+                        tossRequired ||
+                        normalizeStatus(fixture?.status) !== "live"
                       }
                     >
                       <Plus size={23} />
@@ -1628,40 +2001,67 @@ export default function ScoreUpdate() {
               </div>
             </section>
 
-            {state.matchComplete && (
-              <section className="score-winner-card">
-                <div className="score-winner-icon">
-                  <Trophy size={26} />
-                </div>
+            {state.matchComplete && showWinnerPopup && (
+  <div className="winner-popup-overlay">
+    <section className="score-winner-card">
 
-                <div>
-                  <span>FINAL RESULT</span>
-                  <h2>
-                    {state.gamesWonA >=
-                    gamesToWin
-                      ? teamA
-                      : teamB}
-                  </h2>
-                  <p>
-                    Match won{" "}
-                    {Math.max(
-                      state.gamesWonA,
-                      state.gamesWonB
-                    )}
-                    -
-                    {Math.min(
-                      state.gamesWonA,
-                      state.gamesWonB
-                    )}
-                  </p>
-                </div>
+      <button
+        type="button"
+        className="winner-popup-close"
+       onClick={() => setShowWinnerPopup(false)}
+        aria-label="Close winner popup"
+      >
+        ×
+      </button>
 
-                <CheckCircle2
-                  size={28}
-                  className="score-winner-check"
-                />
-              </section>
-            )}
+      <div className="score-winner-icon">
+        <Trophy size={30} />
+      </div>
+
+      <span className="winner-popup-label">
+        MATCH COMPLETED
+      </span>
+
+      <h2>
+        {state.gamesWonA >= gamesToWin
+          ? teamA
+          : teamB}
+      </h2>
+
+      <p className="winner-popup-title">
+        🏆 Winner
+      </p>
+
+      <div className="winner-popup-members">
+        {(state.gamesWonA >= gamesToWin
+          ? teamMembers.A
+          : teamMembers.B
+        ).map((member, index) => (
+          <span key={`winner-${index}`}>
+            {member}
+          </span>
+        ))}
+      </div>
+
+      <div className="winner-popup-score">
+        <span>
+          {state.currentScoreA}
+        </span>
+
+        <b>−</b>
+
+        <span>
+          {state.currentScoreB}
+        </span>
+      </div>
+
+      <p className="winner-popup-message">
+        Congratulations on the win!
+      </p>
+
+    </section>
+  </div>
+)}
 
             <footer className="score-console-footer">
               <div className="score-footer-info">
@@ -1689,3 +2089,4 @@ export default function ScoreUpdate() {
     </div>
   );
 }
+

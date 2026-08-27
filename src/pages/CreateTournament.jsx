@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { apiRequest } from "../services/api";
-import { uploadTournamentIcon } from "../services/supabase";
+
 import {
   useNavigate,
   useLocation,

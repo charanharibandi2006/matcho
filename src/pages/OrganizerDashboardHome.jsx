@@ -1118,14 +1118,6 @@ function handleFixtureSetup(
                 </button>
 
 
-                <button
-                  type="button"
-                  className="org-filter-btn"
-                  onClick={handleRefresh}
-                >
-                  Refresh
-                </button>
-
               </div>
 
             </div>

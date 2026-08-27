@@ -6170,3 +6170,1635 @@
   opacity: 0.45;
   cursor: not-allowed;
 }
+
+/* =========================================================
+   TOURNAMENT PDF ACTIONS
+========================================================= */
+
+.tm-pdf-btn,
+.tm-pdf-share-btn {
+  height: 44px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 0 16px;
+
+  border-radius: 11px;
+
+  font-family: "Poppins", sans-serif;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+.tm-pdf-btn {
+  border: 1px solid #ddd6fe;
+
+  background: #ffffff;
+
+  color: #633cff;
+}
+
+.tm-pdf-btn:hover {
+  background: #faf8ff;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 6px 16px
+    rgba(99, 60, 255, 0.08);
+}
+
+.tm-pdf-share-btn {
+  border: 1px solid transparent;
+
+  background: #633cff;
+
+  color: #ffffff;
+
+  box-shadow:
+    0 8px 20px
+    rgba(99, 60, 255, 0.18);
+}
+
+.tm-pdf-share-btn:hover {
+  background: #5732df;
+
+  transform: translateY(-1px);
+}
+
+.tm-pdf-btn:active,
+.tm-pdf-share-btn:active {
+  transform: translateY(0);
+}
+
+
+/* =========================================================
+   TEAMS HEADER RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+  .tm-team-header-actions {
+    width: 100%;
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+  }
+
+  .tm-pdf-btn,
+  .tm-pdf-share-btn {
+    flex: 1 1 auto;
+  }
+}
+
+
+@media (max-width: 600px) {
+
+  .tm-team-header-actions {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    width: 100%;
+  }
+
+  .tm-pdf-btn,
+  .tm-pdf-share-btn,
+  .tm-team-header-actions .tm-outline-btn,
+  .tm-team-header-actions .tm-primary-btn {
+    width: 100%;
+    min-width: 0;
+
+    padding: 0 10px;
+
+    font-size: 10px;
+  }
+}
+
+
+@media (max-width: 380px) {
+
+  .tm-team-header-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   TOURNAMENT PDF ACTIONS
+========================================================= */
+
+.tm-pdf-btn,
+.tm-pdf-share-btn {
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+  border-radius: 11px;
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+.tm-pdf-btn {
+  border: 1px solid #ddd6fe;
+  background: #fff;
+  color: #633cff;
+}
+
+.tm-pdf-btn:hover {
+  background: #faf8ff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(99, 60, 255, 0.08);
+}
+
+.tm-pdf-share-btn {
+  border: 1px solid transparent;
+  background: #633cff;
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(99, 60, 255, 0.18);
+}
+
+.tm-pdf-share-btn:hover {
+  background: #5732df;
+  transform: translateY(-1px);
+}
+
+.tm-pdf-btn:disabled,
+.tm-pdf-share-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+@media (max-width: 900px) {
+  .tm-team-header-actions {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .tm-team-header-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+
+  .tm-pdf-btn,
+  .tm-pdf-share-btn,
+  .tm-team-header-actions .tm-outline-btn,
+  .tm-team-header-actions .tm-primary-btn {
+    width: 100%;
+    min-width: 0;
+    padding: 0 10px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 380px) {
+  .tm-team-header-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   TEAMS & PAIRS HEADER ACTIONS
+========================================================= */
+
+.tm-team-header-actions {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  gap: 10px;
+  align-items: center;
+}
+
+/* PDF buttons */
+.tm-pdf-btn {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.tm-pdf-share-btn {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+/* Pair management buttons */
+.tm-team-header-actions .tm-outline-btn {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.tm-team-header-actions .tm-primary-btn {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+  .tm-team-header-actions {
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+
+  .tm-pdf-btn,
+  .tm-pdf-share-btn,
+  .tm-team-header-actions .tm-outline-btn,
+  .tm-team-header-actions .tm-primary-btn {
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+  .tm-team-header-actions {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .tm-pdf-btn,
+  .tm-pdf-share-btn,
+  .tm-team-header-actions .tm-outline-btn,
+  .tm-team-header-actions .tm-primary-btn {
+    grid-column: 1;
+    grid-row: auto;
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   FIXTURE PDF ACTIONS
+========================================================= */
+
+.tm-fixture-pdf-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tm-fixture-pdf-actions .tm-pdf-btn,
+.tm-fixture-pdf-actions .tm-pdf-share-btn {
+  min-height: 42px;
+}
+
+.tm-fixture-pdf-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+  .tm-fixture-pdf-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+  .tm-fixture-pdf-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+
+  .tm-fixture-pdf-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 380px) {
+  .tm-fixture-pdf-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   TEAMS & PAIRS - MOBILE RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  /* Header */
+  .tm-team-header {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .tm-team-header-left {
+    width: 100%;
+  }
+
+  /* All action buttons */
+  .tm-team-header-actions {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+  }
+
+  /* PDF buttons */
+  .tm-pdf-btn,
+  .tm-pdf-share-btn {
+    width: 100%;
+    min-width: 0;
+    height: 44px;
+
+    padding: 0 8px;
+
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  /* Random pair generation */
+  .tm-team-header-actions .tm-outline-btn {
+    grid-column: 1 / -1;
+
+    width: 100%;
+    min-width: 0;
+
+    height: 44px;
+
+    padding: 0 10px;
+
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  /* Create pair */
+  .tm-team-header-actions .tm-primary-btn {
+    grid-column: 1 / -1;
+
+    width: 100%;
+    min-width: 0;
+
+    height: 44px;
+
+    padding: 0 10px;
+
+    font-size: 11px;
+  }
+
+  /* =======================================================
+     STATS
+  ======================================================= */
+
+  .tm-team-stats {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+
+    width: 100%;
+  }
+
+  .tm-team-stat-card {
+    min-width: 0;
+
+    padding: 16px 10px;
+  }
+
+  .tm-team-stat-number {
+    font-size: 24px;
+  }
+
+  .tm-team-stat-label {
+    font-size: 11px;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
+
+@media (max-width: 380px) {
+
+  .tm-team-header-actions {
+    gap: 8px;
+  }
+
+  .tm-pdf-btn,
+  .tm-pdf-share-btn {
+    font-size: 10px;
+    padding: 0 5px;
+  }
+
+  .tm-team-header-actions .tm-outline-btn,
+  .tm-team-header-actions .tm-primary-btn {
+    font-size: 10px;
+  }
+
+  .tm-team-stat-card {
+    padding: 13px 8px;
+  }
+
+  .tm-team-stat-number {
+    font-size: 22px;
+  }
+}
+
+/* =========================================================
+   TEAMS & PAIRS - MOBILE BUTTON LAYOUT
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .tm-team-header-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  /* Row 1 */
+  .tm-pdf-btn {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .tm-pdf-share-btn {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  /* Row 2 */
+  .tm-team-header-actions .tm-outline-btn {
+    grid-column: 1;
+    grid-row: 2;
+
+    width: 100%;
+    min-width: 0;
+
+    padding: 0 8px;
+    height: 44px;
+
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .tm-team-header-actions .tm-primary-btn {
+    grid-column: 2;
+    grid-row: 2;
+
+    width: 100%;
+    min-width: 0;
+
+    padding: 0 8px;
+    height: 44px;
+
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .tm-pdf-btn,
+  .tm-pdf-share-btn {
+    width: 100%;
+    min-width: 0;
+    height: 44px;
+
+    padding: 0 8px;
+
+    font-size: 10px;
+    white-space: nowrap;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
+
+@media (max-width: 380px) {
+
+  .tm-team-header-actions {
+    gap: 8px;
+  }
+
+  .tm-pdf-btn,
+  .tm-pdf-share-btn,
+  .tm-team-header-actions .tm-outline-btn,
+  .tm-team-header-actions .tm-primary-btn {
+    font-size: 9px;
+    padding: 0 5px;
+  }
+}
+/* =========================================================
+   FIXTURE + STANDINGS PDF BUTTONS - MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  /* -------------------------------
+     Fixtures
+  -------------------------------- */
+  .tm-fixture-pdf-actions {
+    width: 100% !important;
+
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+
+    gap: 8px !important;
+
+    margin-top: 10px;
+  }
+
+  .tm-fixture-pdf-actions button {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 44px !important;
+
+    padding: 0 8px !important;
+
+    font-size: 10px !important;
+    font-weight: 600 !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 6px !important;
+
+    white-space: nowrap;
+  }
+
+
+  /* -------------------------------
+     Standings
+  -------------------------------- */
+  .tm-standings-header {
+    width: 100% !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+
+  .tm-standings-pdf-actions {
+    width: 100% !important;
+
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+
+    gap: 8px !important;
+
+    margin-top: 0 !important;
+  }
+
+  .tm-standings-pdf-actions button {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 44px !important;
+
+    padding: 0 8px !important;
+
+    font-size: 10px !important;
+    font-weight: 600 !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 6px !important;
+
+    white-space: nowrap;
+  }
+
+
+  /* -------------------------------
+     Make both buttons visually same
+  -------------------------------- */
+  .tm-fixture-pdf-actions .tm-pdf-btn,
+  .tm-fixture-pdf-actions .tm-pdf-share-btn,
+  .tm-standings-pdf-actions .tm-pdf-btn,
+  .tm-standings-pdf-actions .tm-pdf-share-btn {
+    box-sizing: border-box;
+
+    border-radius: 10px !important;
+
+    line-height: 1 !important;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
+
+@media (max-width: 380px) {
+
+  .tm-fixture-pdf-actions,
+  .tm-standings-pdf-actions {
+    gap: 6px !important;
+  }
+
+  .tm-fixture-pdf-actions button,
+  .tm-standings-pdf-actions button {
+    font-size: 9px !important;
+    padding: 0 5px !important;
+  }
+}
+
+/* =========================================================
+   STANDINGS HEADER - RIGHT ALIGN PDF ACTIONS
+========================================================= */
+
+.tm-standings-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.tm-standings-pdf-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.tm-standings-pdf-actions button {
+  height: 44px;
+  min-width: 132px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  padding: 0 16px;
+
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+  .tm-standings-header {
+    align-items: flex-start;
+  }
+
+  .tm-standings-pdf-actions {
+    margin-left: auto;
+  }
+
+  .tm-standings-pdf-actions button {
+    min-width: 120px;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+  .tm-standings-header {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .tm-standings-pdf-actions {
+    width: 100%;
+    margin-left: 0;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .tm-standings-pdf-actions button {
+    width: 100%;
+    min-width: 0;
+    height: 42px;
+
+    padding: 0 8px;
+    font-size: 10px;
+  }
+}
+
+/* =========================================================
+   DOUBLES TEAM MEMBERS IN FIXTURE CARDS
+========================================================= */
+
+.tm-team-members {
+  margin-top: 5px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #8b91a7;
+  font-weight: 500;
+  max-width: 180px;
+}
+
+.tm-team-members-left {
+  text-align: left;
+  padding-left: 1px;
+}
+
+.tm-team-members-right {
+  text-align: right;
+  margin-left: auto;
+  padding-right: 1px;
+}
+
+.tm-team-score-row strong {
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+@media (max-width: 700px) {
+  .tm-team-members {
+    font-size: 10px;
+    max-width: 140px;
+  }
+
+  .tm-team-score-row strong {
+    font-size: 14px;
+  }
+}
+
+/* =========================================================
+   FIXTURE MATCHUP - CLEAN CENTERED SCORE
+========================================================= */
+
+.tm-matchup {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 72px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 10px;
+  min-height: 74px;
+}
+
+.tm-side {
+  min-width: 0;
+}
+
+.tm-side-left {
+  text-align: left;
+}
+
+.tm-side-right {
+  text-align: right;
+}
+
+/* Team name + score arrangement */
+.tm-team-score-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Left side */
+.tm-side-left .tm-team-score-row {
+  justify-content: flex-start;
+}
+
+/* Right side */
+.tm-side-right .tm-team-score-row {
+  justify-content: flex-end;
+}
+
+/* Team names */
+.tm-team-score-row strong {
+  font-size: 16px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #111a3a;
+  white-space: nowrap;
+}
+
+/* Score */
+.tm-side-score {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 30px;
+
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 800;
+
+  color: #643cff;
+  letter-spacing: -0.5px;
+}
+
+/* VS stays perfectly centered */
+.tm-vs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 10px;
+  font-weight: 700;
+  color: #9aa0b5;
+  letter-spacing: 0.4px;
+}
+
+/* Player names */
+.tm-team-members {
+  margin-top: 6px;
+
+  font-size: 11px;
+  line-height: 1.35;
+  font-weight: 500;
+
+  color: #8a91a8;
+}
+
+.tm-team-members-left {
+  text-align: left;
+}
+
+.tm-team-members-right {
+  text-align: right;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+  .tm-matchup {
+    grid-template-columns: minmax(0, 1fr) 42px minmax(0, 1fr);
+    column-gap: 6px;
+  }
+
+  .tm-team-score-row strong {
+    font-size: 14px;
+  }
+
+  .tm-side-score {
+    font-size: 21px;
+    min-width: 26px;
+  }
+
+  .tm-team-members {
+    font-size: 10px;
+  }
+
+  .tm-vs {
+    font-size: 9px;
+  }
+}
+
+/* =========================================================
+   FIXTURE CARD - COMPACT & BALANCED MATCHUP
+========================================================= */
+
+.tm-matchup {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 150px minmax(0, 1fr);
+  align-items: center;
+
+  gap: 16px;
+
+  min-height: 78px;
+  padding: 4px 2px 8px;
+}
+
+
+/* =========================================================
+   TEAM SIDES
+========================================================= */
+
+.tm-side {
+  min-width: 0;
+}
+
+.tm-side-left {
+  text-align: left;
+}
+
+.tm-side-right {
+  text-align: right;
+}
+
+
+/* Team name */
+.tm-team-name {
+  font-size: 19px !important;
+  line-height: 1.15;
+  font-weight: 800;
+  color: #111a3a;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   PLAYER NAMES
+========================================================= */
+
+.tm-team-members {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  margin-top: 5px;
+
+  font-size: 12px !important;
+  line-height: 1.25;
+
+  font-weight: 500;
+  color: #7f879f;
+}
+
+.tm-team-members-right {
+  align-items: flex-end;
+}
+
+
+/* =========================================================
+   CENTER SCORES
+========================================================= */
+
+.tm-center-score {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+  min-width: 150px;
+}
+
+.tm-center-score-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 34px;
+
+  font-size: 28px !important;
+  line-height: 1;
+
+  font-weight: 800;
+
+  color: #643cff !important;
+  letter-spacing: -0.5px;
+}
+
+.tm-center-vs {
+  font-size: 10px !important;
+  font-weight: 700;
+
+  color: #9ba1b4;
+  letter-spacing: 0.3px;
+}
+
+
+/* =========================================================
+   TOP INFORMATION
+========================================================= */
+
+.tm-fixture-top {
+  margin-bottom: 4px !important;
+}
+
+.tm-fixture-top span {
+  font-size: 12px !important;
+  font-weight: 800 !important;
+
+  color: #643cff !important;
+}
+
+.tm-fixture-top small {
+  font-size: 10px !important;
+  font-weight: 600;
+
+  color: #99a0b4;
+}
+
+
+/* =========================================================
+   BOTTOM SECTION
+========================================================= */
+
+.tm-fixture-bottom {
+  margin-top: 2px !important;
+  padding-top: 8px !important;
+}
+
+
+/* Bigger upcoming badge */
+.tm-status {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+
+  padding: 7px 13px !important;
+
+  border-radius: 999px !important;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .tm-matchup {
+    grid-template-columns: minmax(0, 1fr) 100px minmax(0, 1fr);
+    gap: 8px;
+
+    min-height: 76px;
+    padding-top: 2px;
+  }
+
+  .tm-team-name {
+    font-size: 16px !important;
+  }
+
+  .tm-team-members {
+    font-size: 10px !important;
+  }
+
+  .tm-center-score {
+    min-width: 100px;
+    gap: 7px;
+  }
+
+  .tm-center-score-number {
+    font-size: 24px !important;
+  }
+
+  .tm-center-vs {
+    font-size: 9px !important;
+  }
+
+  .tm-status {
+    font-size: 10px !important;
+    padding: 6px 10px !important;
+  }
+}
+
+/* ===============================
+   MATCH STATUS COLORS
+================================ */
+
+.tm-status.live {
+  background: #fff0f0 !important;
+  color: #e53935 !important;
+  border: 1px solid #ffd1d1 !important;
+}
+
+.tm-status.completed {
+  background: #eaf8ef !important;
+  color: #168a43 !important;
+  border: 1px solid #c9edd7 !important;
+}
+
+.tm-status:not(.live):not(.completed) {
+  background: #f0eaff !important;
+  color: #643cff !important;
+  border: 1px solid #ded3ff !important;
+}
+
+/* =========================================================
+   READY TO START + OPPONENT SWAP MODALS
+========================================================= */
+
+.tm-ready-start-modal {
+  width: min(760px, 100%);
+}
+
+.tm-ready-note {
+  margin: 0 30px 20px;
+  padding: 13px 16px;
+
+  border: 1px solid #e7e0ff;
+  border-radius: 12px;
+
+  background: #faf8ff;
+  color: #6f6b86;
+
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.tm-ready-teams {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  gap: 14px;
+
+  margin: 0 30px 20px;
+}
+
+.tm-ready-team {
+  padding: 18px;
+
+  border: 1px solid #e7e3ef;
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.tm-ready-team.confirmed {
+  border-color: #bfe7cf;
+  background: #fbfffc;
+
+  box-shadow:
+    0 5px 18px rgba(28, 139, 77, 0.06);
+}
+
+.tm-ready-team-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  margin-bottom: 12px;
+}
+
+.tm-ready-team-top > span {
+  color: #8c93a7;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.tm-ready-team strong {
+  display: block;
+
+  color: #1d2742;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.tm-ready-members {
+  display: flex;
+  flex-direction: column;
+
+  margin-top: 5px;
+
+  color: #8b93a8;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.tm-ready-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-top: 15px;
+
+  color: #566079;
+  font-size: 11px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.tm-ready-check input {
+  width: 15px;
+  height: 15px;
+
+  accent-color: #6938f5;
+
+  cursor: pointer;
+}
+
+.tm-ready-swap-btn {
+  border: 1px solid #ddd5ff;
+  border-radius: 8px;
+
+  padding: 6px 9px;
+
+  background: #faf8ff;
+  color: #643cff;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.tm-ready-swap-btn:hover {
+  background: #f1ecff;
+  border-color: #cfc0ff;
+  transform: translateY(-1px);
+}
+
+.tm-ready-error {
+  margin: 0 30px 18px;
+  padding: 11px 14px;
+
+  border: 1px solid #ffd1d1;
+  border-radius: 10px;
+
+  background: #fff5f5;
+  color: #c0392b;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.tm-ready-success {
+  margin: 0 30px 18px;
+  padding: 11px 14px;
+
+  border: 1px solid #ccefdc;
+  border-radius: 10px;
+
+  background: #f4fff8;
+  color: #16854a;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.tm-swap-modal {
+  width: min(680px, 100%);
+}
+
+.tm-swap-current {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin: 0 30px 16px;
+  padding: 12px 14px;
+
+  border: 1px solid #e7e0ff;
+  border-radius: 11px;
+
+  background: #faf8ff;
+
+  color: #5f5c73;
+  font-size: 11px;
+}
+
+.tm-swap-current strong {
+  color: #643cff;
+  font-size: 11px;
+}
+
+.tm-swap-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 9px;
+
+  max-height: 330px;
+  overflow-y: auto;
+
+  margin: 0 30px 4px;
+}
+
+.tm-swap-option {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 14px;
+
+  padding: 13px 15px;
+
+  border: 1px solid #e7e3ef;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #253052;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.tm-swap-option:hover {
+  border-color: #cfc0ff;
+  background: #fbfaff;
+  transform: translateY(-1px);
+}
+
+.tm-swap-option.selected {
+  border-color: #7040f5;
+  background: #f8f5ff;
+
+  box-shadow:
+    0 0 0 2px rgba(112, 64, 245, 0.08);
+}
+
+.tm-swap-option > div {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tm-swap-option strong {
+  color: #202a45;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.tm-swap-option small {
+  color: #8c94a8;
+  font-size: 9px;
+}
+
+.tm-swap-option div > span {
+  color: #8f96a9;
+  font-size: 9px;
+}
+
+.tm-swap-side-label {
+  flex-shrink: 0;
+
+  padding: 5px 8px;
+
+  border-radius: 999px;
+
+  background: #f1ecff;
+  color: #643cff;
+
+  font-size: 8px;
+  font-weight: 800;
+}
+
+@media (max-width: 700px) {
+  .tm-ready-teams {
+    grid-template-columns: 1fr;
+  }
+
+  .tm-ready-start-modal,
+  .tm-swap-modal {
+    width: 100%;
+  }
+
+  .tm-ready-note,
+  .tm-ready-teams,
+  .tm-ready-error,
+  .tm-ready-success,
+  .tm-swap-current,
+  .tm-swap-list {
+    margin-left: 18px;
+    margin-right: 18px;
+  }
+
+  .tm-ready-team-top {
+    align-items: flex-start;
+  }
+
+  .tm-summary-actions {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}
+
+/* =========================================================
+   KNOCKOUT FIXTURE - GAME / SET SCORES
+========================================================= */
+
+.tm-fixture-result {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+}
+
+.tm-game-score-list {
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tm-game-score {
+  min-width: 54px;
+  padding: 6px 8px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  border: 1px solid #e5defd;
+  border-radius: 8px;
+  background: #faf9ff;
+  box-sizing: border-box;
+}
+
+.tm-game-score b {
+  color: #9aa2b5;
+  font-size: 7px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.tm-game-score > span {
+  color: #8b94aa;
+  font-size: 9px;
+  line-height: 1;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.tm-game-score.played {
+  border-color: #d8ccff;
+  background: #f4f0ff;
+}
+
+.tm-game-score.played > span {
+  color: #633cff;
+}
+
+.tm-set-total {
+  color: #633cff;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+@media (max-width: 700px) {
+  .tm-fixture-result {
+    gap: 6px;
+  }
+
+  .tm-game-score-list {
+    gap: 4px;
+    flex-wrap: nowrap;
+  }
+
+  .tm-game-score {
+    min-width: 48px;
+    padding: 5px 6px;
+  }
+
+  .tm-game-score b {
+    font-size: 6px;
+  }
+
+  .tm-game-score > span {
+    font-size: 8px;
+  }
+
+  .tm-set-total {
+    font-size: 8px;
+  }
+}
+/* =========================================================
+   KNOCKOUT GAME SCORES
+========================================================= */
+
+.tm-fixture-result-left {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.tm-game-scores {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tm-game-score {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  padding: 4px 8px;
+
+  border-radius: 7px;
+
+  background: #f5f1ff;
+  border: 1px solid #e5dcff;
+
+  color: #8a84a1;
+
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.tm-game-score strong {
+  color: #633cff;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.tm-set-summary {
+  color: #633cff;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .tm-fixture-result-left {
+    gap: 6px;
+  }
+
+  .tm-game-scores {
+    gap: 4px;
+  }
+
+  .tm-game-score {
+    padding: 4px 6px;
+    font-size: 8px;
+  }
+
+  .tm-game-score strong {
+    font-size: 8px;
+  }
+
+  .tm-set-summary {
+    font-size: 9px;
+  }
+}
+

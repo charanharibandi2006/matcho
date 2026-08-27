@@ -2922,3 +2922,160 @@
   background: transparent;
   color: #e53935;
 }
+
+/* ==========================================
+   SUCCESS MODAL - MOBILE UI
+   ========================================== */
+
+@media (max-width: 600px) {
+
+  .tournament-success-overlay {
+    padding: 12px !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .tournament-success-modal {
+    width: 100% !important;
+    max-width: 360px !important;
+
+    max-height: calc(100vh - 24px) !important;
+    overflow-y: auto !important;
+
+    padding: 24px 18px 18px !important;
+
+    border-radius: 18px !important;
+
+    box-shadow:
+      0 18px 45px
+      rgba(24, 25, 50, 0.20) !important;
+
+    text-align: center !important;
+  }
+
+  /* Close button */
+  .success-close-btn {
+    top: 10px !important;
+    right: 10px !important;
+
+    width: 30px !important;
+    height: 30px !important;
+
+    font-size: 18px !important;
+  }
+
+  /* Success icon */
+  .success-check {
+    width: 58px !important;
+    height: 58px !important;
+
+    margin: 0 auto 12px !important;
+
+    font-size: 28px !important;
+
+    box-shadow:
+      0 8px 20px
+      rgba(108, 61, 255, 0.22) !important;
+  }
+
+  /* Heading */
+  .tournament-success-modal h2 {
+    margin: 0 18px 6px !important;
+
+    font-size: 20px !important;
+    line-height: 1.25 !important;
+  }
+
+  /* Description */
+  .success-message {
+    margin: 0 auto 16px !important;
+
+    max-width: 290px !important;
+
+    font-size: 11px !important;
+    line-height: 1.45 !important;
+  }
+
+  /* Registration code */
+  .success-registration-box {
+    padding: 14px !important;
+    margin-bottom: 14px !important;
+
+    border-radius: 14px !important;
+  }
+
+  .success-registration-box span {
+    margin-bottom: 5px !important;
+    font-size: 10px !important;
+  }
+
+  .success-registration-box strong {
+    font-size: 20px !important;
+    letter-spacing: 0.8px !important;
+  }
+
+  /* Copy + share buttons */
+  .success-share-actions {
+    display: flex !important;
+    flex-direction: column !important;
+
+    align-items: stretch !important;
+
+    gap: 8px !important;
+
+    margin-top: 10px !important;
+  }
+
+  .success-copy-btn,
+  .success-share-btn {
+    width: 100% !important;
+    height: 38px !important;
+
+    padding: 0 10px !important;
+
+    font-size: 10px !important;
+
+    border-radius: 9px !important;
+  }
+
+  /* Details */
+  .success-details {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+
+    gap: 7px !important;
+
+    margin-bottom: 14px !important;
+  }
+
+  .success-details > div {
+    padding: 9px 12px !important;
+
+    border-radius: 10px !important;
+
+    text-align: left !important;
+  }
+
+  .success-details span {
+    margin-bottom: 2px !important;
+    font-size: 9px !important;
+  }
+
+  .success-details strong {
+    font-size: 11px !important;
+    line-height: 1.3 !important;
+  }
+
+  /* Dashboard button */
+  .success-dashboard-btn {
+    width: 100% !important;
+    height: 44px !important;
+
+    border-radius: 10px !important;
+
+    font-size: 11px !important;
+
+    margin-top: 2px !important;
+  }
+}
+

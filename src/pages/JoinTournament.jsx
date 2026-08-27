@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { apiRequest } from "../services/api";
+import logo from "../assets/images/ghbpl.jpeg";
 
 import "./StatsDashboard.css";
 import "./RegisterForm.css";
@@ -120,20 +121,53 @@ export default function JoinTournament() {
     }));
   };
 
+  function getAllowedGender(tournament) {
+  const category = String(
+    tournament?.category || ""
+  ).toLowerCase();
+
+  const name = String(
+    tournament?.name || ""
+  ).toLowerCase();
+
+  const tournamentText = `${category} ${name}`
+    .replace(/[’‘]/g, "'")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (
+    tournamentText.includes("women") ||
+    tournamentText.includes("female")
+  ) {
+    return "Female";
+  }
+
+  if (
+    tournamentText.includes("men") ||
+    tournamentText.includes("male")
+  ) {
+    return "Male";
+  }
+
+  return "";
+}
+
   const openForm = (tournament) => {
-    setSelected(tournament);
+  setSelected(tournament);
 
-    setMessage("");
-    setSuccess(false);
+  setMessage("");
+  setSuccess(false);
 
-    setForm({
-      name: "",
-      gender: "",
-      cFlatNumber: "",
-      mobile: "",
-      transactionId: "",
-    });
-  };
+ const allowedGender = getAllowedGender(tournament);
+
+setForm({
+  name: "",
+  gender: allowedGender,
+  cFlatNumber: "",
+  mobile: "",
+  transactionId: "",
+});
+};
 
   const closeForm = () => {
     if (submitting) return;
@@ -419,11 +453,11 @@ const isJoined =
                         <div className="join-card-top">
 
                           <div className="join-card-sport-icon">
-  <span className="join-card-sport-emoji">
-    {tournament.sport === "badminton"
-      ? "🏸"
-      : "🏆"}
-  </span>
+  <img
+    src={logo}
+    alt="MATCHO"
+    className="join-card-matcho-logo"
+  />
 </div>
 
                           <span
@@ -618,57 +652,44 @@ const isJoined =
 
               {/* GENDER */}
 
-              <label className="auth-label">
-                Gender
-              </label>
+             {/* GENDER */}
 
-              <select
-                className="auth-input"
-                value={form.gender}
-                onChange={(event) =>
-                  update(
-                    "gender",
-                    event.target.value
-                  )
-                }
-                required
-              >
-                <option value="">
-                  Select gender
-                </option>
+<label className="auth-label">
+  Gender
+</label>
 
-                <option value="Male">
-                  Male
-                </option>
+{getAllowedGender(selected) ? (
+  <input
+    className="auth-input"
+    type="text"
+    value={getAllowedGender(selected)}
+    readOnly
+  />
+) : (
+  <select
+    className="auth-input"
+    value={form.gender}
+    onChange={(event) =>
+      update(
+        "gender",
+        event.target.value
+      )
+    }
+    required
+  >
+    <option value="">
+      Select gender
+    </option>
 
-                <option value="Female">
-                  Female
-                </option>
+    <option value="Male">
+      Male
+    </option>
 
-                <option value="Other">
-                  Other
-                </option>
-              </select>
-
-
-              {/* C-FLAT */}
-
-              <label className="auth-label">
-                Flat Number(eg: C-101)
-              </label>
-
-              <input
-                className="auth-input"
-                placeholder="C-Flat number"
-                value={form.cFlatNumber}
-                onChange={(event) =>
-                  update(
-                    "cFlatNumber",
-                    event.target.value
-                  )
-                }
-                required
-              />
+    <option value="Female">
+      Female
+    </option>
+  </select>
+)}
 
 
               {/* MOBILE */}

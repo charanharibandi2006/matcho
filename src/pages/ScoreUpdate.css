@@ -950,3 +950,1101 @@
     font-size: 8px;
   }
 }
+
+
+/* =========================================================
+   LIVE SCORING - TEAM MEMBERS, STABLE CONTROLS & TOSS
+========================================================= */
+
+.score-team {
+  display: grid !important;
+  grid-template-rows: 104px 118px 50px;
+  align-items: start;
+  justify-items: center;
+  gap: 0 !important;
+  min-width: 0;
+  width: 100%;
+}
+
+.score-team-side {
+  width: 100%;
+  min-height: 104px !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.score-team h2 {
+  margin: 0 !important;
+  font-size: clamp(22px, 2vw, 30px) !important;
+  line-height: 1.05 !important;
+}
+
+.score-team-members {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-height: 28px;
+  color: #7f88a3;
+  font-size: 12px;
+  line-height: 1.25;
+  font-weight: 500;
+}
+
+.score-team-members span {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.score-number {
+  width: 130px !important;
+  height: 118px !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(82px, 9vw, 118px) !important;
+  line-height: 1 !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.score-point-actions {
+  width: 160px !important;
+  height: 50px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: nowrap !important;
+}
+
+.score-point-btn {
+  flex: 0 0 auto;
+}
+
+.score-point-btn.minus {
+  width: 48px;
+  min-width: 48px;
+}
+
+.score-point-btn.plus {
+  width: 96px;
+  min-width: 96px;
+}
+
+.score-board-locked {
+  opacity: .72;
+}
+
+.score-board-locked .score-point-btn {
+  pointer-events: none;
+}
+
+.score-live-pill {
+  transition: background .2s ease, color .2s ease;
+}
+
+.score-live-pill:has(.score-live-dot) {
+  background: #fff7dd;
+  color: #9a6a00;
+}
+
+.score-restart-btn {
+  border-color: #e8dff9;
+}
+
+/* Toss panel */
+.score-toss-card {
+  margin-bottom: 18px;
+  padding: 22px 24px;
+  border: 1px solid #e4dcfb;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #fbfaff, #f6f2ff);
+  text-align: center;
+}
+
+.score-toss-kicker {
+  display: block;
+  color: #6d3cff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .1em;
+}
+
+.score-toss-card h2 {
+  margin: 6px 0 5px;
+  color: #17204c;
+  font-size: 20px;
+}
+
+.score-toss-card p {
+  margin: 0 auto 16px;
+  max-width: 620px;
+  color: #737d9c;
+  font-size: 12px;
+}
+
+.score-toss-btn,
+.score-start-match-btn {
+  min-width: 155px;
+}
+
+.score-toss-result {
+  color: #2d3760 !important;
+}
+
+.score-toss-choice {
+  margin-top: 12px;
+}
+
+.score-toss-choice > span {
+  display: block;
+  margin-bottom: 9px;
+  color: #70799a;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.score-toss-options {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.score-toss-option {
+  min-width: 155px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid #ddd5f7;
+  border-radius: 11px;
+  background: #fff;
+  color: #5c6381;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.score-toss-option.selected {
+  border-color: #6d3cff;
+  background: #f1ecff;
+  color: #5f36d7;
+}
+
+@media (max-width: 1000px) {
+  .score-team {
+    grid-template-rows: 96px 100px 48px;
+  }
+
+  .score-team-side {
+    min-height: 96px !important;
+  }
+
+  .score-number {
+    width: 110px !important;
+    height: 100px !important;
+    font-size: clamp(66px, 10vw, 94px) !important;
+  }
+
+  .score-point-actions {
+    width: 150px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .score-team {
+    grid-template-rows: auto 86px 48px;
+    row-gap: 4px;
+  }
+
+  .score-team-side {
+    min-height: 0 !important;
+  }
+
+  .score-team-members {
+    font-size: 10px;
+    min-height: 24px;
+  }
+
+  .score-number {
+    width: 100px !important;
+    height: 86px !important;
+    font-size: 76px !important;
+  }
+
+  .score-point-actions {
+    width: 150px !important;
+  }
+
+  .score-toss-card {
+    padding: 18px 14px;
+  }
+
+  .score-toss-options {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .score-toss-option {
+    width: 100%;
+  }
+
+  .score-toss-btn,
+  .score-start-match-btn {
+    width: 100%;
+  }
+
+  .score-restart-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 380px) {
+  .score-team-members {
+    font-size: 9px;
+  }
+
+  .score-number {
+    width: 90px !important;
+    height: 76px !important;
+    font-size: 68px !important;
+  }
+}
+
+/* LIVE STATUS - RED */
+.score-live-pill {
+  background: #fff0f0 !important;
+  color: #dc2626 !important;
+  border: 1px solid #fecaca;
+}
+
+.score-live-dot {
+  background: #ef4444 !important;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.14) !important;
+}
+
+.score-team {
+  display: grid !important;
+  grid-template-rows: 145px 118px 50px;
+  align-items: start;
+  justify-items: center;
+  gap: 0 !important;
+  min-width: 0;
+  width: 100%;
+}
+
+.score-team-side {
+  width: 100%;
+  min-height: 145px !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.score-server-pill {
+  margin-top: 7px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 999px;
+  padding: 5px 9px;
+  color: #5f38d6;
+  background: #eee8ff;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+@media (max-width: 640px) {
+
+  /* =========================================
+     MOBILE SCORING - VERTICAL LAYOUT
+  ========================================= */
+
+  .score-main-board {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+
+    min-height: auto !important;
+
+    gap: 0 !important;
+    padding: 16px 10px !important;
+
+    border-radius: 13px;
+  }
+
+
+  /* =========================================
+     TEAM BLOCK
+  ========================================= */
+
+  .score-team {
+    width: 100% !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    align-items: center !important;
+
+    gap: 4px !important;
+
+    margin: 0;
+  }
+
+  .score-team-side,
+  .score-team-side.right {
+    width: 100%;
+
+    min-height: auto !important;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+  }
+
+  .score-team-tag {
+    margin-bottom: 3px;
+    font-size: 8px;
+  }
+
+  .score-team h2 {
+    margin: 0 !important;
+
+    font-size: 18px !important;
+    line-height: 1.1 !important;
+  }
+
+
+  /* =========================================
+     TEAM MEMBERS
+  ========================================= */
+
+  .score-team-members {
+    margin-top: 4px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 1px;
+
+    min-height: auto;
+
+    font-size: 9px;
+    line-height: 1.2;
+  }
+
+
+  /* =========================================
+     SERVING
+  ========================================= */
+
+  .score-server-pill {
+    margin-top: 4px;
+
+    padding: 4px 8px;
+
+    font-size: 8px;
+  }
+
+
+  /* =========================================
+     SCORE
+  ========================================= */
+
+  .score-number {
+    width: 90px !important;
+    height: 65px !important;
+
+    margin-top: 7px;
+
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 58px !important;
+    line-height: 1 !important;
+  }
+
+
+  /* =========================================
+     POINT BUTTONS
+  ========================================= */
+
+  .score-point-actions {
+    width: auto !important;
+
+    height: 40px;
+
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    margin-top: 4px;
+  }
+
+  .score-point-btn {
+    height: 40px;
+
+    border-radius: 9px;
+  }
+
+  .score-point-btn.minus {
+    width: 40px;
+    min-width: 40px;
+  }
+
+  .score-point-btn.plus {
+    width: 78px;
+    min-width: 78px;
+  }
+
+  .score-point-btn.plus svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .score-point-btn.plus span {
+    font-size: 10px;
+  }
+
+
+  /* =========================================
+     CENTER VS
+  ========================================= */
+
+  .score-vs-column {
+    position: static !important;
+
+    transform: none !important;
+
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: row;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    margin: 12px 0;
+
+    order: 2;
+  }
+
+  .score-vs-circle {
+    width: 34px;
+    height: 34px;
+
+    font-size: 11px;
+  }
+
+  .score-current-game {
+    font-size: 8px;
+  }
+
+  .score-set-progress {
+    width: 42px;
+
+    gap: 3px;
+  }
+
+  .score-set-dot {
+    padding: 4px;
+
+    font-size: 8px;
+  }
+
+
+  /* =========================================
+     ORDERING
+  ========================================= */
+
+  .score-team:first-child {
+    order: 1;
+  }
+
+  .score-vs-column {
+    order: 2;
+  }
+
+  .score-team:last-child {
+    order: 3;
+  }
+
+
+  /* =========================================
+     RULE CARD
+  ========================================= */
+
+  .score-rule-banner {
+    margin-top: 8px;
+
+    padding: 10px;
+
+    border-radius: 10px;
+  }
+
+  .score-rule-banner strong {
+    font-size: 11px;
+  }
+
+  .score-rule-banner span {
+    font-size: 9px;
+    line-height: 1.3;
+  }
+
+  .score-rule-chip {
+    padding: 5px 8px;
+    font-size: 8px;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Keep both teams' controls in the same order */
+  .score-team:last-child .score-point-actions {
+    flex-direction: row-reverse !important;
+  }
+}
+
+/* LIVE = RED */
+.score-live-pill.live {
+  background: #fff0f0 !important;
+  color: #dc2626 !important;
+  border: 1px solid #fecaca;
+}
+
+.score-live-pill.live .score-live-dot {
+  background: #ef4444 !important;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.14) !important;
+}
+
+/* COMPLETED = GREEN */
+.score-live-pill.completed {
+  background: #eaf8ef !important;
+  color: #168a43 !important;
+  border: 1px solid #c9edd7;
+}
+
+.score-live-pill.completed .score-live-dot {
+  background: #16a34a !important;
+  box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.14) !important;
+}
+
+/* =========================================================
+   WINNER POPUP
+========================================================= */
+
+.winner-popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(20, 24, 55, 0.45);
+  backdrop-filter: blur(6px);
+}
+
+.score-winner-card {
+  position: relative;
+
+  width: min(430px, 100%);
+
+  margin: 0 !important;
+  padding: 32px 28px !important;
+
+  border-radius: 24px !important;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+
+  background: #ffffff !important;
+
+  border: 1px solid #ddd4f8 !important;
+
+  box-shadow:
+    0 25px 70px rgba(33, 24, 75, 0.22),
+    0 8px 25px rgba(109, 60, 255, 0.12);
+}
+
+.winner-popup-close {
+  position: absolute;
+
+  top: 12px;
+  right: 14px;
+
+  width: 32px;
+  height: 32px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #f5f2ff;
+  color: #7a7393;
+
+  font-size: 22px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.winner-popup-close:hover {
+  background: #eee8ff;
+  color: #5f36d7;
+}
+
+.score-winner-icon {
+  width: 64px !important;
+  height: 64px !important;
+
+  margin-bottom: 12px;
+
+  border-radius: 18px !important;
+
+  display: grid !important;
+  place-items: center;
+
+  background: linear-gradient(
+    135deg,
+    #7040ff,
+    #5d31e6
+  ) !important;
+
+  color: white !important;
+
+  box-shadow:
+    0 10px 25px rgba(109, 60, 255, 0.22);
+}
+
+.winner-popup-label {
+  color: #6d3cff;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+}
+
+.score-winner-card h2 {
+  margin: 8px 0 0 !important;
+
+  font-size: 28px !important;
+  line-height: 1.15;
+
+  color: #18214d !important;
+}
+
+.winner-popup-title {
+  margin: 7px 0 12px !important;
+
+  color: #168a43 !important;
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.winner-popup-members {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+
+  margin-bottom: 18px;
+
+  color: #6e7898;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.winner-popup-score {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 14px;
+
+  padding: 10px 18px;
+
+  border-radius: 12px;
+
+  background: #f5f2ff;
+
+  color: #643cff;
+
+  font-size: 26px;
+  font-weight: 800;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.winner-popup-score b {
+  color: #9da2b6;
+  font-size: 16px;
+}
+
+.winner-popup-message {
+  margin: 16px 0 0 !important;
+
+  color: #7c849f !important;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   MOBILE WINNER POPUP
+========================================================= */
+
+@media (max-width: 640px) {
+
+  .winner-popup-overlay {
+    padding: 14px;
+  }
+
+  .score-winner-card {
+    width: 100%;
+
+    padding: 28px 20px !important;
+
+    border-radius: 20px !important;
+  }
+
+  .score-winner-card h2 {
+    font-size: 23px !important;
+  }
+
+  .winner-popup-members {
+    font-size: 11px;
+  }
+
+  .winner-popup-score {
+    font-size: 23px;
+  }
+}
+
+/* =========================================================
+   MOBILE SEMI/FINAL - GAME PROGRESS ALIGNMENT
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .score-vs-column {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 8px !important;
+
+    min-width: 74px !important;
+    width: 74px !important;
+  }
+
+  .score-vs-circle {
+    flex-shrink: 0 !important;
+
+    width: 34px !important;
+    height: 34px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+  }
+
+  .score-current-game {
+    display: block !important;
+
+    margin: 0 !important;
+
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+
+    white-space: nowrap !important;
+    text-align: center !important;
+  }
+
+  /* 3-game progress */
+  .score-set-progress {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 4px !important;
+
+    width: auto !important;
+    min-width: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .score-set-dot {
+    width: 22px !important;
+    min-width: 22px !important;
+
+    height: 22px !important;
+    min-height: 22px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border-radius: 6px !important;
+
+    font-size: 7px !important;
+    line-height: 1 !important;
+
+    white-space: nowrap !important;
+  }
+
+  /* Don't let the game indicator overlap point controls */
+  .score-team .score-point-actions {
+    position: relative !important;
+    z-index: 2 !important;
+  }
+
+  .score-vs-column {
+    position: relative !important;
+    z-index: 1 !important;
+  }
+}
+
+/* =========================================================
+   SEMI / FINAL - SET SCORE DISPLAY
+========================================================= */
+
+.score-final-set-summary {
+  display: block !important;
+
+  margin-top: 5px !important;
+
+  color: #7f89a3 !important;
+
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+
+  text-align: center !important;
+}
+
+/* Set score row */
+.score-set-progress {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  gap: 5px !important;
+
+  margin-top: 8px !important;
+}
+
+/* Individual game */
+.score-set-item {
+  width: 42px !important;
+  min-width: 42px !important;
+
+  min-height: 38px !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  gap: 2px !important;
+
+  padding: 4px 3px !important;
+
+  border: 1px solid #e5defd !important;
+  border-radius: 7px !important;
+
+  background: #ffffff !important;
+
+  box-sizing: border-box !important;
+}
+
+/* Game number */
+.score-set-label {
+  color: #9aa1b4 !important;
+
+  font-size: 7px !important;
+  font-weight: 700 !important;
+
+  line-height: 1 !important;
+}
+
+/* Actual score */
+.score-set-score {
+  color: #633cff !important;
+
+  font-size: 9px !important;
+  font-weight: 800 !important;
+
+  line-height: 1 !important;
+
+  white-space: nowrap !important;
+}
+
+/* Completed */
+.score-set-item.done {
+  background: #f7f3ff !important;
+  border-color: #d8ccff !important;
+}
+
+/* Current game */
+.score-set-item.active {
+  background: #633cff !important;
+  border-color: #633cff !important;
+}
+
+.score-set-item.active .score-set-label,
+.score-set-item.active .score-set-score {
+  color: #ffffff !important;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .score-final-set-summary {
+    margin-top: 4px !important;
+    font-size: 8px !important;
+  }
+
+  .score-set-progress {
+    gap: 4px !important;
+    margin-top: 7px !important;
+  }
+
+  .score-set-item {
+    width: 39px !important;
+    min-width: 39px !important;
+    min-height: 36px !important;
+  }
+
+  .score-set-label {
+    font-size: 6px !important;
+  }
+
+  .score-set-score {
+    font-size: 8px !important;
+  }
+}
+/* =========================================================
+   MOBILE SCORE CENTER - GAME PROGRESS
+========================================================= */
+
+@media (max-width: 640px) {
+
+  .score-vs-column {
+    order: 2 !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: 100% !important;
+
+    gap: 7px !important;
+
+    margin: 2px 0 4px !important;
+  }
+
+  .score-vs-circle {
+    width: 36px !important;
+    height: 36px !important;
+
+    flex-shrink: 0 !important;
+
+    font-size: 11px !important;
+  }
+
+  .score-current-game {
+    margin: 0 !important;
+
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+
+    text-align: center !important;
+    white-space: nowrap !important;
+  }
+
+  .score-set-progress {
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: auto !important;
+
+    gap: 5px !important;
+
+    margin: 0 !important;
+  }
+
+  .score-set-dot {
+    flex: 0 0 auto !important;
+
+    width: 38px !important;
+    min-width: 38px !important;
+
+    min-height: 34px !important;
+
+    padding: 5px 4px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border-radius: 7px !important;
+
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+
+    box-sizing: border-box !important;
+  }
+
+  .score-set-item {
+    flex: 0 0 auto !important;
+
+    width: 42px !important;
+    min-width: 42px !important;
+
+    min-height: 38px !important;
+
+    padding: 4px 3px !important;
+  }
+
+  .score-set-label {
+    font-size: 6px !important;
+  }
+
+  .score-set-score {
+    font-size: 8px !important;
+  }
+}

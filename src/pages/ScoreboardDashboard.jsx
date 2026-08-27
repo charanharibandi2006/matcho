@@ -9,7 +9,6 @@ import {
 import {
   Bell,
   CalendarDays,
-  Eye,
   Radio,
   Trophy,
    ShieldCheck,
@@ -25,6 +24,7 @@ import {
 import Scoreboardsidebar from "../components/Scoreboardsidebar";
 import { apiRequest } from "../services/api";
 import { setRole } from "../utils/auth";
+import ghbpllogo from "../assets/images/ghbpl.jpeg";
 
 import "./StatsDashboard.css";
 import "./ScoreboardDashboard.css";
@@ -60,7 +60,7 @@ function getStatus(status) {
     return "COMPLETED";
   }
 
-  return "SCHEDULED";
+  return "UPCOMING";
 }
 
 // =========================================================
@@ -106,7 +106,11 @@ function getParticipantId(fixture, side) {
 function isDoublesFixture(fixture) {
   return Boolean(
     fixture?.team_a_id ||
-    fixture?.team_b_id
+    fixture?.team_b_id ||
+    (Array.isArray(fixture?.team_a_members) &&
+      fixture.team_a_members.length > 0) ||
+    (Array.isArray(fixture?.team_b_members) &&
+      fixture.team_b_members.length > 0)
   );
 }
 
@@ -120,17 +124,22 @@ function getTeamMembers(fixture, side) {
     return [];
   }
 
-  return members.map((member, index) => ({
-    id:
-      member?.id ??
-      member?.player_id ??
-      `${side}-${index}-${member?.name || member?.full_name || member?.participant_name || "player"}`,
-    name:
-      member?.name ||
-      member?.full_name ||
-      member?.participant_name ||
-      "Player",
-  }));
+  return members
+    .map((member, index) => ({
+      id:
+        member?.id ??
+        member?.player_id ??
+        member?.participant_id ??
+        `${side}-${index}-${member?.name || member?.full_name || member?.participant_name || "player"}`,
+      name:
+        member?.name ||
+        member?.full_name ||
+        member?.participant_name ||
+        member?.player?.name ||
+        member?.participant?.name ||
+        "Player",
+    }))
+    .filter((member) => member.name && member.name !== "Player");
 }
 
 function getWinnerName(fixture) {
@@ -205,7 +214,7 @@ function getWinnerSide(fixture) {
 }
 
 function getSportIcon() {
-  return "🏸";
+  return ghbpllogo;
 }
 
 function getStageLabel(fixture) {
@@ -335,28 +344,29 @@ function MatchCard({
           ? "is-live"
           : ""
       }`}
-      onClick={() =>
-        onOpenScore(match)
-      }
     >
-      <div className="live-card-top">
-        <span className="sport-tag">
-          {match.sportIcon}{" "}
-          {match.sportName}
-        </span>
+     <div className="live-card-top">
+  <span className="scoreboard-match-tournament">
+    {match.tournament}
+  </span>
 
-        <span
-          className={
-            match.status === "LIVE"
-              ? "live-badge-pulse"
-              : "badge-green"
-          }
-        >
-          {match.status}
-        </span>
-      </div>
+  <span
+    className={
+      match.status === "LIVE"
+        ? "live-badge-pulse"
+        : match.status === "UPCOMING"
+          ? "upcoming-badge"
+          : "badge-green"
+    }
+  >
+    {match.status}
+  </span>
+</div>
 
       <p className="score-match-meta">
+        {match.pool
+          ? `${match.pool} · `
+          : ""}
         {match.tournament}
 
         {match.round
@@ -366,29 +376,100 @@ function MatchCard({
 
       <div className="score-match-score">
 
-  <div className="score-match-side score-match-side-left">
-    <div className="score-match-team-row">
-      <strong>{match.player1.name}</strong>
-      <span className="score-match-side-score">
-        {match.player1.score}
-      </span>
-    </div>
-  </div>
+        <div className="score-match-side score-match-side-left">
+          <strong className="score-match-team-name">
+            {match.player1.name}
+          </strong>
 
-  <span className="score-match-vs">
-    VS
-  </span>
+          {match.player1.members?.length > 0 && (
+            <div className="score-match-members">
+              {match.player1.members.map((member) => (
+                <span key={member.id}>
+                  {member.name}
+                </span>
+              ))}
+            </div>
+          )}
 
-  <div className="score-match-side score-match-side-right">
-    <div className="score-match-team-row">
-      <span className="score-match-side-score">
-        {match.player2.score}
-      </span>
-      <strong>{match.player2.name}</strong>
-    </div>
-  </div>
+          {match.status === "LIVE" &&
+            match.servingSide === "A" && (
+              <span className="score-serving">
+                ⚡ Serving
+              </span>
+            )}
+        </div>
 
-</div>
+        <span className="score-match-center-score">
+          {match.player1.score}
+        </span>
+
+        <span className="score-match-vs">
+          VS
+        </span>
+
+        <span className="score-match-center-score">
+          {match.player2.score}
+        </span>
+
+        <div className="score-match-side score-match-side-right">
+          <strong className="score-match-team-name">
+            {match.player2.name}
+          </strong>
+
+          {match.player2.members?.length > 0 && (
+            <div className="score-match-members score-match-members-right">
+              {match.player2.members.map((member) => (
+                <span key={member.id}>
+                  {member.name}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {match.status === "LIVE" &&
+            match.servingSide === "B" && (
+              <span className="score-serving">
+                ⚡ Serving
+              </span>
+            )}
+        </div>
+
+      </div>
+
+      {(match.stage === "Semi Final" ||
+        match.stage === "Final") &&
+        match.gameScores?.length > 0 && (
+          <div className="score-match-game-scores">
+            <div className="score-match-game-list">
+              {match.gameScores.map((game) => (
+                <span
+                  key={`game-${game.game}`}
+                  className="score-match-game-item"
+                >
+                  G{game.game}{" "}
+                  <strong>
+                    {game.a}–{game.b}
+                  </strong>
+                </span>
+              ))}
+            </div>
+
+            <div className="score-match-sets">
+              Sets:{" "}
+              {match.gameScores.filter(
+                (game) =>
+                  Number(game?.a) >
+                  Number(game?.b)
+              ).length}
+              –
+              {match.gameScores.filter(
+                (game) =>
+                  Number(game?.b) >
+                  Number(game?.a)
+              ).length}
+            </div>
+          </div>
+        )}
 
       <div className="live-card-foot">
         <span>
@@ -396,17 +477,6 @@ function MatchCard({
           {match.matchNumber}
         </span>
 
-        <button
-          type="button"
-          className="click-view"
-          onClick={(event) => {
-            event.stopPropagation();
-            onOpenScore(match);
-          }}
-        >
-          <Eye size={14} />
-          View score
-        </button>
       </div>
 
       {match.status ===
@@ -543,44 +613,200 @@ export default function ScoreboardDashboard() {
           tournamentRows.map(
             async (tournament) => {
               try {
-                const response =
-                  await apiRequest(
-                    `/fixtures/${tournament.id}`,
-                    {
-                      method: "GET",
-                    }
-                  );
+                const [fixtureResponse, teamResponse] =
+                  await Promise.all([
+                    apiRequest(
+                      `/fixtures/${tournament.id}`,
+                      {
+                        method: "GET",
+                      }
+                    ),
+                    apiRequest(
+                      `/tournaments/${tournament.id}/teams`,
+                      {
+                        method: "GET",
+                      }
+                    ).catch(() => null),
+                  ]);
 
                 const rows =
                   Array.isArray(
-                    response?.fixtures
+                    fixtureResponse?.fixtures
                   )
-                    ? response.fixtures
+                    ? fixtureResponse.fixtures
                     : [];
 
+                const teamRows =
+                  Array.isArray(
+                    teamResponse?.teams
+                  )
+                    ? teamResponse.teams
+                    : Array.isArray(
+                        teamResponse?.data
+                      )
+                      ? teamResponse.data
+                      : [];
+
+                const teamMap =
+                  new Map(
+                    teamRows.map(
+                      (team) => [
+                        String(team.id),
+                        team,
+                      ]
+                    )
+                  );
+
+                const getTeamMembersFromResponse =
+                  (team) => {
+                    if (!team) {
+                      return [];
+                    }
+
+                    const members =
+                      Array.isArray(team.players)
+                        ? team.players
+                        : Array.isArray(team.members)
+                          ? team.members
+                          : Array.isArray(team.participants)
+                            ? team.participants
+                            : Array.isArray(team.team_members)
+                              ? team.team_members
+                              : [
+                                  team.player1,
+                                  team.player2,
+                                  team.player_a,
+                                  team.player_b,
+                                  team.member1,
+                                  team.member2,
+                                ].filter(Boolean);
+
+                    return members
+                      .map(
+                        (member, index) => ({
+                          id:
+                            member?.id ??
+                            member?.player_id ??
+                            member?.participant_id ??
+                            `${team.id}-${index}`,
+                          name:
+                            member?.name ||
+                            member?.full_name ||
+                            member?.participant_name ||
+                            member?.player?.name ||
+                            member?.participant?.name ||
+                            "",
+                        })
+                      )
+                      .filter(
+                        (member) =>
+                          member.name
+                      );
+                  };
+
                 return rows.map(
-                  (fixture) => ({
-                    ...fixture,
+                  (fixture) => {
+                    const teamA =
+                      teamMap.get(
+                        String(
+                          fixture.team_a_id
+                        )
+                      ) ||
+                      teamRows.find(
+                        (team) =>
+                          String(
+                            team?.name ||
+                            team?.team_name ||
+                            ""
+                          ).trim().toLowerCase() ===
+                          String(
+                            fixture?.team_a_name ||
+                            fixture?.player_a_name ||
+                            ""
+                          ).trim().toLowerCase()
+                      );
 
-                    tournament_id:
-                      fixture.tournament_id ||
-                      tournament.id,
+                    const teamB =
+                      teamMap.get(
+                        String(
+                          fixture.team_b_id
+                        )
+                      ) ||
+                      teamRows.find(
+                        (team) =>
+                          String(
+                            team?.name ||
+                            team?.team_name ||
+                            ""
+                          ).trim().toLowerCase() ===
+                          String(
+                            fixture?.team_b_name ||
+                            fixture?.player_b_name ||
+                            ""
+                          ).trim().toLowerCase()
+                      );
 
-                    tournament_name:
-                      fixture.tournament_name ||
-                      tournament.name,
+                    const existingA =
+                      Array.isArray(
+                        fixture.team_a_members
+                      )
+                        ? fixture.team_a_members
+                        : [];
 
-                    tournament_format:
-                      fixture.tournament_format ||
-                      tournament.format,
+                    const existingB =
+                      Array.isArray(
+                        fixture.team_b_members
+                      )
+                        ? fixture.team_b_members
+                        : [];
 
-                    tournament_venue:
-                      fixture.venue ||
-                      tournament.venue,
+                    return {
+                      ...fixture,
 
-                    tournament_start_date:
-                      tournament.start_date,
-                  })
+                      team_a_id:
+                        fixture.team_a_id ||
+                        teamA?.id ||
+                        null,
+
+                      team_b_id:
+                        fixture.team_b_id ||
+                        teamB?.id ||
+                        null,
+
+                      team_a_members:
+                        existingA.length > 0
+                          ? existingA
+                          : getTeamMembersFromResponse(
+                              teamA
+                            ),
+
+                      team_b_members:
+                        existingB.length > 0
+                          ? existingB
+                          : getTeamMembersFromResponse(
+                              teamB
+                            ),
+
+                      tournament_id:
+                        fixture.tournament_id ||
+                        tournament.id,
+
+                      tournament_name:
+                        fixture.tournament_name ||
+                        tournament.name,
+
+                      tournament_format:
+                        fixture.tournament_format ||
+                        tournament.format,
+
+                      tournament_venue:
+                        fixture.venue ||
+                        tournament.venue,
+
+                      tournament_start_date:
+                        tournament.start_date,
+                    };
+                  }
                 );
               } catch (fixtureError) {
                 console.error(
@@ -874,6 +1100,19 @@ export default function ScoreboardDashboard() {
                 fixture
               ),
 
+              servingSide:
+              fixture.serving_side ||
+              fixture.server_side ||
+              fixture.server ||
+              null,
+
+            gameScores:
+              Array.isArray(
+                fixture.game_scores
+              )
+                ? fixture.game_scores
+                : [],
+
             status,
 
             venue:
@@ -965,7 +1204,7 @@ export default function ScoreboardDashboard() {
         return tournamentMatches.filter(
           (match) =>
             match.status ===
-            "SCHEDULED"
+            "UPCOMING"
         );
       }
 
@@ -1011,7 +1250,7 @@ export default function ScoreboardDashboard() {
     formattedMatches.filter(
       (match) =>
         match.status ===
-        "SCHEDULED"
+        "UPCOMING"
     );
 
   const completedMatches =
@@ -1063,22 +1302,6 @@ export default function ScoreboardDashboard() {
         "Results available",
     },
   ];
-
-  // =======================================================
-  // OPEN SCORE VIEW
-  // =======================================================
-
-  function openScoreView(
-    match
-  ) {
-    navigate(
-      `/score-view?fixtureId=${encodeURIComponent(
-        match.id
-      )}&tournamentId=${encodeURIComponent(
-        match.tournamentId
-      )}`
-    );
-  }
 
   // =======================================================
   // TOURNAMENT CHANGE
@@ -1557,11 +1780,6 @@ export default function ScoreboardDashboard() {
                 <div
                   key={match.id}
                   className="tm-fixture-card audience-fixture-card"
-                  onClick={() =>
-                    openScoreView(
-                      match
-                    )
-                  }
                 >
 
                   <div className="tm-fixture-top">
@@ -1649,6 +1867,56 @@ export default function ScoreboardDashboard() {
 
                   </div>
 
+                  {(match.stage === "Semi Final" ||
+  match.stage === "Final") && (
+  <div className="audience-fixture-game-scores">
+    {[1, 2, 3].map((gameNumber) => {
+      const game = Array.isArray(match.gameScores)
+        ? match.gameScores.find(
+            (item) =>
+              Number(item?.game) === gameNumber
+          )
+        : null;
+
+      return (
+        <div
+          key={`fixture-game-${gameNumber}`}
+          className={`audience-fixture-game ${
+            game ? "played" : ""
+          }`}
+        >
+          <span>G{gameNumber}</span>
+
+          <strong>
+            {game
+              ? `${game.a}–${game.b}`
+              : "—"}
+          </strong>
+        </div>
+      );
+    })}
+
+    <div className="audience-fixture-sets">
+      Sets:{" "}
+      {Array.isArray(match.gameScores)
+        ? match.gameScores.filter(
+            (game) =>
+              Number(game?.a) >
+              Number(game?.b)
+          ).length
+        : 0}
+      –
+      {Array.isArray(match.gameScores)
+        ? match.gameScores.filter(
+            (game) =>
+              Number(game?.b) >
+              Number(game?.a)
+          ).length
+        : 0}
+    </div>
+  </div>
+)}
+
                   <div className="tm-fixture-bottom">
 
                     <span>
@@ -1660,14 +1928,12 @@ export default function ScoreboardDashboard() {
 
                     <span
                       className={`tm-status ${
-                        match.status ===
-                        "COMPLETED"
-                          ? "completed"
-                          : match.status ===
-                            "LIVE"
-                          ? "live"
-                          : ""
-                      }`}
+  match.status === "COMPLETED"
+    ? "completed"
+    : match.status === "LIVE"
+      ? "live"
+      : "upcoming"
+}`}
                     >
                       {
                         match.status
@@ -1675,6 +1941,14 @@ export default function ScoreboardDashboard() {
                     </span>
 
                   </div>
+
+                  {match.status === "COMPLETED" &&
+  match.winnerName && (
+    <div className="audience-fixture-winner">
+      Winner:{" "}
+      <strong>{match.winnerName}</strong>
+    </div>
+  )}
 
                 </div>
               )
@@ -2162,9 +2436,6 @@ export default function ScoreboardDashboard() {
                       match={
                         match
                       }
-                      onOpenScore={
-                        openScoreView
-                      }
                     />
                   )
                 )}
@@ -2249,18 +2520,15 @@ export default function ScoreboardDashboard() {
                     key={
                       match.id
                     }
-                    onClick={() =>
-                      openScoreView(
-                        match
-                      )
-                    }
                   >
 
                     <div className="stat-thumb icon-blue">
-                      {
-                        match.sportIcon
-                      }
-                    </div>
+  <img
+    src={match.sportIcon}
+    alt=""
+    className="scoreboard-list-logo"
+  />
+</div>
 
                     <div>
 
@@ -2271,18 +2539,12 @@ export default function ScoreboardDashboard() {
                       </p>
 
                       <p className="stat-row-sub">
-                        {
-                          match
-                            .player1
-                            .name
-                        }{" "}
-                        vs{" "}
-                        {
-                          match
-                            .player2
-                            .name
-                        }
-                      </p>
+  {match.player1.name} vs {match.player2.name}
+</p>
+
+<p className="stat-row-type">
+  {match.round || match.stage || "Pool Match"}
+</p>
 
                     </div>
 
@@ -2348,18 +2610,15 @@ export default function ScoreboardDashboard() {
                       key={
                         match.id
                       }
-                      onClick={() =>
-                        openScoreView(
-                          match
-                        )
-                      }
                     >
 
-                      <div className="scoreboard-result-sport">
-                        {
-                          match.sportIcon
-                        }
-                      </div>
+                     <div className="scoreboard-result-sport">
+  <img
+    src={match.sportIcon}
+    alt=""
+    className="scoreboard-result-logo"
+  />
+</div>
 
                       <div className="scoreboard-result-main">
 
@@ -2412,6 +2671,40 @@ export default function ScoreboardDashboard() {
                           </span>
 
                         </div>
+
+                        {(match.stage === "Semi Final" ||
+                          match.stage === "Final") &&
+                          match.gameScores?.length > 0 && (
+                            <div className="scoreboard-result-games">
+                              <span>
+                                {match.gameScores
+                                  .map(
+                                    (game) =>
+                                      `G${game.game} ${game.a}–${game.b}`
+                                  )
+                                  .join(" · ")}
+                              </span>
+
+                              <strong>
+                                Sets:{" "}
+                                {
+                                  match.gameScores.filter(
+                                    (game) =>
+                                      Number(game?.a) >
+                                      Number(game?.b)
+                                  ).length
+                                }
+                                –
+                                {
+                                  match.gameScores.filter(
+                                    (game) =>
+                                      Number(game?.b) >
+                                      Number(game?.a)
+                                  ).length
+                                }
+                              </strong>
+                            </div>
+                          )}
 
                       </div>
 
@@ -2791,16 +3084,9 @@ export default function ScoreboardDashboard() {
                   {visibleMatches.map(
                     (match) => (
                       <MatchCard
-                        key={
-                          match.id
-                        }
-                        match={
-                          match
-                        }
-                        onOpenScore={
-                          openScoreView
-                        }
-                      />
+  key={match.id}
+  match={match}
+/>
                     )
                   )}
 
