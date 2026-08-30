@@ -4,6 +4,8 @@ const router = express.Router();
 
 const {
     generateRandomFixtures,
+    getFixtureSetup,
+    saveFixtureSetup,
     getFixturesByTournament,
     updateFixtureScore,
     swapUpcomingFixtureSides,
@@ -18,8 +20,31 @@ const authorizeRoles =
     require("../middleware/authorizeRoles");
 
 // ==========================================
+// GET FIXTURE SETUP
+// ==========================================
+
+router.get(
+    "/setup/:tournamentId",
+    authenticateUser,
+    authorizeRoles("Organizer", "Admin"),
+    getFixtureSetup
+);
+
+// ==========================================
+// SAVE / UPDATE FIXTURE SETUP
+// ==========================================
+
+router.put(
+    "/setup/:tournamentId",
+    authenticateUser,
+    authorizeRoles("Organizer", "Admin"),
+    saveFixtureSetup
+);
+
+// ==========================================
 // GENERATE RANDOM FIXTURES
 // ==========================================
+
 router.post(
     "/random/:tournamentId",
     authenticateUser,
@@ -30,6 +55,7 @@ router.post(
 // ==========================================
 // GET TOURNAMENT FIXTURES
 // ==========================================
+
 router.get(
     "/:tournamentId",
     getFixturesByTournament
@@ -38,6 +64,7 @@ router.get(
 // ==========================================
 // UPDATE FIXTURE SCORE
 // ==========================================
+
 router.put(
     "/score/:id",
     authenticateUser,
@@ -48,6 +75,7 @@ router.put(
 // ==========================================
 // SWAP UPCOMING FIXTURE OPPONENTS
 // ==========================================
+
 router.post(
     "/swap",
     authenticateUser,
@@ -58,6 +86,7 @@ router.post(
 // ==========================================
 // GENERATE NEXT ROUND
 // ==========================================
+
 router.post(
     "/next-round/:tournamentId",
     authenticateUser,
@@ -68,6 +97,7 @@ router.post(
 // ==========================================
 // GENERATE FINAL
 // ==========================================
+
 router.post(
     "/final/:tournamentId",
     authenticateUser,
