@@ -1,5 +1,11 @@
 const pool = require("../config/db");
 
+const parseBoolean = (value) => {
+    if (typeof value === "boolean") return value;
+    return String(value || "").trim().toLowerCase() === "true";
+};
+
+
 // =========================================================
 // FIXED MATCH FORMAT
 // =========================================================
@@ -158,9 +164,9 @@ const distributeIntoPools = (participants, poolCount) => {
 
     const poolSize = participants.length / poolCount;
 
-    if (poolSize < 4) {
+    if (poolSize < 2) {
         throw new Error(
-            `Each pool must contain at least 4 participants.`
+            `Each pool must contain at least 2 participants.`
         );
     }
 
@@ -231,83 +237,51 @@ const generateMatchesForParticipantCount = (
     participants,
     matchesPerParticipant
 ) => {
-    const participantCount = participants.length;
+    const target = Number(matchesPerParticipant);
 
-    if (participantCount < 2) {
-        throw new Error(
-            "At least 2 participants are required for fixture generation."
-        );
+    if (!Number.isInteger(target) || target < 1) {
+        throw new Error("Matches per team must be at least 1.");
     }
 
-    if (
-        matchesPerParticipant < 1 ||
-        matchesPerParticipant > participantCount - 1
-    ) {
-        if (!(participantCount === 4 && matchesPerParticipant === 4)) {
-            throw new Error(
-                `A participant can play at most ${participantCount - 1} unique opponents in this group.`
-            );
-        }
+    if (participants.length < 2) {
+        throw new Error("At least 2 participants are required for fixture generation.");
     }
 
-    // Four-team Men's pool: each team has only 3 unique opponents.
-    // Repeat one balanced pairing so every team plays exactly 4 matches.
-    if (participantCount === 4 && matchesPerParticipant === 4) {
-        const [a, b, c, d] = participants;
-        return [
-            { participantA: a, participantB: b },
-            { participantA: c, participantB: d },
-            { participantA: a, participantB: c },
-            { participantA: b, participantB: d },
-            { participantA: a, participantB: d },
-            { participantA: b, participantB: c },
-            { participantA: a, participantB: b },
-            { participantA: c, participantB: d },
-        ];
-    }
+    const counts = new Map(
+        participants.map((participant) => [String(participant.id), 0])
+    );
+    const selected = [];
+    let cycle = 0;
 
-    // For odd-sized pools, an equal number of matches for every
-    // participant is possible when matchesPerParticipant is even.
-    // The circular-offset construction gives every participant exactly
-    // the requested number of unique opponents.
-    if (
-        participantCount % 2 !== 0 &&
-        matchesPerParticipant % 2 !== 0
-    ) {
-        throw new Error(
-            `A pool with ${participantCount} participants cannot give every participant exactly ${matchesPerParticipant} matches.`
-        );
-    }
+    while ([...counts.values()].some((count) => count < target)) {
+        const rounds = generateRoundRobinRounds(shuffleArray(participants));
+        let addedThisCycle = false;
 
-    if (participantCount % 2 !== 0) {
-        const matches = [];
-        const seen = new Set();
-        const maxDistance = matchesPerParticipant / 2;
+        for (const round of rounds) {
+            for (const match of round) {
+                const aKey = String(match.participantA.id);
+                const bKey = String(match.participantB.id);
 
-        for (let i = 0; i < participantCount; i += 1) {
-            for (let distance = 1; distance <= maxDistance; distance += 1) {
-                const j = (i + distance) % participantCount;
-                const low = Math.min(i, j);
-                const high = Math.max(i, j);
-                const key = `${low}-${high}`;
-
-                if (seen.has(key)) continue;
-                seen.add(key);
-
-                matches.push({
-                    participantA: participants[i],
-                    participantB: participants[j],
-                });
+                if (counts.get(aKey) < target && counts.get(bKey) < target) {
+                    selected.push(match);
+                    counts.set(aKey, counts.get(aKey) + 1);
+                    counts.set(bKey, counts.get(bKey) + 1);
+                    addedThisCycle = true;
+                }
             }
         }
 
-        return matches;
+        cycle += 1;
+        if (!addedThisCycle || cycle > target + 2) break;
     }
 
-    const rounds = generateRoundRobinRounds(participants);
-    return rounds
-        .slice(0, matchesPerParticipant)
-        .flatMap((round) => round);
+    if ([...counts.values()].some((count) => count < target)) {
+        throw new Error(
+            "Unable to generate fixtures for the selected matches-per-team configuration."
+        );
+    }
+
+    return selected;
 };
 
 // =========================================================
@@ -478,138 +452,295 @@ const insertFixture = async ({
 };
 
 // =========================================================
-// RANDOM INITIAL FIXTURE GENERATION
+// FIXTURE SETUP
 // =========================================================
 
-const generateRandomFixtures = async (req, res, next) => {
+const getFixtureSetup = async (req, res, next) => {
     try {
         const tournamentId = Number(req.params.tournamentId);
 
-        if (!Number.isInteger(tournamentId)) {
+        if (!Number.isInteger(tournamentId) || tournamentId <= 0) {
             return res.status(400).json({
                 success: false,
                 message: "Invalid tournament ID.",
             });
         }
 
-        const tournament = await getTournament(tournamentId);
-
-        if (!tournament) {
-            return res.status(404).json({
-                success: false,
-                message: "Tournament not found.",
-            });
-        }
-
-        const format = getTournamentFormat(tournament);
-
-        if (!format) {
-            return res.status(400).json({
-                success: false,
-                message:
-                    "Tournament format must be Singles or Doubles.",
-            });
-        }
-
-        const registeredParticipantCount =
-            await getRegisteredParticipantCount(tournamentId);
-
-        const rules = getTournamentRules(
-            tournament,
-            registeredParticipantCount
-        );
-
-        const existingFixtures = await pool.query(
+        const result = await pool.query(
             `
-            SELECT id
-            FROM public.fixtures
+            SELECT
+                id,
+                tournament_id,
+                pool_count,
+                teams_per_pool,
+                group_matches_per_team,
+                super8_enabled,
+                super8_qualifiers,
+                created_at,
+                updated_at,
+                super8_matches_per_team
+            FROM public.tournament_fixture_settings
             WHERE tournament_id = $1
             LIMIT 1
             `,
             [tournamentId]
         );
 
-        if (existingFixtures.rows.length > 0) {
+        return res.status(200).json({
+            success: true,
+            setup: result.rows[0] || null,
+        });
+    } catch (error) {
+        console.error("Get Fixture Setup Error:", error);
+        next(error);
+    }
+};
+
+const saveFixtureSetup = async (req, res, next) => {
+    try {
+        const tournamentId = Number(req.params.tournamentId);
+        const { poolCount, groupMatchesPerTeam, super8Enabled, super8MatchesPerTeam } = req.body;
+
+        if (!Number.isInteger(tournamentId) || tournamentId <= 0) {
             return res.status(400).json({
                 success: false,
-                message:
-                    "Fixtures already generated for this tournament.",
+                message: "Invalid tournament ID.",
             });
         }
 
-        const participants = await getFixtureParticipants(
-            tournamentId,
-            format
+        const normalizedPoolCount = Number(poolCount);
+        const normalizedGroupMatches = Number(groupMatchesPerTeam);
+        const wantsSuper8 = parseBoolean(super8Enabled);
+        const normalizedSuper8Matches = Number(super8MatchesPerTeam);
+
+        if (!Number.isInteger(normalizedPoolCount) || normalizedPoolCount < 1) {
+            return res.status(400).json({
+                success: false,
+                message: "Number of pools must be at least 1.",
+            });
+        }
+
+        if (!Number.isInteger(normalizedGroupMatches) || normalizedGroupMatches < 1) {
+            return res.status(400).json({
+                success: false,
+                message: "Group-stage matches per team must be at least 1.",
+            });
+        }
+
+        if (wantsSuper8) {
+            if (!Number.isInteger(normalizedSuper8Matches) || normalizedSuper8Matches < 1) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Super 8 matches per team must be at least 1.",
+                });
+            }
+            if (![1, 2, 4, 8].includes(normalizedPoolCount)) {
+                return res.status(400).json({
+                    success: false,
+                    message: "When Super 8 is enabled, use 1, 2, 4, or 8 pools so exactly 8 teams can qualify evenly.",
+                });
+            }
+        }
+
+        const tournamentResult = await pool.query(
+            `
+            SELECT id, format
+            FROM public.tournaments
+            WHERE id = $1
+            LIMIT 1
+            `,
+            [tournamentId]
         );
 
-        const minimumParticipants = rules.poolCount * 4;
-
-        if (participants.length < minimumParticipants) {
-            return res.status(400).json({
+        if (tournamentResult.rows.length === 0) {
+            return res.status(404).json({
                 success: false,
-                message:
-                    `${rules.isWomen ? "Women's" : "Men's"} ${format} requires at least ${minimumParticipants} ${format === "Doubles" ? "teams" : "players"}.`,
+                message: "Tournament not found.",
             });
         }
 
-        if (participants.length % rules.poolCount !== 0) {
+        const format = getTournamentFormat(tournamentResult.rows[0]);
+        if (!format) {
             return res.status(400).json({
                 success: false,
-                message:
-                    `Participants must divide evenly across ${rules.poolCount} pools.`,
+                message: "Tournament format must be Singles or Doubles.",
             });
         }
 
-        const poolSize = participants.length / rules.poolCount;
+        const participants = await getFixtureParticipants(tournamentId, format);
+        const totalParticipants = participants.length;
 
-        // Four teams is valid for the Men's 4-match format because
-        // one opponent pairing is repeated to give every team 4 matches.
-        const minimumPoolSize = 4;
-
-        if (poolSize < minimumPoolSize) {
+        if (totalParticipants < 2) {
             return res.status(400).json({
                 success: false,
-                message:
-                    `Each pool must contain at least ${minimumPoolSize} ${format === "Doubles" ? "teams" : "players"} to play ${rules.matchesPerTeam} matches each.`,
+                message: "At least 2 teams/players are required before fixture setup.",
+            });
+        }
+
+        if (totalParticipants % normalizedPoolCount !== 0) {
+            return res.status(400).json({
+                success: false,
+                message: `${totalParticipants} teams/players cannot be divided equally into ${normalizedPoolCount} pools.`,
+            });
+        }
+
+        const teamsPerPool = totalParticipants / normalizedPoolCount;
+
+        if (teamsPerPool < 2) {
+            return res.status(400).json({
+                success: false,
+                message: "Each pool must contain at least 2 teams/players.",
+            });
+        }
+
+        if (wantsSuper8 && totalParticipants < 8) {
+            return res.status(400).json({
+                success: false,
+                message: "At least 8 teams/players are required for Super 8.",
+            });
+        }
+
+        const result = await pool.query(
+            `
+            INSERT INTO public.tournament_fixture_settings
+            (
+                tournament_id,
+                pool_count,
+                teams_per_pool,
+                group_matches_per_team,
+                super8_enabled,
+                super8_qualifiers,
+                super8_matches_per_team,
+                updated_at
+            )
+            VALUES ($1, $2, $3, $4, $5, 8, $6, CURRENT_TIMESTAMP)
+            ON CONFLICT (tournament_id)
+            DO UPDATE SET
+                pool_count = EXCLUDED.pool_count,
+                teams_per_pool = EXCLUDED.teams_per_pool,
+                group_matches_per_team = EXCLUDED.group_matches_per_team,
+                super8_enabled = EXCLUDED.super8_enabled,
+                super8_qualifiers = 8,
+                super8_matches_per_team = EXCLUDED.super8_matches_per_team,
+                updated_at = CURRENT_TIMESTAMP
+            RETURNING *
+            `,
+            [
+                tournamentId,
+                normalizedPoolCount,
+                teamsPerPool,
+                normalizedGroupMatches,
+                wantsSuper8,
+                wantsSuper8 ? normalizedSuper8Matches : null,
+            ]
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Fixture setup saved successfully.",
+            setup: result.rows[0],
+        });
+    } catch (error) {
+        console.error("Save Fixture Setup Error:", error);
+        next(error);
+    }
+};
+
+const getSavedFixtureSetup = async (tournamentId) => {
+    const result = await pool.query(
+        `
+        SELECT
+            pool_count,
+            teams_per_pool,
+            group_matches_per_team,
+            super8_enabled,
+            super8_qualifiers,
+            super8_matches_per_team
+        FROM public.tournament_fixture_settings
+        WHERE tournament_id = $1
+        LIMIT 1
+        `,
+        [tournamentId]
+    );
+    return result.rows[0] || null;
+};
+
+// =========================================================
+// RANDOM INITIAL FIXTURE GENERATION
+// =========================================================
+
+const generateRandomFixtures = async (req, res, next) => {
+    try {
+        const tournamentId = Number(req.params.tournamentId);
+        if (!Number.isInteger(tournamentId) || tournamentId <= 0) {
+            return res.status(400).json({ success: false, message: "Invalid tournament ID." });
+        }
+
+        const tournament = await getTournament(tournamentId);
+        if (!tournament) {
+            return res.status(404).json({ success: false, message: "Tournament not found." });
+        }
+
+        const format = getTournamentFormat(tournament);
+        if (!format) {
+            return res.status(400).json({ success: false, message: "Tournament format must be Singles or Doubles." });
+        }
+
+        const setup = await getSavedFixtureSetup(tournamentId);
+        if (!setup) {
+            return res.status(400).json({ success: false, message: "Fixture setup has not been configured yet." });
+        }
+
+        const existingFixtures = await pool.query(
+            `SELECT id FROM public.fixtures WHERE tournament_id = $1 LIMIT 1`,
+            [tournamentId]
+        );
+        if (existingFixtures.rows.length > 0) {
+            return res.status(400).json({ success: false, message: "Fixtures already generated for this tournament." });
+        }
+
+        const participants = await getFixtureParticipants(tournamentId, format);
+        const poolCount = Number(setup.pool_count);
+        const teamsPerPool = Number(setup.teams_per_pool);
+        const groupMatchesPerTeam = Number(setup.group_matches_per_team);
+        const super8Enabled = Boolean(setup.super8_enabled);
+        const super8MatchesPerTeam = super8Enabled ? Number(setup.super8_matches_per_team) : 0;
+
+        if (participants.length !== poolCount * teamsPerPool) {
+            return res.status(400).json({
+                success: false,
+                message: `The current participant/team count (${participants.length}) does not match the saved setup (${poolCount} × ${teamsPerPool}).`,
+            });
+        }
+
+        if (super8Enabled && (participants.length < 8 || ![1, 2, 4, 8].includes(poolCount))) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid Super 8 configuration.",
             });
         }
 
         const client = await pool.connect();
-
         try {
             await client.query("BEGIN");
-
-            const shuffled = shuffleArray(participants);
-            const pools = distributeIntoPools(
-                shuffled,
-                rules.poolCount
-            );
-
+            const pools = distributeIntoPools(shuffleArray(participants), poolCount);
             const generatedFixtures = [];
             const poolSummary = [];
 
             for (let poolIndex = 0; poolIndex < pools.length; poolIndex += 1) {
                 const poolName = `Pool ${String.fromCharCode(65 + poolIndex)}`;
-                const poolParticipants = pools[poolIndex];
-
-                const matches = generateMatchesForParticipantCount(
-                    poolParticipants,
-                    rules.matchesPerTeam
-                );
+                const matches = generateMatchesForParticipantCount(pools[poolIndex], groupMatchesPerTeam);
 
                 poolSummary.push({
                     pool: poolName,
-                    participantCount: poolParticipants.length,
-                    participantIds: poolParticipants.map(
-                        (participant) => participant.id
-                    ),
+                    participantCount: pools[poolIndex].length,
+                    participantIds: pools[poolIndex].map((participant) => participant.id),
                     matchCount: matches.length,
                 });
 
                 for (let index = 0; index < matches.length; index += 1) {
                     const match = matches[index];
-
-                    const fixture = await insertFixture({
+                    generatedFixtures.push(await insertFixture({
                         db: client,
                         tournamentId,
                         format,
@@ -619,10 +750,8 @@ const generateRandomFixtures = async (req, res, next) => {
                         matchNumber: index + 1,
                         participantAId: match.participantA.id,
                         participantBId: match.participantB.id,
-                        bestOf: rules.poolBestOf,
-                    });
-
-                    generatedFixtures.push(fixture);
+                        bestOf: POOL_BEST_OF,
+                    }));
                 }
             }
 
@@ -630,8 +759,15 @@ const generateRandomFixtures = async (req, res, next) => {
 
             return res.status(201).json({
                 success: true,
-                message: `Fixtures generated for ${rules.isWomen ? "women's" : "men's"} ${format} tournament.`,
-                configuration: rules,
+                message: "Pool fixtures generated successfully.",
+                configuration: {
+                    poolCount,
+                    teamsPerPool,
+                    groupMatchesPerTeam,
+                    super8Enabled,
+                    super8MatchesPerTeam: super8Enabled ? super8MatchesPerTeam : null,
+                    super8Qualifiers: super8Enabled ? 8 : 0,
+                },
                 pools: poolSummary,
                 fixtures: generatedFixtures,
             });
@@ -642,10 +778,7 @@ const generateRandomFixtures = async (req, res, next) => {
             client.release();
         }
     } catch (error) {
-        console.error(
-            "Generate Fixtures Error:",
-            error
-        );
+        console.error("Generate Fixtures Error:", error);
         next(error);
     }
 };
@@ -1128,165 +1261,88 @@ const calculateRankings = (fixtures, isDoubles) => {
 const generateNextRound = async (req, res, next) => {
     try {
         const tournamentId = Number(req.params.tournamentId);
-
-        if (!Number.isInteger(tournamentId)) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid tournament ID.",
-            });
+        if (!Number.isInteger(tournamentId) || tournamentId <= 0) {
+            return res.status(400).json({ success: false, message: "Invalid tournament ID." });
         }
 
         const tournament = await getTournament(tournamentId);
-
         if (!tournament) {
-            return res.status(404).json({
-                success: false,
-                message: "Tournament not found.",
-            });
+            return res.status(404).json({ success: false, message: "Tournament not found." });
         }
 
         const format = getTournamentFormat(tournament);
-
         if (!format) {
-            return res.status(400).json({
-                success: false,
-                message:
-                    "Tournament format must be Singles or Doubles.",
-            });
+            return res.status(400).json({ success: false, message: "Tournament format must be Singles or Doubles." });
         }
 
-        const registeredParticipantCount =
-            await getRegisteredParticipantCount(tournamentId);
+        const setup = await getSavedFixtureSetup(tournamentId);
+        if (!setup) {
+            return res.status(400).json({ success: false, message: "Fixture setup not found." });
+        }
 
-        const rules = getTournamentRules(
-            tournament,
-            registeredParticipantCount
-        );
-
-        const allFixturesResult = await pool.query(
-            `
-            SELECT *
-            FROM public.fixtures
-            WHERE tournament_id = $1
-            ORDER BY id ASC
-            `,
+        const result = await pool.query(
+            `SELECT * FROM public.fixtures WHERE tournament_id = $1 ORDER BY id ASC`,
             [tournamentId]
         );
-
-        const fixtures = allFixturesResult.rows;
-        const poolFixtures = fixtures.filter(
-            (fixture) => fixture.stage === "Pool"
-        );
-        const super8Fixtures = fixtures.filter(
-            (fixture) => fixture.stage === "Super 8"
-        );
-        const semifinalFixtures = fixtures.filter(
-            (fixture) => fixture.stage === "Semi Final"
-        );
+        const tournamentFixtures = result.rows;
+        const poolFixtures = tournamentFixtures.filter((fixture) => fixture.stage === "Pool");
+        const super8Fixtures = tournamentFixtures.filter((fixture) => fixture.stage === "Super 8");
+        const semifinalFixtures = tournamentFixtures.filter((fixture) => fixture.stage === "Semi Final");
+        const super8Enabled = Boolean(setup.super8_enabled);
+        const poolCount = Number(setup.pool_count);
+        const super8MatchesPerTeam = Number(setup.super8_matches_per_team);
 
         if (poolFixtures.length === 0) {
-            return res.status(400).json({
-                success: false,
-                message: "No pool fixtures found.",
-            });
+            return res.status(400).json({ success: false, message: "No pool fixtures found." });
         }
 
-        const poolIncomplete = poolFixtures.filter(
-            (fixture) => fixture.status !== "Completed"
-        );
-
-        if (poolIncomplete.length > 0) {
-            return res.status(400).json({
-                success: false,
-                message:
-                    "All pool matches must be completed before generating the next round.",
-                remainingMatches: poolIncomplete.length,
-            });
+        if (poolFixtures.some((fixture) => fixture.status !== "Completed")) {
+            return res.status(400).json({ success: false, message: "All pool matches must be completed before generating the next round." });
         }
 
         const client = await pool.connect();
-
         try {
             await client.query("BEGIN");
 
-            // --------------------------------------------------
-            // MEN'S: POOL -> SUPER 8
-            // --------------------------------------------------
-
-            if (rules.super8 && super8Fixtures.length === 0) {
-                const poolStandings = {};
+            // Pool -> Super 8
+            if (super8Enabled && super8Fixtures.length === 0) {
+                if (![1, 2, 4, 8].includes(poolCount)) {
+                    return await rollbackAndSend(client, res, 400, "When Super 8 is enabled, the pool count must be 1, 2, 4, or 8.");
+                }
 
                 const poolNames = Array.from(
-                    new Set(
-                        poolFixtures
-                            .map((fixture) => fixture.pool_name)
-                            .filter(Boolean)
-                    )
+                    new Set(poolFixtures.map((fixture) => fixture.pool_name).filter(Boolean))
                 ).sort();
 
-                if (poolNames.length !== 4) {
-                    return await rollbackAndSend(
-                        client,
-                        res,
-                        400,
-                        "Men's tournaments require exactly 4 pools."
-                    );
+                if (poolNames.length !== poolCount) {
+                    return await rollbackAndSend(client, res, 400, "The saved pool configuration does not match the generated fixtures.");
                 }
+
+                const qualifiersPerPool = 8 / poolCount;
+                const qualifiers = [];
 
                 for (const poolName of poolNames) {
-                    const poolRows = poolFixtures.filter(
-                        (fixture) =>
-                            fixture.pool_name === poolName
-                    );
-
                     const rankings = calculateRankings(
-                        poolRows,
+                        poolFixtures.filter((fixture) => fixture.pool_name === poolName),
                         format === "Doubles"
                     );
-
-                    if (rankings.length < 2) {
-                        return await rollbackAndSend(
-                            client,
-                            res,
-                            400,
-                            `${poolName} must have at least 2 participants.`
-                        );
+                    if (rankings.length < qualifiersPerPool) {
+                        return await rollbackAndSend(client, res, 400, `${poolName} does not have enough ranked participants.`);
                     }
-
-                    poolStandings[poolName] = rankings;
+                    qualifiers.push(...rankings.slice(0, qualifiersPerPool));
                 }
-
-                const qualifiers = poolNames.flatMap(
-                    (poolName) =>
-                        poolStandings[poolName].slice(
-                            0,
-                            rules.qualifiersPerPool
-                        )
-                );
 
                 if (qualifiers.length !== 8) {
-                    return await rollbackAndSend(
-                        client,
-                        res,
-                        400,
-                        "Exactly 8 teams/players must qualify for the Super 8."
-                    );
+                    return await rollbackAndSend(client, res, 400, "Exactly 8 teams/players must qualify for the Super 8.");
                 }
 
-                const matches = generateMatchesForParticipantCount(
-                    qualifiers.map((participant) => ({
-                        id: participant.id,
-                        name: String(participant.id),
-                    })),
-                    rules.super8MatchesPerTeam
-                );
-
+                const super8Participants = qualifiers.map((item) => ({ id: item.id, name: String(item.id) }));
+                const matches = generateMatchesForParticipantCount(super8Participants, super8MatchesPerTeam);
                 const generated = [];
 
                 for (let i = 0; i < matches.length; i += 1) {
                     const match = matches[i];
-
-                    const fixture = await insertFixture({
+                    generated.push(await insertFixture({
                         db: client,
                         tournamentId,
                         format,
@@ -1296,199 +1352,99 @@ const generateNextRound = async (req, res, next) => {
                         matchNumber: i + 1,
                         participantAId: match.participantA.id,
                         participantBId: match.participantB.id,
-                        bestOf: rules.super8BestOf,
-                    });
-
-                    generated.push(fixture);
+                        bestOf: SUPER8_BEST_OF,
+                    }));
                 }
 
                 await client.query("COMMIT");
-
-                return res.status(201).json({
-                    success: true,
-                    message:
-                        "Super 8 fixtures generated successfully.",
-                    fixtures: generated,
-                });
+                return res.status(201).json({ success: true, message: "Super 8 fixtures generated successfully.", fixtures: generated });
             }
 
-            // --------------------------------------------------
-            // MEN'S: SUPER 8 -> SEMI-FINALS
-            // --------------------------------------------------
-
-            if (
-                rules.super8 &&
-                super8Fixtures.length > 0 &&
-                semifinalFixtures.length === 0
-            ) {
-                const super8Incomplete = super8Fixtures.filter(
-                    (fixture) => fixture.status !== "Completed"
-                );
-
-                if (super8Incomplete.length > 0) {
+            // Super 8 -> Semi Finals
+            if (super8Enabled && super8Fixtures.length > 0 && semifinalFixtures.length === 0) {
+                if (super8Fixtures.some((fixture) => fixture.status !== "Completed")) {
                     await client.query("ROLLBACK");
-                    return res.status(400).json({
-                        success: false,
-                        message:
-                            "All Super 8 matches must be completed before generating the semi-finals.",
-                        remainingMatches:
-                            super8Incomplete.length,
-                    });
+                    return res.status(400).json({ success: false, message: "All Super 8 matches must be completed before generating the semi-finals." });
                 }
 
-                const rankings = calculateRankings(
-                    super8Fixtures,
-                    format === "Doubles"
-                );
-
+                const rankings = calculateRankings(super8Fixtures, format === "Doubles");
                 if (rankings.length !== 8) {
                     await client.query("ROLLBACK");
-                    return res.status(400).json({
-                        success: false,
-                        message:
-                            "The Super 8 must contain exactly 8 participants before generating the semi-finals.",
-                    });
+                    return res.status(400).json({ success: false, message: "The Super 8 must contain exactly 8 participants before generating the semi-finals." });
                 }
 
-                const semifinalParticipants = [
-                    rankings[0],
-                    rankings[1],
-                    rankings[2],
-                    rankings[3],
-                ];
-
                 const semifinalMatches = [
-                    [
-                        semifinalParticipants[0].id,
-                        semifinalParticipants[3].id,
-                    ],
-                    [
-                        semifinalParticipants[1].id,
-                        semifinalParticipants[2].id,
-                    ],
+                    [rankings[0].id, rankings[3].id],
+                    [rankings[1].id, rankings[2].id],
                 ];
-
                 const generated = [];
 
                 for (let i = 0; i < semifinalMatches.length; i += 1) {
-                    const [participantAId, participantBId] =
-                        semifinalMatches[i];
-
-                    const fixture = await insertFixture({
+                    generated.push(await insertFixture({
                         db: client,
                         tournamentId,
                         format,
                         stage: "Semi Final",
                         round: "Semi Final",
                         matchNumber: i + 1,
-                        participantAId,
-                        participantBId,
-                        bestOf: rules.semiFinalBestOf,
-                    });
-
-                    generated.push(fixture);
+                        participantAId: semifinalMatches[i][0],
+                        participantBId: semifinalMatches[i][1],
+                        bestOf: KNOCKOUT_BEST_OF,
+                    }));
                 }
 
                 await client.query("COMMIT");
-
-                return res.status(201).json({
-                    success: true,
-                    message:
-                        "Semi-final fixtures generated successfully.",
-                    fixtures: generated,
-                });
+                return res.status(201).json({ success: true, message: "Semi-final fixtures generated successfully.", fixtures: generated });
             }
 
-            // --------------------------------------------------
-            // WOMEN'S: POOL -> SEMI-FINALS
-            // --------------------------------------------------
+            // No Super 8 -> Top 4 overall -> Semi Finals
+            if (!super8Enabled && semifinalFixtures.length === 0) {
+                const allRanked = [];
+                const poolNames = Array.from(new Set(poolFixtures.map((fixture) => fixture.pool_name).filter(Boolean))).sort();
 
-            if (!rules.super8 && semifinalFixtures.length === 0) {
-                const poolNames = Array.from(
-                    new Set(
-                        poolFixtures
-                            .map((fixture) => fixture.pool_name)
-                            .filter(Boolean)
-                    )
-                ).sort();
-
-                if (poolNames.length !== 2) {
-                    return await rollbackAndSend(
-                        client,
-                        res,
-                        400,
-                        "Women's tournaments require exactly 2 pools."
+                for (const poolName of poolNames) {
+                    const rankings = calculateRankings(
+                        poolFixtures.filter((fixture) => fixture.pool_name === poolName),
+                        format === "Doubles"
                     );
+                    allRanked.push(...rankings);
                 }
 
-                const rankedA = calculateRankings(
-                    poolFixtures.filter(
-                        (fixture) =>
-                            fixture.pool_name === poolNames[0]
-                    ),
-                    format === "Doubles"
+                allRanked.sort(
+                    (a, b) =>
+                        b.points - a.points ||
+                        b.wins - a.wins ||
+                        b.difference - a.difference ||
+                        String(a.id).localeCompare(String(b.id))
                 );
 
-                const rankedB = calculateRankings(
-                    poolFixtures.filter(
-                        (fixture) =>
-                            fixture.pool_name === poolNames[1]
-                    ),
-                    format === "Doubles"
-                );
-
-                if (rankedA.length < 2 || rankedB.length < 2) {
-                    return await rollbackAndSend(
-                        client,
-                        res,
-                        400,
-                        "Each pool must have at least 2 participants."
-                    );
+                const topFour = allRanked.slice(0, 4);
+                if (topFour.length !== 4) {
+                    await client.query("ROLLBACK");
+                    return res.status(400).json({ success: false, message: "At least 4 qualified teams/players are required for the semi-finals." });
                 }
-
-                const semifinalMatches = [
-                    [rankedA[0].id, rankedB[1].id],
-                    [rankedB[0].id, rankedA[1].id],
-                ];
 
                 const generated = [];
-
-                for (let i = 0; i < semifinalMatches.length; i += 1) {
-                    const [participantAId, participantBId] =
-                        semifinalMatches[i];
-
-                    const fixture = await insertFixture({
+                for (let i = 0; i < 4; i += 2) {
+                    generated.push(await insertFixture({
                         db: client,
                         tournamentId,
                         format,
                         stage: "Semi Final",
                         round: "Semi Final",
-                        matchNumber: i + 1,
-                        participantAId,
-                        participantBId,
-                        bestOf: rules.semiFinalBestOf,
-                    });
-
-                    generated.push(fixture);
+                        matchNumber: i / 2 + 1,
+                        participantAId: topFour[i].id,
+                        participantBId: topFour[i + 1].id,
+                        bestOf: KNOCKOUT_BEST_OF,
+                    }));
                 }
 
                 await client.query("COMMIT");
-
-                return res.status(201).json({
-                    success: true,
-                    message:
-                        "Semi-final fixtures generated successfully.",
-                    fixtures: generated,
-                });
+                return res.status(201).json({ success: true, message: "Semi-final fixtures generated successfully.", fixtures: generated });
             }
 
             await client.query("ROLLBACK");
-
-            return res.status(400).json({
-                success: false,
-                message:
-                    "The next round is not available yet or has already been generated.",
-            });
+            return res.status(400).json({ success: false, message: "The next round is not available yet or has already been generated." });
         } catch (error) {
             await client.query("ROLLBACK");
             throw error;
@@ -1496,25 +1452,14 @@ const generateNextRound = async (req, res, next) => {
             client.release();
         }
     } catch (error) {
-        console.error(
-            "Generate Next Round Error:",
-            error
-        );
+        console.error("Generate Next Round Error:", error);
         next(error);
     }
 };
 
-const rollbackAndSend = async (
-    client,
-    res,
-    status,
-    message
-) => {
+const rollbackAndSend = async (client, res, status, message) => {
     await client.query("ROLLBACK");
-    return res.status(status).json({
-        success: false,
-        message,
-    });
+    return res.status(status).json({ success: false, message });
 };
 
 // =========================================================
@@ -1551,13 +1496,6 @@ const generateFinal = async (req, res, next) => {
             });
         }
 
-        const registeredParticipantCount =
-            await getRegisteredParticipantCount(tournamentId);
-
-        const rules = getTournamentRules(
-            tournament,
-            registeredParticipantCount
-        );
 
         const existingFinal = await pool.query(
             `
@@ -1647,7 +1585,7 @@ const generateFinal = async (req, res, next) => {
             matchNumber: 1,
             participantAId: winnerA,
             participantBId: winnerB,
-            bestOf: rules.finalBestOf,
+            bestOf: KNOCKOUT_BEST_OF,
         });
 
         return res.status(201).json({
@@ -2011,4 +1949,6 @@ module.exports = {
     swapUpcomingFixtureSides,
     generateNextRound,
     generateFinal,
+    getFixtureSetup,
+    saveFixtureSetup,
 };
