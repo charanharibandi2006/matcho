@@ -720,38 +720,155 @@ const generateRandomFixtures = async (req, res, next) => {
             });
         }
 
+        // Pool membership must be decided before fixtures are generated.
+        // The organizer can either save it manually or generate it randomly
+        // from the pool-assignment UI.
+        const poolRows = await getPoolParticipantRows(
+            tournamentId,
+            format
+        );
+
+        if (poolRows.length !== participants.length) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "All teams/players must be assigned to pools before generating fixtures.",
+            });
+        }
+
+        const participantMap = new Map(
+            participants.map((participant) => [
+                String(participant.id),
+                participant,
+            ])
+        );
+
+        const pools = Array.from(
+            { length: poolCount },
+            (_, index) => ({
+                poolNumber: index + 1,
+                participants: [],
+            })
+        );
+
+        const seenParticipants = new Set();
+
+        for (const row of poolRows) {
+            const participantId =
+                format === "Doubles"
+                    ? row.team_id
+                    : row.player_id;
+
+            const poolNumber = Number(row.pool_number);
+
+            if (
+                !Number.isInteger(poolNumber) ||
+                poolNumber < 1 ||
+                poolNumber > poolCount
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid pool assignment found.",
+                });
+            }
+
+            const participant =
+                participantMap.get(String(participantId));
+
+            if (!participant) {
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "A saved pool member no longer exists.",
+                });
+            }
+
+            if (seenParticipants.has(String(participantId))) {
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "A team/player cannot belong to more than one pool.",
+                });
+            }
+
+            seenParticipants.add(String(participantId));
+
+            pools[poolNumber - 1].participants.push(
+                participant
+            );
+        }
+
+        if (seenParticipants.size !== participants.length) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Every team/player must be assigned to exactly one pool.",
+            });
+        }
+
+        for (const poolData of pools) {
+            if (poolData.participants.length !== teamsPerPool) {
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        `Pool ${String.fromCharCode(65 + poolData.poolNumber - 1)} must contain exactly ${teamsPerPool} teams/players.`,
+                });
+            }
+        }
+
         const client = await pool.connect();
         try {
             await client.query("BEGIN");
-            const pools = distributeIntoPools(shuffleArray(participants), poolCount);
             const generatedFixtures = [];
             const poolSummary = [];
 
             for (let poolIndex = 0; poolIndex < pools.length; poolIndex += 1) {
-                const poolName = `Pool ${String.fromCharCode(65 + poolIndex)}`;
-                const matches = generateMatchesForParticipantCount(pools[poolIndex], groupMatchesPerTeam);
+                const poolName =
+                    `Pool ${String.fromCharCode(65 + poolIndex)}`;
+
+                const poolParticipants =
+                    pools[poolIndex].participants;
+
+                const matches =
+                    generateMatchesForParticipantCount(
+                        poolParticipants,
+                        groupMatchesPerTeam
+                    );
 
                 poolSummary.push({
                     pool: poolName,
-                    participantCount: pools[poolIndex].length,
-                    participantIds: pools[poolIndex].map((participant) => participant.id),
+                    participantCount:
+                        poolParticipants.length,
+                    participantIds:
+                        poolParticipants.map(
+                            (participant) => participant.id
+                        ),
                     matchCount: matches.length,
                 });
 
-                for (let index = 0; index < matches.length; index += 1) {
+                for (
+                    let index = 0;
+                    index < matches.length;
+                    index += 1
+                ) {
                     const match = matches[index];
-                    generatedFixtures.push(await insertFixture({
-                        db: client,
-                        tournamentId,
-                        format,
-                        stage: "Pool",
-                        poolName,
-                        round: "Pool Match",
-                        matchNumber: index + 1,
-                        participantAId: match.participantA.id,
-                        participantBId: match.participantB.id,
-                        bestOf: POOL_BEST_OF,
-                    }));
+
+                    generatedFixtures.push(
+                        await insertFixture({
+                            db: client,
+                            tournamentId,
+                            format,
+                            stage: "Pool",
+                            poolName,
+                            round: "Pool Match",
+                            matchNumber: index + 1,
+                            participantAId:
+                                match.participantA.id,
+                            participantBId:
+                                match.participantB.id,
+                            bestOf: POOL_BEST_OF,
+                        })
+                    );
                 }
             }
 
@@ -759,14 +876,19 @@ const generateRandomFixtures = async (req, res, next) => {
 
             return res.status(201).json({
                 success: true,
-                message: "Pool fixtures generated successfully.",
+                message:
+                    "Pool fixtures generated successfully.",
                 configuration: {
                     poolCount,
                     teamsPerPool,
                     groupMatchesPerTeam,
                     super8Enabled,
-                    super8MatchesPerTeam: super8Enabled ? super8MatchesPerTeam : null,
-                    super8Qualifiers: super8Enabled ? 8 : 0,
+                    super8MatchesPerTeam:
+                        super8Enabled
+                            ? super8MatchesPerTeam
+                            : null,
+                    super8Qualifiers:
+                        super8Enabled ? 8 : 0,
                 },
                 pools: poolSummary,
                 fixtures: generatedFixtures,
@@ -1942,6 +2064,753 @@ const swapUpcomingFixtureSides = async (req, res, next) => {
     }
 };
 
+// =========================================================
+// POOL ASSIGNMENT HELPERS
+// =========================================================
+
+const getPoolParticipantRows = async (
+    tournamentId,
+    format
+) => {
+    const result = await pool.query(
+        `
+        SELECT
+            tpm.id,
+            tpm.tournament_id,
+            tpm.pool_number,
+            tpm.team_id,
+            tpm.player_id,
+
+            CASE
+                WHEN $2 = 'Doubles'
+                    THEN t.team_name
+                ELSE COALESCE(u.full_name, tr.participant_name)
+            END AS participant_name
+
+        FROM public.tournament_pool_members tpm
+
+        LEFT JOIN public.teams t
+            ON t.id = tpm.team_id
+
+        LEFT JOIN public.users u
+            ON u.id = tpm.player_id
+
+        LEFT JOIN public.tournament_registrations tr
+            ON tr.tournament_id = tpm.tournament_id
+            AND tr.player_id = tpm.player_id
+
+        WHERE tpm.tournament_id = $1
+
+        ORDER BY
+            tpm.pool_number ASC,
+            tpm.id ASC
+        `,
+        [tournamentId, format]
+    );
+
+    return result.rows;
+};
+
+
+// =========================================================
+// VALIDATE SAVED POOLS
+// =========================================================
+
+const validatePoolAssignments = async (
+    tournamentId,
+    format,
+    pools,
+    setup
+) => {
+    const participants =
+        await getFixtureParticipants(
+            tournamentId,
+            format
+        );
+
+    const expectedTotal =
+        participants.length;
+
+    const poolCount =
+        Number(setup.pool_count);
+
+    const teamsPerPool =
+        Number(setup.teams_per_pool);
+
+    if (
+        !Number.isInteger(poolCount) ||
+        poolCount < 1
+    ) {
+        throw new Error(
+            "Invalid pool count."
+        );
+    }
+
+    if (
+        !Number.isInteger(teamsPerPool) ||
+        teamsPerPool < 2
+    ) {
+        throw new Error(
+            "Invalid teams per pool."
+        );
+    }
+
+    if (
+        !Array.isArray(pools) ||
+        pools.length !== poolCount
+    ) {
+        throw new Error(
+            `Exactly ${poolCount} pools are required.`
+        );
+    }
+
+    const validIds = new Set(
+        participants.map(
+            (participant) =>
+                String(participant.id)
+        )
+    );
+
+    const seen = new Set();
+
+    for (
+        const poolData of pools
+    ) {
+
+        if (
+            !Number.isInteger(
+                Number(poolData.poolNumber)
+            )
+        ) {
+            throw new Error(
+                "Invalid pool number."
+            );
+        }
+
+        const memberIds =
+            Array.isArray(
+                poolData.participantIds
+            )
+                ? poolData.participantIds
+                : [];
+
+        if (
+            memberIds.length !==
+            teamsPerPool
+        ) {
+            throw new Error(
+                `Pool ${poolData.poolNumber} must contain exactly ${teamsPerPool} teams/players.`
+            );
+        }
+
+        for (
+            const rawId of memberIds
+        ) {
+
+            const id =
+                String(rawId);
+
+            if (
+                !validIds.has(id)
+            ) {
+                throw new Error(
+                    `Invalid team/player ID: ${rawId}`
+                );
+            }
+
+            if (
+                seen.has(id)
+            ) {
+                throw new Error(
+                    "A team/player cannot belong to more than one pool."
+                );
+            }
+
+            seen.add(id);
+        }
+    }
+
+    if (
+        seen.size !==
+        expectedTotal
+    ) {
+        throw new Error(
+            `All ${expectedTotal} teams/players must be assigned to a pool.`
+        );
+    }
+
+    return participants;
+};
+
+
+// =========================================================
+// GET POOL ASSIGNMENTS
+// =========================================================
+
+const getPoolAssignments = async (
+    req,
+    res,
+    next
+) => {
+
+    try {
+
+        const tournamentId =
+            Number(
+                req.params.tournamentId
+            );
+
+        if (
+            !Number.isInteger(
+                tournamentId
+            ) ||
+            tournamentId <= 0
+        ) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Invalid tournament ID."
+            });
+        }
+
+        const tournament =
+            await getTournament(
+                tournamentId
+            );
+
+        if (!tournament) {
+            return res.status(404).json({
+                success: false,
+                message:
+                    "Tournament not found."
+            });
+        }
+
+        const format =
+            getTournamentFormat(
+                tournament
+            );
+
+        if (!format) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Tournament format must be Singles or Doubles."
+            });
+        }
+
+        const setup =
+            await getSavedFixtureSetup(
+                tournamentId
+            );
+
+        if (!setup) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Fixture setup must be configured first."
+            });
+        }
+
+        const rows =
+            await getPoolParticipantRows(
+                tournamentId,
+                format
+            );
+
+        const poolCount =
+            Number(setup.pool_count);
+
+        const pools =
+            Array.from(
+                { length: poolCount },
+                (_, index) => ({
+                    poolNumber: index + 1,
+                    members: []
+                })
+            );
+
+        rows.forEach((row) => {
+
+            const pool =
+                pools.find(
+                    (item) =>
+                        item.poolNumber ===
+                        Number(row.pool_number)
+                );
+
+            if (!pool) return;
+
+            pool.members.push({
+                id:
+                    format === "Doubles"
+                        ? row.team_id
+                        : row.player_id,
+
+                name:
+                    row.participant_name ||
+                    "Unnamed",
+
+                type: format === "Doubles"
+                    ? "team"
+                    : "player"
+            });
+        });
+
+        return res.status(200).json({
+            success: true,
+            tournamentId,
+            poolCount,
+            teamsPerPool:
+                Number(setup.teams_per_pool),
+            pools
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Get Pool Assignments Error:",
+            error
+        );
+
+        next(error);
+    }
+};
+
+
+// =========================================================
+// RANDOM POOL ASSIGNMENT
+// =========================================================
+
+const randomizePoolAssignments = async (
+    req,
+    res,
+    next
+) => {
+
+    const client =
+        await pool.connect();
+
+    try {
+
+        const tournamentId =
+            Number(
+                req.params.tournamentId
+            );
+
+        const tournament =
+            await getTournament(
+                tournamentId
+            );
+
+        if (!tournament) {
+            return res.status(404).json({
+                success: false,
+                message:
+                    "Tournament not found."
+            });
+        }
+
+        const format =
+            getTournamentFormat(
+                tournament
+            );
+
+        const setup =
+            await getSavedFixtureSetup(
+                tournamentId
+            );
+
+        if (!setup) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Save the fixture setup first."
+            });
+        }
+
+        const existingFixtures =
+            await pool.query(
+                `
+                SELECT id
+                FROM public.fixtures
+                WHERE tournament_id = $1
+                LIMIT 1
+                `,
+                [tournamentId]
+            );
+
+        if (
+            existingFixtures.rows.length
+        ) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Pools cannot be changed after fixtures have been generated."
+            });
+        }
+
+        const participants =
+            await getFixtureParticipants(
+                tournamentId,
+                format
+            );
+
+        const poolCount =
+            Number(setup.pool_count);
+
+        const teamsPerPool =
+            Number(setup.teams_per_pool);
+
+        if (
+            participants.length !==
+            poolCount * teamsPerPool
+        ) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Current team/player count does not match the saved fixture setup."
+            });
+        }
+
+        const shuffled =
+            shuffleArray(
+                participants
+            );
+
+        await client.query(
+            "BEGIN"
+        );
+
+        await client.query(
+            `
+            DELETE FROM public.tournament_pool_members
+            WHERE tournament_id = $1
+            `,
+            [tournamentId]
+        );
+
+        for (
+            let i = 0;
+            i < shuffled.length;
+            i++
+        ) {
+
+            const poolNumber =
+                Math.floor(
+                    i / teamsPerPool
+                ) + 1;
+
+            const participant =
+                shuffled[i];
+
+            if (
+                format === "Doubles"
+            ) {
+
+                await client.query(
+                    `
+                    INSERT INTO public.tournament_pool_members
+                    (
+                        tournament_id,
+                        pool_number,
+                        team_id
+                    )
+                    VALUES ($1, $2, $3)
+                    `,
+                    [
+                        tournamentId,
+                        poolNumber,
+                        participant.id
+                    ]
+                );
+
+            } else {
+
+                await client.query(
+                    `
+                    INSERT INTO public.tournament_pool_members
+                    (
+                        tournament_id,
+                        pool_number,
+                        player_id
+                    )
+                    VALUES ($1, $2, $3)
+                    `,
+                    [
+                        tournamentId,
+                        poolNumber,
+                        participant.id
+                    ]
+                );
+            }
+        }
+
+        await client.query(
+            "COMMIT"
+        );
+
+        return getPoolAssignments(
+            {
+                params: {
+                    tournamentId
+                }
+            },
+            res,
+            next
+        );
+
+    } catch (error) {
+
+        await client.query(
+            "ROLLBACK"
+        );
+
+        console.error(
+            "Random Pool Assignment Error:",
+            error
+        );
+
+        next(error);
+
+    } finally {
+
+        client.release();
+    }
+};
+
+
+// =========================================================
+// SAVE MANUAL POOL ASSIGNMENTS
+// =========================================================
+
+const savePoolAssignments = async (
+    req,
+    res,
+    next
+) => {
+
+    const client =
+        await pool.connect();
+
+    try {
+
+        const tournamentId =
+            Number(
+                req.params.tournamentId
+            );
+
+        const {
+            pools
+        } = req.body;
+
+        const tournament =
+            await getTournament(
+                tournamentId
+            );
+
+        if (!tournament) {
+            return res.status(404).json({
+                success: false,
+                message:
+                    "Tournament not found."
+            });
+        }
+
+        const format =
+            getTournamentFormat(
+                tournament
+            );
+
+        const setup =
+            await getSavedFixtureSetup(
+                tournamentId
+            );
+
+        if (!setup) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Save the fixture setup first."
+            });
+        }
+
+        const existingFixtures =
+            await pool.query(
+                `
+                SELECT id
+                FROM public.fixtures
+                WHERE tournament_id = $1
+                LIMIT 1
+                `,
+                [tournamentId]
+            );
+
+        if (
+            existingFixtures.rows.length
+        ) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Pool assignments cannot be changed after fixtures are generated."
+            });
+        }
+
+        await validatePoolAssignments(
+            tournamentId,
+            format,
+            pools,
+            setup
+        );
+
+        await client.query(
+            "BEGIN"
+        );
+
+        await client.query(
+            `
+            DELETE FROM public.tournament_pool_members
+            WHERE tournament_id = $1
+            `,
+            [tournamentId]
+        );
+
+        for (
+            const poolData of pools
+        ) {
+
+            for (
+                const participantId
+                of poolData.participantIds
+            ) {
+
+                if (
+                    format === "Doubles"
+                ) {
+
+                    await client.query(
+                        `
+                        INSERT INTO public.tournament_pool_members
+                        (
+                            tournament_id,
+                            pool_number,
+                            team_id
+                        )
+                        VALUES ($1, $2, $3)
+                        `,
+                        [
+                            tournamentId,
+                            Number(poolData.poolNumber),
+                            Number(participantId)
+                        ]
+                    );
+
+                } else {
+
+                    await client.query(
+                        `
+                        INSERT INTO public.tournament_pool_members
+                        (
+                            tournament_id,
+                            pool_number,
+                            player_id
+                        )
+                        VALUES ($1, $2, $3)
+                        `,
+                        [
+                            tournamentId,
+                            Number(poolData.poolNumber),
+                            Number(participantId)
+                        ]
+                    );
+                }
+            }
+        }
+
+        await client.query(
+            "COMMIT"
+        );
+
+        return getPoolAssignments(
+            {
+                params: {
+                    tournamentId
+                }
+            },
+            res,
+            next
+        );
+
+    } catch (error) {
+
+        await client.query(
+            "ROLLBACK"
+        );
+
+        console.error(
+            "Save Pool Assignments Error:",
+            error
+        );
+
+        return res.status(400).json({
+            success: false,
+            message:
+                error.message ||
+                "Unable to save pool assignments."
+        });
+
+    } finally {
+
+        client.release();
+    }
+};
+
+
+// =========================================================
+// CLEAR POOL ASSIGNMENTS
+// =========================================================
+
+const clearPoolAssignments = async (
+    req,
+    res,
+    next
+) => {
+
+    try {
+
+        const tournamentId =
+            Number(
+                req.params.tournamentId
+            );
+
+        const result =
+            await pool.query(
+                `
+                DELETE FROM public.tournament_pool_members
+                WHERE tournament_id = $1
+                `,
+                [tournamentId]
+            );
+
+        return res.status(200).json({
+            success: true,
+            message:
+                "Pool assignments cleared.",
+            deleted:
+                result.rowCount
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Clear Pool Assignments Error:",
+            error
+        );
+
+        next(error);
+    }
+};
+
 module.exports = {
     generateRandomFixtures,
     getFixturesByTournament,
@@ -1951,4 +2820,8 @@ module.exports = {
     generateFinal,
     getFixtureSetup,
     saveFixtureSetup,
+    getPoolAssignments,
+randomizePoolAssignments,
+savePoolAssignments,
+clearPoolAssignments,
 };

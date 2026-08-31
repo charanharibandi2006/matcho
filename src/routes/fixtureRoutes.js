@@ -6,6 +6,10 @@ const {
     generateRandomFixtures,
     getFixtureSetup,
     saveFixtureSetup,
+    getPoolAssignments,
+    randomizePoolAssignments,
+    savePoolAssignments,
+    clearPoolAssignments,
     getFixturesByTournament,
     updateFixtureScore,
     swapUpcomingFixtureSides,
@@ -50,6 +54,50 @@ router.post(
     authenticateUser,
     authorizeRoles("Organizer", "Admin"),
     generateRandomFixtures
+);
+
+// ==========================================
+// GET POOL ASSIGNMENTS
+// ==========================================
+
+router.get(
+    "/pools/:tournamentId",
+    authenticateUser,
+    authorizeRoles("Organizer", "Admin"),
+    getPoolAssignments
+);
+
+// ==========================================
+// RANDOMLY ASSIGN TEAMS / PLAYERS TO POOLS
+// ==========================================
+
+router.post(
+    "/pools/:tournamentId/random",
+    authenticateUser,
+    authorizeRoles("Organizer", "Admin"),
+    randomizePoolAssignments
+);
+
+// ==========================================
+// SAVE MANUAL POOL ASSIGNMENTS
+// ==========================================
+
+router.put(
+    "/pools/:tournamentId",
+    authenticateUser,
+    authorizeRoles("Organizer", "Admin"),
+    savePoolAssignments
+);
+
+// ==========================================
+// CLEAR POOL ASSIGNMENTS
+// ==========================================
+
+router.delete(
+    "/pools/:tournamentId",
+    authenticateUser,
+    authorizeRoles("Organizer", "Admin"),
+    clearPoolAssignments
 );
 
 // ==========================================
