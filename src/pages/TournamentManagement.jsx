@@ -480,6 +480,21 @@ const [loadingFixtures, setLoadingFixtures] = useState(false);
 const [fixtureError, setFixtureError] = useState("");
 const [fixtureSaving, setFixtureSaving] = useState(false);
 
+const [fixtureSetup, setFixtureSetup] = useState({
+  poolCount: 2,
+  teamsPerPool: 2,
+  groupMatchesPerTeam: 1,
+  super8Enabled: false,
+  super8MatchesPerTeam: 1,
+});
+
+const [fixtureSetupConfigured, setFixtureSetupConfigured] =
+  useState(false);
+const [fixtureSetupSaving, setFixtureSetupSaving] =
+  useState(false);
+const [fixtureSetupError, setFixtureSetupError] =
+  useState("");
+
 const [selectedFixture, setSelectedFixture] = useState(null);
 const [fixtureFilter, setFixtureFilter] =
   useState("all");
@@ -1759,6 +1774,60 @@ if (!Number.isInteger(playerAId) || !Number.isInteger(playerBId)) {
   }
 
   // =======================================================
+  // LOAD FIXTURE SETUP
+  // =======================================================
+
+  async function loadFixtureSetup(selectedTournamentId) {
+    if (!selectedTournamentId) {
+      setFixtureSetupConfigured(false);
+      setFixtureSetupError("");
+      return;
+    }
+
+    try {
+      setFixtureSetupError("");
+
+      const token = localStorage.getItem("matcho_token");
+
+      if (!token) {
+        setFixtureSetupConfigured(false);
+        return;
+      }
+
+      const result = await apiRequest(
+        `/fixtures/setup/${selectedTournamentId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (result?.setup) {
+        const saved = result.setup;
+
+        setFixtureSetup({
+          poolCount: Number(saved.pool_count),
+          teamsPerPool: Number(saved.teams_per_pool),
+          groupMatchesPerTeam: Number(saved.group_matches_per_team),
+          super8Enabled: Boolean(saved.super8_enabled),
+          super8MatchesPerTeam: saved.super8_matches_per_team
+            ? Number(saved.super8_matches_per_team)
+            : 1,
+        });
+
+        setFixtureSetupConfigured(true);
+      } else {
+        setFixtureSetupConfigured(false);
+      }
+    } catch (error) {
+      console.error("Load Fixture Setup Error:", error);
+      setFixtureSetupConfigured(false);
+    }
+  }
+
+  // =======================================================
   // TOURNAMENT CHANGE
   // =======================================================
 
@@ -1769,6 +1838,8 @@ if (!Number.isInteger(playerAId) || !Number.isInteger(playerBId)) {
   setParticipants([]);
   setFixtures([]);
   setFixtureError("");
+  setFixtureSetupError("");
+  setFixtureSetupConfigured(false);
   setActiveSection("overview");
 
   const selected = tournaments.find(
@@ -1815,6 +1886,12 @@ if (!Number.isInteger(playerAId) || !Number.isInteger(playerBId)) {
       loadFixtures(tournamentId);
     } else {
       setFixtures([]);
+    }
+  }, [tournamentId]);
+
+  useEffect(() => {
+    if (tournamentId) {
+      loadFixtureSetup(tournamentId);
     }
   }, [tournamentId]);
 
@@ -1930,56 +2007,44 @@ useEffect(() => {
 
   // =======================================================
   // FIXTURE CONFIGURATION
-  // Men's  -> 4 pools -> Super 8
-  // Women's -> 2 pools -> Semi-finals
+  // Organizer-controlled for every tournament.
+  // Group-stage matches and Super 8 matches are separate.
+  // Super 8 always qualifies exactly 8 teams/players.
   // =======================================================
-
- const category = String(
-  tournament?.category || ""
-).toLowerCase();
-
-const isWomen =
-  category.includes("women") ||
-  category.includes("female") ||
-  category.includes("girls");
 
 const isDoubles =
   String(tournament?.format || "")
-    .toLowerCase() === "doubles" ||
-  category.includes("doubles");
+    .toLowerCase() === "doubles";
 
-// Women's tournament changes to large format at 48+ registered participants
-const largeWomensFormat =
-  isWomen && participants.length >= 48;
-
-// Small women's format:
-//   2 pools → semifinals → final
-//
-// Large women's / men's format:
-//   4 pools → Super 8 → semifinals → final
-const poolCount =
-  isWomen && !largeWomensFormat
-    ? 2
-    : 4;
-
-const matchesPerTeam = !isWomen
-  ? 4
-  : largeWomensFormat
-    ? 4
-    : 3;
-const qualifiersPerPool = 2;
-
-const hasSuper8Format =
-  !isWomen || largeWomensFormat;
-
-// For doubles, fixtures are generated from teams.
-// For singles, from participants.
 const availableParticipants = isDoubles
   ? teams.length
   : participants.length;
 
-const minimumParticipants =
-  poolCount * 4;
+const poolCount = Number(
+  fixtureSetup.poolCount || 0
+);
+
+const calculatedTeamsPerPool =
+  poolCount > 0 && availableParticipants % poolCount === 0
+    ? availableParticipants / poolCount
+    : 0;
+
+const groupMatchesPerTeam = Number(
+  fixtureSetup.groupMatchesPerTeam || 0
+);
+
+const hasSuper8Format = Boolean(
+  fixtureSetup.super8Enabled
+);
+
+const super8MatchesPerTeam = Number(
+  fixtureSetup.super8MatchesPerTeam || 0
+);
+
+const qualifiersPerPool =
+  poolCount > 0 && 8 % poolCount === 0
+    ? 8 / poolCount
+    : 0;
 
   const poolFixtures = useMemo(
     () =>
@@ -2120,7 +2185,7 @@ const minimumParticipants =
     );
 
   const super8Complete =
-    super8Fixtures.length === 8 &&
+    super8Fixtures.length > 0 &&
     super8Fixtures.every(
       (fixture) => fixture.status === "Completed"
     );
@@ -2130,6 +2195,110 @@ const minimumParticipants =
     semifinalFixtures.every(
       (fixture) => fixture.status === "Completed"
     );
+
+  // =======================================================
+  // SAVE FIXTURE SETUP
+  // =======================================================
+
+  async function saveFixtureSetup() {
+    if (!tournamentId) {
+      setFixtureSetupError("Please select a tournament first.");
+      return;
+    }
+
+    if (!Number.isInteger(poolCount) || poolCount < 1) {
+      setFixtureSetupError("Number of pools must be at least 1.");
+      return;
+    }
+
+    if (!Number.isInteger(groupMatchesPerTeam) || groupMatchesPerTeam < 1) {
+      setFixtureSetupError("Group-stage matches per team must be at least 1.");
+      return;
+    }
+
+    if (!Number.isInteger(calculatedTeamsPerPool) || calculatedTeamsPerPool < 2) {
+      setFixtureSetupError(
+        `${availableParticipants} ${isDoubles ? "teams" : "players"} cannot be divided equally into ${poolCount} pools.`
+      );
+      return;
+    }
+
+    if (hasSuper8Format) {
+      if (availableParticipants < 8) {
+        setFixtureSetupError("At least 8 teams/players are required for Super 8.");
+        return;
+      }
+
+      if (!Number.isInteger(super8MatchesPerTeam) || super8MatchesPerTeam < 1) {
+        setFixtureSetupError("Super 8 matches per team must be at least 1.");
+        return;
+      }
+
+      if (8 % poolCount !== 0) {
+        setFixtureSetupError("For Super 8, use 1, 2, 4, or 8 pools.");
+        return;
+      }
+    }
+
+    try {
+      setFixtureSetupSaving(true);
+      setFixtureSetupError("");
+
+      const token = localStorage.getItem("matcho_token");
+      if (!token) {
+        throw new Error("Please login as an organizer.");
+      }
+
+      const result = await apiRequest(
+        `/fixtures/setup/${tournamentId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            poolCount,
+            groupMatchesPerTeam,
+            super8Enabled: hasSuper8Format,
+            super8MatchesPerTeam: hasSuper8Format
+              ? super8MatchesPerTeam
+              : null,
+          }),
+        }
+      );
+
+      if (!result?.success) {
+        throw new Error(
+          result?.message || "Unable to save fixture setup."
+        );
+      }
+
+      const saved = result.setup;
+
+      if (saved) {
+        setFixtureSetup({
+          poolCount: Number(saved.pool_count),
+          teamsPerPool: Number(saved.teams_per_pool),
+          groupMatchesPerTeam: Number(saved.group_matches_per_team),
+          super8Enabled: Boolean(saved.super8_enabled),
+          super8MatchesPerTeam: saved.super8_matches_per_team
+            ? Number(saved.super8_matches_per_team)
+            : 1,
+        });
+      }
+
+      setFixtureSetupConfigured(true);
+      setMessage("Fixture setup saved successfully.");
+    } catch (error) {
+      console.error("Save Fixture Setup Error:", error);
+      setFixtureSetupError(
+        error.message || "Unable to save fixture setup."
+      );
+    } finally {
+      setFixtureSetupSaving(false);
+    }
+  }
 
   // =======================================================
   // GENERATE INITIAL FIXTURES
@@ -2146,17 +2315,24 @@ const minimumParticipants =
       return;
     }
 
-    if (availableParticipants < minimumParticipants) {
-      setMessage(
-        `${isWomen ? "Women's" : "Men's"} format requires at least ${minimumParticipants} ${isDoubles ? "teams" : "players"}.`
+    if (!fixtureSetupConfigured) {
+      setFixtureError("Save the fixture setup before generating fixtures.");
+      setActiveSection("setup");
+      return;
+    }
+
+    if (!Number.isInteger(calculatedTeamsPerPool) || calculatedTeamsPerPool < 2) {
+      setFixtureError(
+        `${availableParticipants} ${isDoubles ? "teams" : "players"} do not divide evenly across ${poolCount} pools.`
       );
       return;
     }
 
-    if (availableParticipants % poolCount !== 0) {
-      setMessage(
-        `Participants must divide evenly across ${poolCount} pools.`
-      );
+    const confirmed = window.confirm(
+      `Generate fixtures with ${poolCount} pools, ${calculatedTeamsPerPool} ${isDoubles ? "teams" : "players"} per pool, ${groupMatchesPerTeam} group-stage matches per team${hasSuper8Format ? `, Super 8 enabled with ${super8MatchesPerTeam} matches per team, and exactly 8 qualifiers` : ", with no Super 8"}.`
+    );
+
+    if (!confirmed) {
       return;
     }
 
@@ -2178,16 +2354,6 @@ const minimumParticipants =
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            poolCount,
-            matchesPerTeam,
-            qualifiersPerPool,
-            super8: hasSuper8Format,
-            poolBestOf: 1,
-            super8BestOf: hasSuper8Format ? 1 : null,
-            semiFinalBestOf: 3,
-            finalBestOf: 3,
-          }),
         }
       );
 
@@ -2198,7 +2364,6 @@ const minimumParticipants =
       }
 
       await loadFixtures(tournamentId);
-      
       setActiveSection("fixtures");
     } catch (error) {
       console.error("Generate Fixtures Error:", error);
@@ -5666,50 +5831,199 @@ setEditError("");
 
                 </div>
 
-               <div className="tm-fixture-generator-simple">
+                <div className="tm-fixture-setup-box">
 
-  <div className="tm-generator-field">
+                  <div className="tm-fixture-setup-grid">
 
-    <label htmlFor="fixture-format">
-      Tournament Type
-    </label>
+                    <div className="tm-fixture-setup-field">
+                      <label htmlFor="fixture-pool-count">
+                        Number of Pools
+                      </label>
 
-    <select
-      id="fixture-format"
-      className="tm-select"
-      value={format}
-      onChange={(event) =>
-        setFormat(event.target.value)
-      }
-    >
-      <option value="Singles">
-        Singles
-      </option>
+                      <input
+                        id="fixture-pool-count"
+                        className="tm-input"
+                        type="number"
+                        min="1"
+                        step="1"
+                        value={fixtureSetup.poolCount}
+                        onChange={(event) =>
+                          setFixtureSetup((current) => ({
+                            ...current,
+                            poolCount: Number(event.target.value),
+                          }))
+                        }
+                        disabled={fixtures.length > 0 || fixtureSetupSaving}
+                      />
+                    </div>
 
-      <option value="Doubles">
-        Doubles
-      </option>
-    </select>
+                    <div className="tm-fixture-setup-field">
+                      <label htmlFor="fixture-group-matches">
+                        Group Stage Matches per Team
+                      </label>
 
-  </div>
+                      <input
+                        id="fixture-group-matches"
+                        className="tm-input"
+                        type="number"
+                        min="1"
+                        value={fixtureSetup.groupMatchesPerTeam}
+                        onChange={(event) =>
+                          setFixtureSetup((current) => ({
+                            ...current,
+                            groupMatchesPerTeam: Number(event.target.value),
+                          }))
+                        }
+                        disabled={fixtures.length > 0 || fixtureSetupSaving}
+                      />
+                    </div>
 
-  <button
-    type="button"
-    className="tm-primary-btn tm-generate-fixtures-btn"
-    disabled={
-      fixtureSaving ||
-      fixtures.length > 0
-    }
-    onClick={generate}
-  >
-    <Dices size={18} />
+                    <div className="tm-fixture-setup-field">
+                      <label htmlFor="fixture-super8">
+                        Super 8
+                      </label>
 
-    {fixtureSaving
-      ? "Generating Fixtures..."
-      : "Generate Fixtures"}
-  </button>
+                      <select
+                        id="fixture-super8"
+                        className="tm-select"
+                        value={fixtureSetup.super8Enabled ? "yes" : "no"}
+                        onChange={(event) =>
+                          setFixtureSetup((current) => ({
+                            ...current,
+                            super8Enabled: event.target.value === "yes",
+                          }))
+                        }
+                        disabled={fixtures.length > 0 || fixtureSetupSaving}
+                      >
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                      </select>
+                    </div>
 
-</div>
+                    {fixtureSetup.super8Enabled && (
+                      <div className="tm-fixture-setup-field">
+                        <label htmlFor="fixture-super8-matches">
+                          Super 8 Matches per Team
+                        </label>
+
+                        <input
+                          id="fixture-super8-matches"
+                          className="tm-input"
+                          type="number"
+                          min="1"
+                          value={fixtureSetup.super8MatchesPerTeam}
+                          onChange={(event) =>
+                            setFixtureSetup((current) => ({
+                              ...current,
+                              super8MatchesPerTeam: Number(event.target.value),
+                            }))
+                          }
+                          disabled={fixtures.length > 0 || fixtureSetupSaving}
+                        />
+                      </div>
+                    )}
+
+                  </div>
+
+                  <div className="tm-fixture-setup-summary">
+                    <div>
+                      <span>Total {isDoubles ? "Teams" : "Players"}</span>
+                      <strong>{availableParticipants}</strong>
+                    </div>
+
+                    <div>
+                      <span>Configured per Pool</span>
+                      <strong>
+                        {poolCount > 0 && calculatedTeamsPerPool > 0
+                          ? `${poolCount} × ${calculatedTeamsPerPool}`
+                          : "-"}
+                      </strong>
+                    </div>
+
+                    {fixtureSetup.super8Enabled && (
+                      <div>
+                        <span>Qualification</span>
+                        <strong>
+                          {qualifiersPerPool > 0
+                            ? `Top ${qualifiersPerPool} / pool → 8`
+                            : "Use 1, 2, 4, or 8 pools"}
+                        </strong>
+                      </div>
+                    )}
+                  </div>
+
+                  {fixtureSetupError && (
+                    <div className="tm-error">
+                      {fixtureSetupError}
+                    </div>
+                  )}
+
+                  {fixtureSetupConfigured && !fixtureSetupError && (
+                    <div className="tm-setup-saved-message">
+                      ✓ Fixture setup saved. You can generate fixtures now.
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    className="tm-primary-btn"
+                    onClick={saveFixtureSetup}
+                    disabled={
+                      fixtures.length > 0 ||
+                      fixtureSetupSaving
+                    }
+                  >
+                    {fixtureSetupSaving
+                      ? "Saving Setup..."
+                      : "Save Fixture Setup"}
+                  </button>
+
+                </div>
+
+                <div className="tm-fixture-generator-simple">
+
+                  <div className="tm-generator-field">
+                    <label htmlFor="fixture-format">
+                      Tournament Type
+                    </label>
+
+                    <select
+                      id="fixture-format"
+                      className="tm-select"
+                      value={format}
+                      onChange={(event) =>
+                        setFormat(event.target.value)
+                      }
+                    >
+                      <option value="Singles">
+                        Singles
+                      </option>
+
+                      <option value="Doubles">
+                        Doubles
+                      </option>
+                    </select>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="tm-primary-btn tm-generate-fixtures-btn"
+                    disabled={
+                      fixtureSaving ||
+                      fixtureSetupSaving ||
+                      fixtures.length > 0 ||
+                      !fixtureSetupConfigured
+                    }
+                    onClick={generate}
+                  >
+                    <Dices size={18} />
+
+                    {fixtureSaving
+                      ? "Generating Fixtures..."
+                      : "Generate Fixtures"}
+                  </button>
+
+                </div>
 
                 {fixtureError && (
                   <div className="tm-error">

@@ -7802,3 +7802,527 @@
   }
 }
 
+/* =========================================================
+   MATCHO - CONFIGURABLE FIXTURE SETUP
+   ========================================================= */
+
+.tm-fixture-setup-box {
+  width: 100%;
+  margin: 22px 0 22px;
+  padding: 22px;
+  box-sizing: border-box;
+
+  border: 1px solid #e7e3f0;
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 6px 20px rgba(25, 32, 58, 0.04);
+}
+
+.tm-fixture-setup-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+
+  margin-bottom: 18px;
+}
+
+.tm-fixture-setup-heading h4 {
+  margin: 0 0 5px;
+
+  color: #17213d;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.tm-fixture-setup-heading p {
+  margin: 0;
+
+  color: #929aaf;
+  font-family: "Poppins", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.tm-fixture-setup-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.tm-fixture-setup-field {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.tm-fixture-setup-field label {
+  color: #566079;
+  font-family: "Poppins", sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.tm-fixture-setup-field input,
+.tm-fixture-setup-field select {
+  width: 100%;
+  height: 44px;
+  box-sizing: border-box;
+
+  padding: 0 12px;
+
+  border: 1px solid #dfe3ee;
+  border-radius: 10px;
+
+  outline: none;
+
+  background: #fbfbfe;
+  color: #26304c;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.tm-fixture-setup-field input:hover,
+.tm-fixture-setup-field select:hover {
+  border-color: #cfc6f4;
+  background: #ffffff;
+}
+
+.tm-fixture-setup-field input:focus,
+.tm-fixture-setup-field select:focus {
+  border-color: #7040f5;
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 3px rgba(112, 64, 245, 0.08);
+}
+
+.tm-fixture-setup-field input[type="number"] {
+  appearance: auto;
+}
+
+.tm-fixture-setup-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  margin-top: 16px;
+  padding: 12px 14px;
+
+  border: 1px solid #e6defc;
+  border-radius: 10px;
+
+  background: #faf8ff;
+}
+
+.tm-fixture-setup-info strong {
+  color: #5631cb;
+  font-family: "Poppins", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.tm-fixture-setup-info span {
+  color: #7f88a0;
+  font-family: "Poppins", sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.tm-fixture-setup-box .tm-primary-btn {
+  margin-top: 17px;
+}
+
+.tm-fixture-setup-box .tm-error {
+  margin-top: 12px;
+}
+
+
+/* =========================================================
+   EXISTING GENERATE AREA
+   ========================================================= */
+
+.tm-fixture-generator-simple {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tm-generate-fixtures-btn {
+  min-width: 190px;
+}
+
+
+/* =========================================================
+   MOBILE FIXTURE SETUP
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .tm-fixture-setup-box {
+    margin-top: 16px;
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .tm-fixture-setup-heading {
+    margin-bottom: 15px;
+  }
+
+  .tm-fixture-setup-heading h4 {
+    font-size: 14px;
+  }
+
+  .tm-fixture-setup-heading p {
+    font-size: 9px;
+  }
+
+  .tm-fixture-setup-grid {
+    grid-template-columns: 1fr;
+    gap: 11px;
+  }
+
+  .tm-fixture-setup-field {
+    gap: 6px;
+  }
+
+  .tm-fixture-setup-field label {
+    font-size: 9px;
+  }
+
+  .tm-fixture-setup-field input,
+  .tm-fixture-setup-field select {
+    height: 42px;
+    font-size: 10px;
+    border-radius: 9px;
+  }
+
+  .tm-fixture-setup-info {
+    margin-top: 13px;
+    padding: 10px 12px;
+    border-radius: 9px;
+  }
+
+  .tm-fixture-setup-info strong {
+    font-size: 10px;
+  }
+
+  .tm-fixture-setup-info span {
+    font-size: 8px;
+  }
+
+  .tm-fixture-setup-box .tm-primary-btn {
+    width: 100%;
+    min-width: 0;
+    height: 44px;
+    margin-top: 14px;
+    font-size: 10px;
+  }
+
+  .tm-generate-fixtures-btn {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* =========================================================
+   FIXTURE SETUP - REFINED UI
+   ========================================================= */
+
+.tm-fixture-setup-box {
+  width: 100%;
+  box-sizing: border-box;
+
+  margin-top: 18px;
+  padding: 24px;
+
+  border: 1px solid #e5e7ef;
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 8px 24px rgba(25, 32, 58, 0.04);
+}
+
+/* ---------- FORM GRID ---------- */
+
+.tm-fixture-setup-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+/* ---------- FIELD ---------- */
+
+.tm-fixture-setup-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  min-width: 0;
+}
+
+.tm-fixture-setup-field label {
+  margin: 0;
+
+  color: #4f5870;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* ---------- INPUT + SELECT ---------- */
+
+.tm-fixture-setup-field .tm-input,
+.tm-fixture-setup-field .tm-select {
+  width: 100%;
+  height: 48px;
+
+  padding: 0 14px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #dfe3ed;
+  border-radius: 10px;
+
+  outline: none;
+
+  background: #ffffff;
+  color: #26304c;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+.tm-fixture-setup-field .tm-input:hover,
+.tm-fixture-setup-field .tm-select:hover {
+  border-color: #cfc5ff;
+  background: #fdfcff;
+}
+
+.tm-fixture-setup-field .tm-input:focus,
+.tm-fixture-setup-field .tm-select:focus {
+  border-color: #7040f5;
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 3px rgba(112, 64, 245, 0.08);
+}
+
+.tm-fixture-setup-field .tm-input:disabled,
+.tm-fixture-setup-field .tm-select:disabled {
+  background: #f7f7fa;
+  color: #969daf;
+  cursor: not-allowed;
+}
+
+/* ---------- NUMBER INPUT ---------- */
+
+.tm-fixture-setup-field input[type="number"] {
+  appearance: auto;
+}
+
+/* ---------- SUMMARY ---------- */
+
+.tm-fixture-setup-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 12px;
+
+  margin-top: 20px;
+}
+
+.tm-fixture-setup-summary > div {
+  min-height: 62px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 10px 14px;
+
+  border: 1px solid #ece9f7;
+  border-radius: 10px;
+
+  background: #faf9ff;
+}
+
+.tm-fixture-setup-summary span {
+  margin-bottom: 3px;
+
+  color: #969db0;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.tm-fixture-setup-summary strong {
+  color: #17213d;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+/* ---------- ERROR ---------- */
+
+.tm-fixture-setup-box .tm-error {
+  margin-top: 14px;
+
+  padding: 10px 13px;
+
+  border: 1px solid #f0d8dc;
+  border-radius: 9px;
+
+  background: #fff7f8;
+  color: #c44d5b;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* ---------- SAVED MESSAGE ---------- */
+
+.tm-setup-saved-message {
+  display: flex;
+  align-items: center;
+
+  margin-top: 14px;
+  padding: 10px 13px;
+
+  border: 1px solid #d9f0e2;
+  border-radius: 9px;
+
+  background: #f4fbf6;
+  color: #258252;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+/* ---------- SAVE BUTTON ---------- */
+
+.tm-fixture-setup-box > .tm-primary-btn {
+  min-width: 170px;
+  height: 46px;
+
+  margin-top: 18px;
+
+  padding: 0 20px;
+
+  border-radius: 10px;
+
+  font-size: 10px;
+}
+
+/* ---------- GENERATOR BELOW SETUP ---------- */
+
+.tm-fixture-generator-simple {
+  margin-top: 16px;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .tm-fixture-setup-box {
+    margin-top: 14px;
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .tm-fixture-setup-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .tm-fixture-setup-field {
+    gap: 6px;
+  }
+
+  .tm-fixture-setup-field label {
+    font-size: 9px;
+  }
+
+  .tm-fixture-setup-field .tm-input,
+  .tm-fixture-setup-field .tm-select {
+    height: 44px;
+
+    padding: 0 12px;
+
+    border-radius: 9px;
+
+    font-size: 10px;
+  }
+
+  .tm-fixture-setup-summary {
+    grid-template-columns: 1fr;
+    gap: 8px;
+
+    margin-top: 14px;
+  }
+
+  .tm-fixture-setup-summary > div {
+    min-height: 54px;
+    padding: 9px 12px;
+
+    border-radius: 9px;
+  }
+
+  .tm-fixture-setup-summary span {
+    font-size: 8px;
+  }
+
+  .tm-fixture-setup-summary strong {
+    font-size: 11px;
+  }
+
+  .tm-setup-saved-message {
+    margin-top: 11px;
+    padding: 9px 11px;
+
+    font-size: 9px;
+  }
+
+  .tm-fixture-setup-box > .tm-primary-btn {
+    width: 100%;
+    height: 44px;
+
+    margin-top: 13px;
+
+    font-size: 10px;
+  }
+}
