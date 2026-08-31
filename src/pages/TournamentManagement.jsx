@@ -495,6 +495,11 @@ const [fixtureSetupSaving, setFixtureSetupSaving] =
 const [fixtureSetupError, setFixtureSetupError] =
   useState("");
 
+const [poolAssignments, setPoolAssignments] = useState([]);
+const [poolAssignmentError, setPoolAssignmentError] = useState("");
+const [loadingPoolAssignments, setLoadingPoolAssignments] = useState(false);
+const [poolAssignmentSaving, setPoolAssignmentSaving] = useState(false);
+
 const [selectedFixture, setSelectedFixture] = useState(null);
 const [fixtureFilter, setFixtureFilter] =
   useState("all");
@@ -1827,6 +1832,272 @@ if (!Number.isInteger(playerAId) || !Number.isInteger(playerBId)) {
     }
   }
 
+
+  // =======================================================
+  // LOAD POOL ASSIGNMENTS
+  // =======================================================
+
+  async function loadPoolAssignments(selectedTournamentId) {
+    if (!selectedTournamentId) {
+      setPoolAssignments([]);
+      setPoolAssignmentError("");
+      return;
+    }
+
+    try {
+      setLoadingPoolAssignments(true);
+      setPoolAssignmentError("");
+
+      const token = localStorage.getItem("matcho_token");
+
+      if (!token) {
+        setPoolAssignments([]);
+        return;
+      }
+
+      const result = await apiRequest(
+        `/fixtures/pools/${selectedTournamentId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setPoolAssignments(
+        Array.isArray(result?.pools)
+          ? result.pools
+          : []
+      );
+    } catch (error) {
+      console.error("Load Pool Assignments Error:", error);
+      setPoolAssignments([]);
+    } finally {
+      setLoadingPoolAssignments(false);
+    }
+  }
+
+  async function randomizePools() {
+    if (!tournamentId) return;
+
+    try {
+      setPoolAssignmentSaving(true);
+      setPoolAssignmentError("");
+
+      const token = localStorage.getItem("matcho_token");
+
+      if (!token) {
+        throw new Error("Please login as an organizer.");
+      }
+
+      const result = await apiRequest(
+        `/fixtures/pools/${tournamentId}/random`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!result?.success) {
+        throw new Error(
+          result?.message ||
+          "Unable to randomly assign pools."
+        );
+      }
+
+      setPoolAssignments(
+        Array.isArray(result?.pools)
+          ? result.pools
+          : []
+      );
+      setMessage("Teams/players randomly assigned to pools.");
+    } catch (error) {
+      console.error("Random Pool Assignment Error:", error);
+      setPoolAssignmentError(
+        error.message ||
+        "Unable to randomly assign pools."
+      );
+    } finally {
+      setPoolAssignmentSaving(false);
+    }
+  }
+
+  function getPoolForParticipant(participantId) {
+    const pool = poolAssignments.find((item) =>
+      (item.members || []).some(
+        (member) => String(member.id) === String(participantId)
+      )
+    );
+
+    return pool ? Number(pool.poolNumber) : "";
+  }
+
+  function manuallyAssignParticipant(participantId, poolNumber) {
+    const targetPool = Number(poolNumber);
+
+    if (!targetPool) {
+      setPoolAssignments((current) =>
+        current.map((pool) => ({
+          ...pool,
+          members: (pool.members || []).filter(
+            (member) => String(member.id) !== String(participantId)
+          ),
+        }))
+      );
+      return;
+    }
+
+    const currentPool = getPoolForParticipant(participantId);
+
+    if (
+      currentPool &&
+      currentPool !== targetPool
+    ) {
+      const destination = poolAssignments.find(
+        (pool) => Number(pool.poolNumber) === targetPool
+      );
+
+      if (
+        destination &&
+        (destination.members || []).length >= calculatedTeamsPerPool
+      ) {
+        setPoolAssignmentError(
+          `Pool ${String.fromCharCode(64 + targetPool)} is already full.`
+        );
+        return;
+      }
+    }
+
+    setPoolAssignmentError("");
+
+    setPoolAssignments((currentPools) => {
+      const cleaned = currentPools.map((pool) => ({
+        ...pool,
+        members: (pool.members || []).filter(
+          (member) => String(member.id) !== String(participantId)
+        ),
+      }));
+
+      const target = cleaned.find(
+        (pool) => Number(pool.poolNumber) === targetPool
+      );
+
+      if (!target) return cleaned;
+
+      const list = isDoubles ? teams : participants;
+
+      const participant = list.find((item) => {
+        const id = isDoubles
+          ? item.id
+          : (item.player_id ?? item.id);
+        return String(id) === String(participantId);
+      });
+
+      if (!participant) return cleaned;
+
+      target.members.push({
+        id: participantId,
+        name: isDoubles
+          ? (participant.team_name || participant.name || `Team ${participantId}`)
+          : (participant.participant_name || participant.name || `Player ${participantId}`),
+        type: isDoubles ? "team" : "player",
+      });
+
+      return cleaned;
+    });
+  }
+
+  async function savePoolAssignments() {
+    if (!tournamentId) return;
+
+    try {
+      setPoolAssignmentSaving(true);
+      setPoolAssignmentError("");
+
+      if (!calculatedTeamsPerPool) {
+        throw new Error(
+          "The number of teams/players cannot be divided equally among the selected pools."
+        );
+      }
+
+      const pools = poolAssignments.map((pool) => ({
+        poolNumber: Number(pool.poolNumber),
+        participantIds: (pool.members || []).map(
+          (member) => Number(member.id)
+        ),
+      }));
+
+      if (pools.length !== poolCount) {
+        throw new Error(
+          `Configure all ${poolCount} pools before saving.`
+        );
+      }
+
+      const totalAssigned = pools.reduce(
+        (total, pool) => total + pool.participantIds.length,
+        0
+      );
+
+      if (totalAssigned !== availableParticipants) {
+        throw new Error(
+          `Assign all ${availableParticipants} ${isDoubles ? "teams" : "players"} to pools.`
+        );
+      }
+
+      for (const pool of pools) {
+        if (pool.participantIds.length !== calculatedTeamsPerPool) {
+          throw new Error(
+            `Each pool must contain exactly ${calculatedTeamsPerPool} ${isDoubles ? "teams" : "players"}.`
+          );
+        }
+      }
+
+      const token = localStorage.getItem("matcho_token");
+
+      if (!token) {
+        throw new Error("Please login as an organizer.");
+      }
+
+      const result = await apiRequest(
+        `/fixtures/pools/${tournamentId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ pools }),
+        }
+      );
+
+      if (!result?.success) {
+        throw new Error(
+          result?.message ||
+          "Unable to save pool assignments."
+        );
+      }
+
+      setPoolAssignments(
+        Array.isArray(result?.pools)
+          ? result.pools
+          : poolAssignments
+      );
+      setMessage("Pool assignments saved successfully.");
+    } catch (error) {
+      console.error("Save Pool Assignments Error:", error);
+      setPoolAssignmentError(
+        error.message ||
+        "Unable to save pool assignments."
+      );
+    } finally {
+      setPoolAssignmentSaving(false);
+    }
+  }
+
   // =======================================================
   // TOURNAMENT CHANGE
   // =======================================================
@@ -1892,6 +2163,14 @@ if (!Number.isInteger(playerAId) || !Number.isInteger(playerBId)) {
   useEffect(() => {
     if (tournamentId) {
       loadFixtureSetup(tournamentId);
+    }
+  }, [tournamentId]);
+
+  useEffect(() => {
+    if (tournamentId) {
+      loadPoolAssignments(tournamentId);
+    } else {
+      setPoolAssignments([]);
     }
   }, [tournamentId]);
 
@@ -2024,10 +2303,23 @@ const poolCount = Number(
   fixtureSetup.poolCount || 0
 );
 
+const teamsPerPool = Number(
+  fixtureSetup.teamsPerPool || 0
+);
+
 const calculatedTeamsPerPool =
-  poolCount > 0 && availableParticipants % poolCount === 0
+  poolCount > 0 &&
+  availableParticipants > 0 &&
+  availableParticipants % poolCount === 0
     ? availableParticipants / poolCount
     : 0;
+
+const poolsAssignedComplete =
+  calculatedTeamsPerPool > 0 &&
+  poolAssignments.length === poolCount &&
+  poolAssignments.every(
+    (pool) => (pool.members || []).length === calculatedTeamsPerPool
+  );
 
 const groupMatchesPerTeam = Number(
   fixtureSetup.groupMatchesPerTeam || 0
@@ -2045,6 +2337,21 @@ const qualifiersPerPool =
   poolCount > 0 && 8 % poolCount === 0
     ? 8 / poolCount
     : 0;
+
+  useEffect(() => {
+    if (calculatedTeamsPerPool > 0) {
+      setFixtureSetup((current) => ({
+        ...current,
+        teamsPerPool: calculatedTeamsPerPool,
+      }));
+    }
+  }, [calculatedTeamsPerPool]);
+
+  useEffect(() => {
+    if (poolCount > 0 && poolAssignments.length > 0 && poolAssignments.length !== poolCount) {
+      setPoolAssignments([]);
+    }
+  }, [poolCount]);
 
   const poolFixtures = useMemo(
     () =>
@@ -2211,14 +2518,21 @@ const qualifiersPerPool =
       return;
     }
 
+    if (!Number.isInteger(calculatedTeamsPerPool) || calculatedTeamsPerPool < 2) {
+      setFixtureSetupError(
+        "The selected number of pools cannot divide the current teams/players evenly."
+      );
+      return;
+    }
+
     if (!Number.isInteger(groupMatchesPerTeam) || groupMatchesPerTeam < 1) {
       setFixtureSetupError("Group-stage matches per team must be at least 1.");
       return;
     }
 
-    if (!Number.isInteger(calculatedTeamsPerPool) || calculatedTeamsPerPool < 2) {
+    if (availableParticipants !== poolCount * calculatedTeamsPerPool) {
       setFixtureSetupError(
-        `${availableParticipants} ${isDoubles ? "teams" : "players"} cannot be divided equally into ${poolCount} pools.`
+        `${availableParticipants} ${isDoubles ? "teams" : "players"} cannot be divided into ${poolCount} equal pools.`
       );
       return;
     }
@@ -2259,6 +2573,7 @@ const qualifiersPerPool =
           },
           body: JSON.stringify({
             poolCount,
+            teamsPerPool,
             groupMatchesPerTeam,
             super8Enabled: hasSuper8Format,
             super8MatchesPerTeam: hasSuper8Format
@@ -2321,15 +2636,20 @@ const qualifiersPerPool =
       return;
     }
 
-    if (!Number.isInteger(calculatedTeamsPerPool) || calculatedTeamsPerPool < 2) {
+    if (!poolsAssignedComplete) {
+      setFixtureError("Assign all teams/players to pools and save the pool assignment before generating fixtures.");
+      return;
+    }
+
+    if (availableParticipants !== poolCount * teamsPerPool) {
       setFixtureError(
-        `${availableParticipants} ${isDoubles ? "teams" : "players"} do not divide evenly across ${poolCount} pools.`
+        `${availableParticipants} ${isDoubles ? "teams" : "players"} do not match the saved fixture setup.`
       );
       return;
     }
 
     const confirmed = window.confirm(
-      `Generate fixtures with ${poolCount} pools, ${calculatedTeamsPerPool} ${isDoubles ? "teams" : "players"} per pool, ${groupMatchesPerTeam} group-stage matches per team${hasSuper8Format ? `, Super 8 enabled with ${super8MatchesPerTeam} matches per team, and exactly 8 qualifiers` : ", with no Super 8"}.`
+      `Generate fixtures with ${poolCount} pools, ${teamsPerPool} ${isDoubles ? "teams" : "players"} per pool, ${groupMatchesPerTeam} group-stage matches per team${hasSuper8Format ? `, Super 8 enabled with ${super8MatchesPerTeam} matches per team, and exactly 8 qualifiers` : ", with no Super 8"}.`
     );
 
     if (!confirmed) {
@@ -5840,12 +6160,9 @@ setEditError("");
                         Number of Pools
                       </label>
 
-                      <input
+                      <select
                         id="fixture-pool-count"
-                        className="tm-input"
-                        type="number"
-                        min="1"
-                        step="1"
+                        className="tm-select"
                         value={fixtureSetup.poolCount}
                         onChange={(event) =>
                           setFixtureSetup((current) => ({
@@ -5854,7 +6171,22 @@ setEditError("");
                           }))
                         }
                         disabled={fixtures.length > 0 || fixtureSetupSaving}
-                      />
+                      >
+                        <option value={1}>1 Pool</option>
+                        <option value={2}>2 Pools</option>
+                        <option value={4}>4 Pools</option>
+                        <option value={8}>8 Pools</option>
+                      </select>
+                    </div>
+
+                    <div className="tm-fixture-setup-field">
+                      <label>
+                        Teams / Players per Pool
+                      </label>
+
+                      <div className="tm-fixture-setup-readonly">
+                        {calculatedTeamsPerPool || "Auto"}
+                      </div>
                     </div>
 
                     <div className="tm-fixture-setup-field">
@@ -5980,6 +6312,180 @@ setEditError("");
 
                 </div>
 
+
+
+                <div className="tm-pool-assignment-box">
+
+                  <div className="tm-pool-assignment-header">
+                    <div>
+                      <h4>Pool Assignment</h4>
+                      <p>Assign each team/player to a pool manually or let Matcho distribute them randomly.</p>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="tm-outline-btn tm-random-pools-btn"
+                      onClick={randomizePools}
+                      disabled={
+                        fixtures.length > 0 ||
+                        fixtureSetupSaving ||
+                        poolAssignmentSaving ||
+                        !fixtureSetupConfigured ||
+                        !calculatedTeamsPerPool
+                      }
+                    >
+                      <Dices size={15} />
+                      {poolAssignmentSaving ? "Working..." : "Randomly Generate Pools"}
+                    </button>
+                  </div>
+
+                  <div className="tm-pool-summary">
+                    <div>
+                      <span>Total {isDoubles ? "Teams" : "Players"}</span>
+                      <strong>{availableParticipants}</strong>
+                    </div>
+                    <div>
+                      <span>Pools</span>
+                      <strong>{poolCount || "-"}</strong>
+                    </div>
+                    <div>
+                      <span>{isDoubles ? "Teams" : "Players"} per Pool</span>
+                      <strong>{calculatedTeamsPerPool || "-"}</strong>
+                    </div>
+                  </div>
+
+                  <div className="tm-manual-pool-list">
+                    {(isDoubles ? teams : participants).map((item) => {
+                      const participantId = isDoubles
+                        ? item.id
+                        : (item.player_id ?? item.id);
+
+                      const participantName = isDoubles
+                        ? (item.team_name || item.name || `Team ${participantId}`)
+                        : (item.participant_name || item.name || `Player ${participantId}`);
+
+                      return (
+                        <div
+                          className="tm-manual-pool-row"
+                          key={participantId}
+                        >
+                          <div className="tm-manual-pool-name">
+                            {participantName}
+                          </div>
+
+                          <select
+                            value={getPoolForParticipant(participantId)}
+                            onChange={(event) =>
+                              manuallyAssignParticipant(
+                                participantId,
+                                Number(event.target.value)
+                              )
+                            }
+                            disabled={
+                              fixtures.length > 0 ||
+                              poolAssignmentSaving ||
+                              !fixtureSetupConfigured
+                            }
+                          >
+                            <option value="">
+                              Select Pool
+                            </option>
+
+                            {Array.from(
+                              { length: poolCount },
+                              (_, index) => (
+                                <option
+                                  key={index + 1}
+                                  value={index + 1}
+                                >
+                                  Pool {String.fromCharCode(65 + index)}
+                                </option>
+                              )
+                            )}
+                          </select>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {loadingPoolAssignments && (
+                    <div className="tm-pool-loading">
+                      Loading pool assignments...
+                    </div>
+                  )}
+
+                  {poolAssignmentError && (
+                    <div className="tm-error">
+                      {poolAssignmentError}
+                    </div>
+                  )}
+
+                  <div className="tm-pool-columns">
+                    {Array.from(
+                      { length: poolCount },
+                      (_, index) => {
+                        const poolNumber = index + 1;
+                        const pool =
+                          poolAssignments.find(
+                            (item) => Number(item.poolNumber) === poolNumber
+                          ) || { members: [] };
+
+                        return (
+                          <div
+                            className="tm-pool-column"
+                            key={poolNumber}
+                          >
+                            <div className="tm-pool-column-header">
+                              <strong>
+                                Pool {String.fromCharCode(64 + poolNumber)}
+                              </strong>
+                              <span>
+                                {(pool.members || []).length}
+                                {calculatedTeamsPerPool
+                                  ? ` / ${calculatedTeamsPerPool}`
+                                  : ""}
+                              </span>
+                            </div>
+
+                            <div className="tm-pool-members">
+                              {(pool.members || []).map((member) => (
+                                <div
+                                  className="tm-pool-member"
+                                  key={`${poolNumber}-${member.id}`}
+                                >
+                                  {member.name}
+                                </div>
+                              ))}
+
+                              {(pool.members || []).length === 0 && (
+                                <div className="tm-pool-empty">
+                                  No teams/players assigned
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      }
+                    )}
+                  </div>
+
+                  <button
+                    type="button"
+                    className="tm-primary-btn tm-save-pool-btn"
+                    onClick={savePoolAssignments}
+                    disabled={
+                      fixtures.length > 0 ||
+                      poolAssignmentSaving ||
+                      !fixtureSetupConfigured ||
+                      !poolsAssignedComplete
+                    }
+                  >
+                    {poolAssignmentSaving
+                      ? "Saving Pools..."
+                      : "Save Pool Assignment"}
+                  </button>
+
+                </div>
                 <div className="tm-fixture-generator-simple">
 
                   <div className="tm-generator-field">
@@ -6012,7 +6518,8 @@ setEditError("");
                       fixtureSaving ||
                       fixtureSetupSaving ||
                       fixtures.length > 0 ||
-                      !fixtureSetupConfigured
+                      !fixtureSetupConfigured ||
+                      !poolsAssignedComplete
                     }
                     onClick={generate}
                   >

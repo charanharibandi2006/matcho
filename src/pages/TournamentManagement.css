@@ -8326,3 +8326,509 @@
     font-size: 10px;
   }
 }
+
+
+/* =========================================================
+   POOL ASSIGNMENT - MATCHO ORGANIZER UI
+   Keeps the existing Tournament Management visual language.
+   ========================================================= */
+
+.tm-pool-assignment-box {
+  width: 100%;
+  box-sizing: border-box;
+
+  margin: 18px 0 22px;
+  padding: 22px;
+
+  border: 1px solid #e7e3f0;
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 6px 20px rgba(25, 32, 58, 0.04);
+}
+
+/* ---------- HEADER ---------- */
+
+.tm-pool-assignment-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.tm-pool-assignment-header > div {
+  min-width: 0;
+}
+
+.tm-pool-assignment-header h4 {
+  margin: 0 0 5px;
+
+  color: #17213d;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.tm-pool-assignment-header p {
+  margin: 0;
+
+  color: #929aaf;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.tm-random-pools-btn {
+  flex: 0 0 auto;
+
+  height: 42px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding: 0 15px;
+
+  border-radius: 10px;
+
+  white-space: nowrap;
+}
+
+/* ---------- SUMMARY ---------- */
+
+.tm-pool-summary {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 10px;
+
+  margin-bottom: 18px;
+}
+
+.tm-pool-summary > div {
+  min-width: 0;
+
+  padding: 12px 14px;
+
+  border: 1px solid #ece9f7;
+  border-radius: 10px;
+
+  background: #faf9ff;
+}
+
+.tm-pool-summary span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #969db0;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 8px;
+  font-weight: 600;
+
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.tm-pool-summary strong {
+  display: block;
+
+  color: #633cff;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+
+  line-height: 1.2;
+}
+
+/* =========================================================
+   MANUAL ASSIGNMENT
+   ========================================================= */
+
+.tm-manual-pool-list {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 8px;
+
+  max-height: 360px;
+
+  margin-bottom: 18px;
+  padding-right: 3px;
+
+  overflow-y: auto;
+}
+
+.tm-manual-pool-row {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  padding: 9px 11px;
+
+  border: 1px solid #ececf3;
+  border-radius: 10px;
+
+  background: #fbfbfe;
+
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.tm-manual-pool-row:hover {
+  border-color: #dcd4fa;
+  background: #ffffff;
+}
+
+.tm-manual-pool-name {
+  min-width: 0;
+
+  color: #303950;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tm-manual-pool-row select {
+  flex: 0 0 105px;
+
+  width: 105px;
+  height: 34px;
+
+  padding: 0 8px;
+
+  border: 1px solid #ddd9eb;
+  border-radius: 8px;
+
+  outline: none;
+
+  background: #ffffff;
+  color: #49339e;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.tm-manual-pool-row select:hover {
+  border-color: #cfc5ef;
+}
+
+.tm-manual-pool-row select:focus {
+  border-color: #7040f5;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(112, 64, 245, 0.08);
+}
+
+.tm-manual-pool-row select:disabled {
+  background: #f4f4f7;
+  color: #999fb0;
+  cursor: not-allowed;
+}
+
+/* ---------- LOADING ---------- */
+
+.tm-pool-loading {
+  margin: 10px 0 14px;
+  padding: 10px 12px;
+
+  border: 1px solid #e6defc;
+  border-radius: 9px;
+
+  background: #faf8ff;
+
+  color: #7d7696;
+
+  font-size: 9px;
+  font-weight: 500;
+
+  text-align: center;
+}
+
+/* =========================================================
+   POOL PREVIEW
+   ========================================================= */
+
+.tm-pool-columns {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 12px;
+
+  margin-bottom: 18px;
+}
+
+.tm-pool-column {
+  min-width: 0;
+
+  overflow: hidden;
+
+  border: 1px solid #e8e4f0;
+  border-radius: 12px;
+
+  background: #ffffff;
+}
+
+.tm-pool-column-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  padding: 11px 13px;
+
+  border-bottom: 1px solid #ece9f4;
+
+  background: #faf9ff;
+}
+
+.tm-pool-column-header strong {
+  color: #5f36d6;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.tm-pool-column-header span {
+  flex-shrink: 0;
+
+  padding: 4px 7px;
+
+  border-radius: 999px;
+
+  background: #f0ebff;
+
+  color: #633cff;
+
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.tm-pool-members {
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+
+  max-height: 260px;
+
+  padding: 10px;
+
+  overflow-y: auto;
+}
+
+.tm-pool-member {
+  min-width: 0;
+
+  padding: 8px 10px;
+
+  border: 1px solid #f0eef5;
+  border-radius: 8px;
+
+  background: #fbfbfd;
+
+  color: #3d465d;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tm-pool-member:hover {
+  background: #f7f4ff;
+  border-color: #e6defc;
+}
+
+.tm-pool-empty {
+  padding: 14px 10px;
+
+  color: #a0a6b6;
+
+  font-size: 9px;
+  font-weight: 500;
+
+  text-align: center;
+}
+
+/* ---------- SAVE BUTTON ---------- */
+
+.tm-save-pool-btn {
+  min-width: 190px;
+  height: 44px;
+
+  font-size: 10px;
+}
+
+/* ---------- ERROR INSIDE POOL CARD ---------- */
+
+.tm-pool-assignment-box .tm-error {
+  margin: 12px 0;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .tm-pool-assignment-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .tm-random-pools-btn {
+    width: 100%;
+  }
+
+  .tm-manual-pool-list {
+    grid-template-columns: 1fr;
+  }
+
+  .tm-pool-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+
+  .tm-pool-assignment-box {
+    margin-top: 16px;
+    padding: 16px;
+
+    border-radius: 14px;
+  }
+
+  .tm-pool-assignment-header {
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .tm-pool-assignment-header h4 {
+    font-size: 14px;
+  }
+
+  .tm-pool-assignment-header p {
+    font-size: 9px;
+  }
+
+  .tm-pool-summary {
+    grid-template-columns: 1fr;
+    gap: 7px;
+
+    margin-bottom: 14px;
+  }
+
+  .tm-pool-summary > div {
+    padding: 10px 12px;
+  }
+
+  .tm-manual-pool-list {
+    gap: 7px;
+
+    max-height: 330px;
+    margin-bottom: 14px;
+  }
+
+  .tm-manual-pool-row {
+    padding: 8px 9px;
+  }
+
+  .tm-manual-pool-name {
+    font-size: 9px;
+  }
+
+  .tm-manual-pool-row select {
+    flex-basis: 96px;
+    width: 96px;
+
+    height: 32px;
+
+    font-size: 8px;
+  }
+
+  .tm-pool-columns {
+    gap: 9px;
+    margin-bottom: 14px;
+  }
+
+  .tm-pool-column-header {
+    padding: 10px 11px;
+  }
+
+  .tm-pool-column-header strong {
+    font-size: 10px;
+  }
+
+  .tm-pool-members {
+    max-height: 220px;
+    padding: 8px;
+  }
+
+  .tm-pool-member {
+    padding: 7px 8px;
+    font-size: 8px;
+  }
+
+  .tm-save-pool-btn {
+    width: 100%;
+    min-width: 0;
+    height: 44px;
+  }
+}
+
+@media (max-width: 380px) {
+
+  .tm-pool-assignment-box {
+    padding: 13px;
+  }
+
+  .tm-pool-assignment-header h4 {
+    font-size: 13px;
+  }
+
+  .tm-manual-pool-row {
+    gap: 7px;
+  }
+
+  .tm-manual-pool-row select {
+    flex-basis: 88px;
+    width: 88px;
+  }
+}
