@@ -857,11 +857,9 @@ export default function ScoreUpdate() {
     }
   };
 
-  // New fixtures remain Upcoming until the organizer completes the toss.
-  // This prevents the match from starting automatically when the scoring page opens.
-  const conductToss = () => {
-    const winner = Math.random() < 0.5 ? 1 : 2;
-
+  // The toss is conducted offline on the court.
+  // The organizer/referee only records which team won it.
+  const recordTossWinner = (winner) => {
     setTossState({
       completed: true,
       winner,
@@ -1630,19 +1628,29 @@ export default function ScoreUpdate() {
                   {!tossState.completed ? (
                     <>
                       <p>
-                        Conduct the toss before Game 1.
-                        The toss happens only once for this match.
+                        Conduct the coin toss on the court.
+                        Ask the teams to call Heads or Tails, then record the team that won the toss.
                       </p>
 
-                      <button
-                        type="button"
-                        className="score-primary-btn score-toss-btn"
-                        onClick={conductToss}
-                        disabled={saving}
-                      >
-                        <Trophy size={16} />
-                        Conduct Toss
-                      </button>
+                      <div className="score-toss-team-options">
+                        <button
+                          type="button"
+                          className="score-toss-team-btn"
+                          onClick={() => recordTossWinner(1)}
+                          disabled={saving}
+                        >
+                          {teamA} won the toss
+                        </button>
+
+                        <button
+                          type="button"
+                          className="score-toss-team-btn"
+                          onClick={() => recordTossWinner(2)}
+                          disabled={saving}
+                        >
+                          {teamB} won the toss
+                        </button>
+                      </div>
                     </>
                   ) : (
                     <>

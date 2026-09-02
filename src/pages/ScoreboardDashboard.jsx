@@ -1434,6 +1434,10 @@ export default function ScoreboardDashboard() {
                 playerA.id,
               name:
                 playerA.name,
+              members:
+                Array.isArray(playerA.members)
+                  ? playerA.members
+                  : [],
               played: 0,
               wins: 0,
               losses: 0,
@@ -1454,6 +1458,10 @@ export default function ScoreboardDashboard() {
                 playerB.id,
               name:
                 playerB.name,
+              members:
+                Array.isArray(playerB.members)
+                  ? playerB.members
+                  : [],
               played: 0,
               wins: 0,
               losses: 0,
@@ -1622,7 +1630,27 @@ export default function ScoreboardDashboard() {
                     </td>
 
                     <td>
-                      {row.name}
+                      <div className="tm-standings-team-name">
+                        {row.name}
+                      </div>
+
+                      {Array.isArray(row.members) &&
+                        row.members.length > 0 && (
+                          <div className="tm-team-members scoreboard-standings-members">
+                            {row.members.map(
+                              (member, memberIndex) => (
+                                <span
+                                  key={
+                                    member.id ||
+                                    memberIndex
+                                  }
+                                >
+                                  {member.name}
+                                </span>
+                              )
+                            )}
+                          </div>
+                        )}
                     </td>
 
                     <td>

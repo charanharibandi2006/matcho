@@ -2397,22 +2397,28 @@ const qualifiersPerPool =
   function calculateStandings(fixtureList) {
     const map = new Map();
 
-    const add = (id, name) => {
-      if (id === null || id === undefined) return;
-      const key = String(id);
-      if (!map.has(key)) {
-        map.set(key, {
-          id,
-          name: name || `Participant ${id}`,
-          played: 0,
-          won: 0,
-          lost: 0,
-          points: 0,
-          difference: 0,
-        });
-      }
-      return map.get(key);
-    };
+    const add = (id, name, members = []) => {
+  if (id === null || id === undefined) return;
+
+  const key = String(id);
+
+  if (!map.has(key)) {
+    map.set(key, {
+      id,
+      name: name || `Participant ${id}`,
+      members: Array.isArray(members)
+        ? members
+        : [],
+      played: 0,
+      won: 0,
+      lost: 0,
+      points: 0,
+      difference: 0,
+    });
+  }
+
+  return map.get(key);
+};
 
     fixtureList.forEach((fixture) => {
       const aId = isDoubles
@@ -2423,14 +2429,32 @@ const qualifiersPerPool =
         : fixture.player_b_id;
 
       const aName = isDoubles
-        ? fixture.team_a_name
-        : fixture.player_a_name;
-      const bName = isDoubles
-        ? fixture.team_b_name
-        : fixture.player_b_name;
+  ? fixture.team_a_name
+  : fixture.player_a_name;
 
-      const a = add(aId, aName);
-      const b = add(bId, bName);
+const bName = isDoubles
+  ? fixture.team_b_name
+  : fixture.player_b_name;
+
+const aMembers = isDoubles
+  ? fixture.team_a_members
+  : [];
+
+const bMembers = isDoubles
+  ? fixture.team_b_members
+  : [];
+
+const a = add(
+  aId,
+  aName,
+  aMembers
+);
+
+const b = add(
+  bId,
+  bName,
+  bMembers
+);
 
       if (!a || !b) return;
 
@@ -7216,19 +7240,21 @@ const sideBMembers = isDoubles
                     <section className="tm-standings-grid">
                       {poolNames.map((poolName) => (
                         <PointsTable
-                          key={poolName}
-                          title={poolName}
-                          rows={poolStandings[poolName] || []}
-                        />
+  key={poolName}
+  title={poolName}
+  rows={poolStandings[poolName] || []}
+  isDoubles={isDoubles}
+/>
                       ))}
                     </section>
 
                     {hasSuper8Format && super8Fixtures.length > 0 && (
                       <section className="tm-standings-grid">
                         <PointsTable
-                          title="Super 8"
-                          rows={super8Standings}
-                        />
+  title="Super 8"
+  rows={super8Standings}
+  isDoubles={isDoubles}
+/>
                       </section>
                     )}
                   </>
@@ -8462,6 +8488,7 @@ const sideBMembers = isDoubles
 function PointsTable({
   title,
   rows,
+  isDoubles,
 }) {
 
   return (
@@ -8544,7 +8571,7 @@ function PointsTable({
 
                 <tr
                   key={
-                    row.name
+                    row.id
                   }
                 >
 
@@ -8564,8 +8591,24 @@ function PointsTable({
 
 
                   <td className="tm-player-name">
-                    {row.name}
-                  </td>
+  <div className="tm-standings-team-name">
+    {row.name}
+  </div>
+
+  {isDoubles &&
+    Array.isArray(row.members) &&
+    row.members.length > 0 && (
+      <div className="tm-standings-team-members">
+        {row.members.map(
+          (member, memberIndex) => (
+            <span key={member.id || memberIndex}>
+              {member.name}
+            </span>
+          )
+        )}
+      </div>
+    )}
+</td>
 
 
                   <td>

@@ -1092,6 +1092,44 @@
   min-width: 155px;
 }
 
+.score-toss-team-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  max-width: 640px;
+  margin: 0 auto 16px;
+}
+
+.score-toss-team-btn {
+  min-height: 48px;
+  padding: 0 16px;
+  border: 1px solid #dcd4f7;
+  border-radius: 12px;
+  background: #fff;
+  color: #4f3a9a;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    border-color .2s ease,
+    background .2s ease,
+    transform .2s ease,
+    box-shadow .2s ease;
+}
+
+.score-toss-team-btn:hover:not(:disabled) {
+  border-color: #a993f4;
+  background: #faf8ff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(109, 60, 255, .08);
+}
+
+.score-toss-team-btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
 .score-toss-result {
   color: #2d3760 !important;
 }
@@ -1186,6 +1224,10 @@
   .score-toss-options {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .score-toss-team-options {
+    grid-template-columns: 1fr;
   }
 
   .score-toss-option {
