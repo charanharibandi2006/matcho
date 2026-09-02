@@ -331,7 +331,7 @@ const getFixtureParticipants = async (tournamentId, format) => {
         `
         SELECT
             r.player_id AS id,
-            COALESCE(u.full_name, r.participant_name) AS name
+            COALESCE(r.participant_name, u.full_name) AS name
         FROM public.tournament_registrations r
         LEFT JOIN public.users u
             ON u.id = r.player_id
@@ -946,8 +946,8 @@ COALESCE(
                 'id', tm.player_id,
                 'name',
                 COALESCE(
-                    u.full_name,
                     tr.participant_name,
+                    u.full_name,
                     'Player'
                 )
             )
@@ -974,8 +974,8 @@ COALESCE(
                 'id', tm.player_id,
                 'name',
                 COALESCE(
-                    u.full_name,
                     tr.participant_name,
+                    u.full_name,
                     'Player'
                 )
             )
