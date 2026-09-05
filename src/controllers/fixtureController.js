@@ -1236,35 +1236,32 @@ const updateFixtureScore = async (req, res, next) => {
         }
 
         const result = await pool.query(
-            `
-            UPDATE public.fixtures
-            SET
-                player_a_score = $1,
-                player_b_score = $2,
-                winner_player_id = $3,
-                winner_team_id = $4,
-                status = $5,
-                serving_side = $6,
-                game_scores = $7,
-                completed_at = CASE
-    WHEN $5::text = 'Completed'
-        THEN NOW()
-    ELSE completed_at
-END
-            WHERE id = $8
-            RETURNING *
-            `,
-            [
-                playerAScore,
-                playerBScore,
-                winnerPlayerId,
-                winnerTeamId,
-                status,
-                nextServingSide,
-                JSON.stringify(nextGameScores),
-                fixtureId,
-            ]
-        );
+    `
+    UPDATE public.fixtures
+    SET
+        player_a_score = $1,
+        player_b_score = $2,
+        winner_player_id = $3,
+        winner_team_id = $4,
+        status = $5,
+        serving_side = $6,
+        game_scores = $7,
+        completed_at = $8
+    WHERE id = $9
+    RETURNING *
+    `,
+    [
+        playerAScore,
+        playerBScore,
+        winnerPlayerId,
+        winnerTeamId,
+        status,
+        nextServingSide,
+        JSON.stringify(nextGameScores),
+        completedAt,
+        fixtureId,
+    ]
+);
 
         const updatedFixture = result.rows[0];
 
