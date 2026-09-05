@@ -1248,7 +1248,7 @@ const updateFixtureScore = async (req, res, next) => {
                 game_scores = $7,
                 completed_at = CASE
                     WHEN $5 = 'Completed'
-                        THEN COALESCE(completed_at, NOW())
+                        THEN NOW()
                     ELSE completed_at
                 END
             WHERE id = $8
