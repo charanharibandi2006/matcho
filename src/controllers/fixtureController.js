@@ -1003,7 +1003,8 @@ f.serving_side,
 
                 f.status,
                 f.best_of,
-                f.created_at
+                f.created_at,
+                f.completed_at
 
             FROM public.fixtures f
 
@@ -1244,7 +1245,11 @@ const updateFixtureScore = async (req, res, next) => {
                 winner_team_id = $4,
                 status = $5,
                 serving_side = $6,
-                game_scores = $7
+                game_scores = $7,
+                completed_at = CASE
+                    WHEN $5 = 'Completed' THEN COALESCE(completed_at, NOW())
+                    ELSE completed_at
+                END
             WHERE id = $8
             RETURNING *
             `,
