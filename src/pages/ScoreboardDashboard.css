@@ -974,6 +974,8 @@
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
+
+  overflow: hidden;
 }
 
 .scoreboard-tournament-select-wrap select:hover {
@@ -3171,5 +3173,215 @@
     line-height: 1 !important;
 
     z-index: 1 !important;
+  }
+}
+
+/* =========================================================
+   MATCH SEARCH
+========================================================= */
+
+.scoreboard-match-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  width: min(280px, 100%);
+  height: 42px;
+  box-sizing: border-box;
+
+  padding: 0 12px;
+
+  border: 1px solid #ddd8ee;
+  border-radius: 11px;
+
+  background: #fff;
+  color: #7b8199;
+
+  box-shadow: 0 2px 8px rgba(44, 26, 110, 0.04);
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.scoreboard-match-search:focus-within {
+  border-color: #6c3dff;
+  box-shadow:
+    0 0 0 3px rgba(108, 61, 255, 0.08);
+}
+
+.scoreboard-match-search svg {
+  flex: 0 0 auto;
+  color: #7b8199;
+}
+
+.scoreboard-match-search input {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+
+  padding: 0;
+  margin: 0;
+
+  border: 0;
+  outline: 0;
+  background: transparent;
+
+  color: #283250;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.scoreboard-match-search input::placeholder {
+  color: #9a9eb0;
+}
+
+.scoreboard-match-search button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 auto;
+
+  width: 24px;
+  height: 24px;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: #f1eff8;
+  color: #70758b;
+
+  font-size: 17px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.scoreboard-match-search button:hover {
+  background: #e9e4fb;
+  color: #4f25d7;
+}
+
+/* Desktop: keep search centered between the heading and tabs */
+.score-viewer-shell .score-live-panel {
+  position: relative;
+}
+
+.score-viewer-shell .score-live-panel > .scoreboard-match-search {
+  position: absolute;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.score-viewer-shell .score-live-panel > .scoreboard-filter-tabs {
+  position: absolute;
+  top: 22px;
+  right: 24px;
+  z-index: 2;
+}
+
+/* Audience Fixtures search stays naturally below its heading */
+.score-viewer-shell .tm-card > .scoreboard-match-search {
+  margin: 18px 0 20px;
+}
+
+/* Mobile */
+@media (max-width: 760px) {
+  .score-viewer-shell .score-live-panel > .scoreboard-match-search,
+  .score-viewer-shell .score-live-panel > .scoreboard-filter-tabs {
+    position: static;
+    transform: none;
+  }
+
+  .score-viewer-shell .score-live-panel > .scoreboard-match-search {
+    width: 100%;
+    margin: 16px 0 12px;
+  }
+
+  .score-viewer-shell .score-live-panel > .scoreboard-filter-tabs {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .scoreboard-filter-tabs button {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .score-viewer-shell .tm-card > .scoreboard-match-search {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   MOBILE AUDIENCE STANDINGS - HORIZONTAL SCROLL FIX
+   Keeps page fixed; only the standings table can scroll.
+========================================================= */
+
+@media (max-width: 700px) {
+
+  /* Lock the audience page to the phone viewport */
+  .score-viewer-shell {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .score-viewer-shell .stat-main {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+
+  /* Prevent the standings grid/card from becoming wider
+     than the available mobile content area */
+  .score-viewer-shell .tm-standings-grid {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .score-viewer-shell .tm-points-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  /* THIS is the only area allowed to scroll horizontally */
+  .score-viewer-shell .tm-table-wrap {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
+  }
+
+  /* Keep the existing table width/min-width from
+     TournamentManagement.css so columns don't collapse */
+  .score-viewer-shell .tm-table {
+    width: 100%;
+    table-layout: fixed;
   }
 }

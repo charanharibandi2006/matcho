@@ -33,6 +33,7 @@ import {
   Trash2,
   Download,
   FileDown,
+  Search,
   FileText
 } from "lucide-react";
 
@@ -504,6 +505,8 @@ const [selectedFixture, setSelectedFixture] = useState(null);
 const [fixtureFilter, setFixtureFilter] =
   useState("all");
 
+  const [fixtureSearch, setFixtureSearch] = useState("");
+
 const [readyModalOpen, setReadyModalOpen] =
   useState(false);
 const [readyFixture, setReadyFixture] =
@@ -523,31 +526,74 @@ const [swapSaving, setSwapSaving] =
   useState(false);
 
   const filteredFixtures = useMemo(() => {
-  switch (fixtureFilter) {
-    case "group":
-      return fixtures.filter(
-        (fixture) => fixture.stage === "Pool"
-      );
+  const search = fixtureSearch.trim().toLowerCase();
 
-    case "super8":
-      return fixtures.filter(
-        (fixture) => fixture.stage === "Super 8"
-      );
+  return fixtures.filter((fixture) => {
+    let matchesFilter = true;
 
-    case "semi":
-      return fixtures.filter(
-        (fixture) => fixture.stage === "Semi Final"
-      );
+    switch (fixtureFilter) {
+      case "group":
+        matchesFilter =
+          fixture.stage === "Pool" ||
+          fixture.stage === "GROUP" ||
+          fixture.stage === "Group" ||
+          Boolean(fixture.pool_name);
+        break;
 
-    case "final":
-      return fixtures.filter(
-        (fixture) => fixture.stage === "Final"
-      );
+      case "super8":
+        matchesFilter =
+          fixture.stage === "Super 8";
+        break;
 
-    default:
-      return fixtures;
-  }
-}, [fixtures, fixtureFilter]);
+      case "semi":
+        matchesFilter =
+          fixture.stage === "Semi Final";
+        break;
+
+      case "final":
+        matchesFilter =
+          fixture.stage === "Final";
+        break;
+
+      default:
+        matchesFilter = true;
+    }
+
+    if (!matchesFilter) return false;
+
+    if (!search) return true;
+
+    const memberNames = [
+      ...(fixture.team_a_members || []),
+      ...(fixture.team_b_members || []),
+    ]
+      .map(
+        (member) =>
+          member?.name ||
+          member?.full_name ||
+          member?.participant_name ||
+          ""
+      )
+      .join(" ");
+
+    const searchableText = [
+      fixture.team_a_name,
+      fixture.team_b_name,
+      fixture.player_a_name,
+      fixture.player_b_name,
+      fixture.pool_name,
+      fixture.round,
+      fixture.stage,
+      memberNames,
+      String(fixture.match_number || ""),
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return searchableText.includes(search);
+  });
+}, [fixtures, fixtureFilter, fixtureSearch]);
   // =======================================================
   // EDIT TOURNAMENT STATE
   // =======================================================
@@ -6702,6 +6748,30 @@ setEditError("");
                       ))}
 
                     </div>
+
+                    <div className="tm-fixture-search">
+  <Search size={17} />
+
+  <input
+    type="text"
+    value={fixtureSearch}
+    onChange={(e) =>
+      setFixtureSearch(e.target.value)
+    }
+    placeholder="Search player or team..."
+    aria-label="Search fixtures"
+  />
+
+  {fixtureSearch && (
+    <button
+      type="button"
+      onClick={() => setFixtureSearch("")}
+      aria-label="Clear search"
+    >
+      ×
+    </button>
+  )}
+</div>
 
                     <div className="tm-fixture-stage-sections">
 

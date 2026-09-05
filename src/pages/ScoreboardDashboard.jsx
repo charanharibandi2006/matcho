@@ -14,6 +14,7 @@ import {
    ShieldCheck,
   RefreshCw,
   ChevronDown,
+  Search,
 } from "lucide-react";
 
 import {
@@ -537,6 +538,9 @@ export default function ScoreboardDashboard() {
     activeTab,
     setActiveTab,
   ] = useState("all");
+
+  const [matchSearch, setMatchSearch] =
+  useState("");
 
   const [
     selectedTournament,
@@ -1184,46 +1188,80 @@ export default function ScoreboardDashboard() {
   // FILTER BY STATUS
   // =======================================================
 
-  const visibleMatches =
-    useMemo(() => {
-      if (
-        activeTab ===
-        "live"
-      ) {
-        return tournamentMatches.filter(
-          (match) =>
-            match.status ===
-            "LIVE"
-        );
-      }
+  const matchesSearch = (match, searchValue) => {
+  const search = searchValue.trim().toLowerCase();
 
-      if (
-        activeTab ===
-        "upcoming"
-      ) {
-        return tournamentMatches.filter(
-          (match) =>
-            match.status ===
-            "UPCOMING"
-        );
-      }
+  if (!search) return true;
 
-      if (
-        activeTab ===
-        "completed"
-      ) {
-        return tournamentMatches.filter(
-          (match) =>
-            match.status ===
-            "COMPLETED"
-        );
-      }
+  const memberNames = [
+    ...(match.player1?.members || []),
+    ...(match.player2?.members || []),
+  ]
+    .map((member) => member?.name || "")
+    .join(" ");
 
-      return tournamentMatches;
-    }, [
-      tournamentMatches,
-      activeTab,
-    ]);
+  const text = [
+    match.player1?.name,
+    match.player2?.name,
+    memberNames,
+    match.tournament,
+    match.round,
+    match.stage,
+    match.pool,
+    String(match.matchNumber || ""),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  return text.includes(search);
+};
+
+  const visibleMatches = useMemo(() => {
+  let result = tournamentMatches;
+
+  if (activeTab === "live") {
+    result = result.filter(
+      (match) => match.status === "LIVE"
+    );
+  }
+
+  if (activeTab === "upcoming") {
+    result = result.filter(
+      (match) => match.status === "UPCOMING"
+    );
+  }
+
+  if (activeTab === "completed") {
+    result = result
+      .filter(
+        (match) => match.status === "COMPLETED"
+      )
+      .sort((a, b) => {
+        const timeA = new Date(
+          a.completed_at ||
+            a.created_at ||
+            0
+        ).getTime();
+
+        const timeB = new Date(
+          b.completed_at ||
+            b.created_at ||
+            0
+        ).getTime();
+
+        return timeB - timeA;
+      });
+  }
+
+  return result.filter((match) =>
+    matchesSearch(match, matchSearch)
+  );
+}, [
+  tournamentMatches,
+  activeTab,
+  matchSearch,
+]);
 
   // =======================================================
   // PREVIEW
@@ -1254,11 +1292,29 @@ export default function ScoreboardDashboard() {
     );
 
   const completedMatches =
-    formattedMatches.filter(
-      (match) =>
-        match.status ===
-        "COMPLETED"
-    );
+    useMemo(() => {
+      return [...formattedMatches]
+        .filter(
+          (match) =>
+            match.status ===
+            "COMPLETED"
+        )
+        .sort((a, b) => {
+          const timeA = new Date(
+            a.completed_at ||
+              a.created_at ||
+              0
+          ).getTime();
+
+          const timeB = new Date(
+            b.completed_at ||
+              b.created_at ||
+              0
+          ).getTime();
+
+          return timeB - timeA;
+        });
+    }, [formattedMatches]);
 
   const stats = [
     {
@@ -1705,14 +1761,26 @@ export default function ScoreboardDashboard() {
   // =======================================================
 
   function AudienceFixtures() {
+    const [
+      audienceFixtureSearch,
+      setAudienceFixtureSearch,
+    ] = useState("");
+
     const filteredFixtures =
-      tournamentMatches.filter(
-        (match) =>
-          matchesStage(
+      tournamentMatches
+        .filter(
+          (match) =>
+            matchesStage(
+              match,
+              fixtureFilter
+            )
+        )
+        .filter((match) =>
+          matchesSearch(
             match,
-            fixtureFilter
+            audienceFixtureSearch
           )
-      );
+        );
 
     return (
       <div className="tm-card">
@@ -1735,6 +1803,38 @@ export default function ScoreboardDashboard() {
             </p>
           </div>
 
+        </div>
+
+        {/* SEARCH */}
+
+        <div className="scoreboard-match-search">
+          <Search size={17} />
+
+          <input
+            type="text"
+            value={
+              audienceFixtureSearch
+            }
+            onChange={(event) =>
+              setAudienceFixtureSearch(
+                event.target.value
+              )
+            }
+            placeholder="Search player or team..."
+            aria-label="Search tournament fixtures"
+          />
+
+          {audienceFixtureSearch && (
+            <button
+              type="button"
+              onClick={() =>
+                setAudienceFixtureSearch("")
+              }
+              aria-label="Clear search"
+            >
+              ×
+            </button>
+          )}
         </div>
 
         {/* FILTERS */}
@@ -2385,6 +2485,34 @@ export default function ScoreboardDashboard() {
                 </span>
               )}
 
+            </div>
+
+            <div className="scoreboard-match-search">
+              <Search size={17} />
+
+              <input
+                type="text"
+                value={matchSearch}
+                onChange={(event) =>
+                  setMatchSearch(
+                    event.target.value
+                  )
+                }
+                placeholder="Search player or team..."
+                aria-label="Search matches"
+              />
+
+              {matchSearch && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setMatchSearch("")
+                  }
+                  aria-label="Clear search"
+                >
+                  ×
+                </button>
+              )}
             </div>
 
             <div className="scoreboard-filter-tabs">
