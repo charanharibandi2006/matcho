@@ -27,6 +27,7 @@ import { apiRequest } from "../services/api";
 import { setRole } from "../utils/auth";
 import ghbpllogo from "../assets/images/ghbpl.jpeg";
 
+
 import "./StatsDashboard.css";
 import "./ScoreboardDashboard.css";
 
@@ -489,6 +490,107 @@ function MatchCard({
           </div>
         )}
     </article>
+  );
+}
+
+// =========================================================
+// PREMIUM LOADING SKELETON
+// UI ONLY — DOES NOT CHANGE DATA LOADING
+// =========================================================
+
+function ScoreboardSkeleton() {
+  return (
+    <div className="scoreboard-skeleton">
+
+      {/* HEADER */}
+      <div className="skeleton-header">
+        <div className="skeleton-line skeleton-title" />
+        <div className="skeleton-line skeleton-subtitle" />
+      </div>
+
+      {/* HERO */}
+      <div className="skeleton-hero">
+        <div className="skeleton-line skeleton-hero-title" />
+        <div className="skeleton-line skeleton-hero-text" />
+        <div className="skeleton-button" />
+      </div>
+
+      {/* STAT CARDS */}
+      <div className="skeleton-stats">
+
+        <div className="skeleton-stat">
+          <div className="skeleton-stat-icon" />
+          <div className="skeleton-stat-content">
+            <div className="skeleton-small-line" />
+            <div className="skeleton-medium-line" />
+          </div>
+        </div>
+
+        <div className="skeleton-stat">
+          <div className="skeleton-stat-icon" />
+          <div className="skeleton-stat-content">
+            <div className="skeleton-small-line" />
+            <div className="skeleton-medium-line" />
+          </div>
+        </div>
+
+        <div className="skeleton-stat">
+          <div className="skeleton-stat-icon" />
+          <div className="skeleton-stat-content">
+            <div className="skeleton-small-line" />
+            <div className="skeleton-medium-line" />
+          </div>
+        </div>
+
+        <div className="skeleton-stat">
+          <div className="skeleton-stat-icon" />
+          <div className="skeleton-stat-content">
+            <div className="skeleton-small-line" />
+            <div className="skeleton-medium-line" />
+          </div>
+        </div>
+
+      </div>
+
+      {/* MATCH SECTION */}
+      <div className="skeleton-section">
+
+        <div className="skeleton-line skeleton-section-title" />
+
+        <div className="skeleton-match-grid">
+
+          <div className="skeleton-match-card">
+            <div className="skeleton-match-top" />
+            <div className="skeleton-match-body">
+              <div className="skeleton-team-line" />
+              <div className="skeleton-score-line" />
+              <div className="skeleton-team-line" />
+            </div>
+          </div>
+
+          <div className="skeleton-match-card">
+            <div className="skeleton-match-top" />
+            <div className="skeleton-match-body">
+              <div className="skeleton-team-line" />
+              <div className="skeleton-score-line" />
+              <div className="skeleton-team-line" />
+            </div>
+          </div>
+
+          <div className="skeleton-match-card">
+            <div className="skeleton-match-top" />
+            <div className="skeleton-match-body">
+              <div className="skeleton-team-line" />
+              <div className="skeleton-score-line" />
+              <div className="skeleton-team-line" />
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
   );
 }
 
@@ -2195,37 +2297,21 @@ export default function ScoreboardDashboard() {
   // LOADING
   // =======================================================
 
-  if (loading) {
-    return (
-      <div className="stat-shell score-viewer-shell">
+ if (loading) {
+  return (
+    <div className="stat-shell score-viewer-shell">
 
-        <Scoreboardsidebar />
+      <Scoreboardsidebar />
 
-        <main className="stat-main">
+      <main className="stat-main">
 
-          <div className="scoreboard-loading">
+        <ScoreboardSkeleton />
 
-            <RefreshCw
-              size={28}
-              className="scoreboard-spin"
-            />
+      </main>
 
-            <h2>
-              Loading scoreboard...
-            </h2>
-
-            <p>
-              Getting the latest
-              tournament scores.
-            </p>
-
-          </div>
-
-        </main>
-
-      </div>
-    );
-  }
+    </div>
+  );
+}
 
   // =======================================================
   // OVERVIEW
@@ -2904,6 +2990,8 @@ export default function ScoreboardDashboard() {
 
   return (
     <div className="stat-shell score-viewer-shell">
+
+    
 
       <Scoreboardsidebar />
 
