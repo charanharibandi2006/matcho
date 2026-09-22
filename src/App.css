@@ -777,6 +777,7 @@
     width: 190px;
     height: 390px;
 
+    background-image: url("./assets/images/left.png");
     background-repeat: no-repeat;
     background-position: left center;
     background-size: contain;
@@ -796,6 +797,7 @@
     width: 190px;
     height: 400px;
 
+    background-image: url("./assets/images/right.png");
     background-repeat: no-repeat;
     background-position: right center;
     background-size: contain;
@@ -805,22 +807,46 @@
     z-index: 0;
   }
 
-  /* Bottom stadium is a third image, so use a background
-     layer on the page rather than another pseudo-element. */
+  /* -------------------------------------------------------
+     BOTTOM ARTWORK
+     pagebottom.png stays exactly as it is.
+     The purple light gently fades ON and OFF behind it.
+     ------------------------------------------------------- */
+
   .auth-container,
   .splash {
+    --matcho-glow-main: 0.11;
+    --matcho-glow-soft: 0.035;
 
-    background-repeat: no-repeat;
+    background:
+      url("./assets/images/pagebottom.png")
+        center calc(100% - 150px) / min(92vw, 520px) auto
+        no-repeat,
 
-    background-position:
-      center bottom,
-      center top;
+      /* Concentrated purple glow directly behind the icons */
+      radial-gradient(
+        ellipse at center,
+        rgba(126, 78, 255, var(--matcho-glow-main)) 0%,
+        rgba(126, 78, 255, calc(var(--matcho-glow-main) * 0.48)) 24%,
+        transparent 68%
+      )
+        center calc(100% - 150px) / 230px 82px
+        no-repeat,
 
-    background-size:
-      100% auto,
-      auto;
+      /* Very soft outer falloff */
+      radial-gradient(
+        ellipse at center,
+        rgba(177, 125, 255, var(--matcho-glow-soft)) 0%,
+        transparent 70%
+      )
+        48% calc(100% - 148px) / 170px 58px
+        no-repeat,
 
-    background-color: #f9faff;
+      url("./assets/images/stadium.png")
+        center bottom / 100% auto
+        no-repeat,
+
+      #f9faff;
   }
 
   /* -------------------------------------------------------
@@ -1352,6 +1378,37 @@
       right: -45px;
     }
 
+    .auth-container,
+    .splash {
+      background:
+        url("./assets/images/pagebottom.png")
+          center calc(100% - 128px) / 94vw auto
+          no-repeat,
+
+        radial-gradient(
+          ellipse at center,
+          rgba(126, 78, 255, var(--matcho-glow-main)) 0%,
+          rgba(126, 78, 255, calc(var(--matcho-glow-main) * 0.45)) 24%,
+          transparent 68%
+        )
+          center calc(100% - 128px) / 198px 70px
+          no-repeat,
+
+        radial-gradient(
+          ellipse at center,
+          rgba(177, 125, 255, var(--matcho-glow-soft)) 0%,
+          transparent 70%
+        )
+          48% calc(100% - 126px) / 148px 50px
+          no-repeat,
+
+        url("./assets/images/stadium.png")
+          center bottom / 100% auto
+          no-repeat,
+
+        #f9faff;
+    }
+
     .otp-box {
       width: 42px;
       height: 48px;
@@ -1419,3 +1476,4 @@
     margin-bottom: 0 !important;
   }
 }
+
