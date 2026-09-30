@@ -11044,3 +11044,66 @@ html.matcho-theme-transition .scoreboard-top-icon-btn {
     padding: 22px 14px 24px !important;
   }
 }
+
+/* =========================================================
+   MOBILE MATCH FILTERS — UNIFORM 2 x 2 GRID
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+  .score-viewer-shell .scoreboard-filter-tabs {
+    display: grid !important;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+
+    gap: 8px !important;
+
+    width: 100% !important;
+    margin-top: 8px !important;
+
+    box-sizing: border-box !important;
+  }
+
+  .score-viewer-shell .scoreboard-filter-tabs button {
+    width: 100% !important;
+    min-width: 0 !important;
+
+    height: 38px !important;
+    min-height: 38px !important;
+
+    padding: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    box-sizing: border-box !important;
+
+    border-radius: 10px !important;
+
+    font-size: 11px !important;
+    font-weight: 600 !important;
+
+    line-height: 1 !important;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+  .score-viewer-shell .scoreboard-filter-tabs {
+    gap: 7px !important;
+  }
+
+  .score-viewer-shell .scoreboard-filter-tabs button {
+    height: 36px !important;
+    min-height: 36px !important;
+
+    font-size: 10.5px !important;
+    border-radius: 9px !important;
+  }
+}
