@@ -584,3 +584,154 @@
   color: #c9bcff;
 }
 
+/* =========================================================
+   SCOREBOARD SIDEBAR - QUICK ACTIONS
+========================================================= */
+
+.org-sidebar-quick-actions {
+  flex: 0 0 auto;
+
+  margin: 10px 12px 18px;
+
+  padding-top: 18px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.org-sidebar-quick-title {
+  margin: 0 8px 9px;
+
+  color: #777b91;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.org-quick-action {
+  width: 100%;
+
+  min-height: 42px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 7px;
+
+  padding: 0 11px;
+
+  border-radius: 10px;
+
+  font-family: "Poppins", sans-serif;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.org-quick-action:last-child {
+  margin-bottom: 0;
+}
+
+.org-quick-action-icon {
+  width: 28px;
+  height: 28px;
+
+  flex: 0 0 28px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 8px;
+}
+
+.org-quick-action-primary {
+  border: 1px solid rgba(108, 61, 255, 0.45);
+
+  background: rgba(108, 61, 255, 0.13);
+
+  color: #eeeaff;
+}
+
+.org-quick-action-primary
+.org-quick-action-icon {
+  background: rgba(108, 61, 255, 0.22);
+
+  color: #b8a5ff;
+}
+
+.org-quick-action-primary:hover {
+  background: rgba(108, 61, 255, 0.20);
+
+  transform: translateY(-1px);
+}
+
+.org-quick-action-secondary {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  background: rgba(255, 255, 255, 0.035);
+
+  color: #b8bbca;
+}
+
+.org-quick-action-secondary
+.org-quick-action-icon {
+  background: rgba(255, 255, 255, 0.06);
+
+  color: #9297ab;
+}
+
+.org-quick-action-secondary:hover {
+  background: rgba(255, 255, 255, 0.07);
+
+  color: #ffffff;
+
+  transform: translateY(-1px);
+}
+
+.org-quick-action-text {
+  min-width: 0;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+/* =========================================================
+   MATCHO SCOREBOARD SIDEBAR - QUICK ACTION POLISH
+========================================================= */
+
+@media (min-width: 901px) {
+  .org-sidebar-quick-actions {
+    margin: 10px 12px 16px;
+    padding-top: 16px;
+  }
+
+  .org-quick-action {
+    min-height: 40px;
+    margin-bottom: 6px;
+  }
+}
+
+@media (max-width: 700px) {
+  .org-sidebar-quick-actions {
+    margin: 8px 10px 14px;
+    padding-top: 14px;
+  }
+}
+

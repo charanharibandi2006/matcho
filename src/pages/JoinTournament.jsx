@@ -37,6 +37,26 @@ function formatDate(value) {
   });
 }
 
+const SPORT_ICONS = {
+  volleyball: "🏐",
+  badminton: "🏸",
+  "kho-kho": "🏃",
+  football: "⚽",
+  throwball: "🤾",
+  basketball: "🏀",
+  pickleball: "🥎",
+  "table-tennis": "🏓",
+};
+
+function getSportIcon(sport) {
+  const key = String(sport || "")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-");
+
+  return SPORT_ICONS[key] || "🏆";
+}
+
 export default function JoinTournament() {
   const navigate = useNavigate();
 
@@ -82,6 +102,15 @@ export default function JoinTournament() {
     loadTournaments();
   }, []);
 
+  useEffect(() => {
+  const savedTheme =
+    localStorage.getItem("matcho_theme") === "dark";
+
+  document.documentElement.classList.toggle(
+    "matcho-dark",
+    savedTheme
+  );
+}, []);
   /* =========================================================
      SEARCH
   ========================================================= */

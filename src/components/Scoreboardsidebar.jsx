@@ -11,12 +11,11 @@ import {
   LayoutDashboard,
   CalendarRange,
   BarChart3,
-   Trophy,
+  Trophy,
   ShieldCheck,
 } from "lucide-react";
 
 import "./Sidebar.css";
-
 
 // =========================================================
 // NAV ITEMS
@@ -50,20 +49,14 @@ function buildNavItems(dashboardPath) {
 // =========================================================
 
 export default function Scoreboardsidebar() {
-  const navigate =
-    useNavigate();
-
-  const location =
-    useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // =======================================================
   // LOGGED-IN USER
   // =======================================================
 
-  const storedUser =
-    localStorage.getItem(
-      "matcho_user"
-    );
+  const storedUser = localStorage.getItem("matcho_user");
 
   let currentUser = null;
 
@@ -91,8 +84,7 @@ export default function Scoreboardsidebar() {
     userName
       .trim()
       .charAt(0)
-      .toUpperCase() ||
-    "V";
+      .toUpperCase() || "V";
 
   // =======================================================
   // DASHBOARD PATH
@@ -100,10 +92,9 @@ export default function Scoreboardsidebar() {
 
   const dashboardPath = "/";
 
-  const NAV_ITEMS =
-    buildNavItems(
-      dashboardPath
-    );
+  const NAV_ITEMS = buildNavItems(
+    dashboardPath
+  );
 
   // =======================================================
   // CURRENT SECTION
@@ -116,18 +107,13 @@ export default function Scoreboardsidebar() {
 
   // =======================================================
   // ACTIVE ITEM
-  //
-  // IMPORTANT:
-  // Do NOT force Dashboard active using a prop.
-  // The URL decides which navigation item is active.
   // =======================================================
 
   const isActive = (item) => {
     // Dashboard
     if (
       item.section === null &&
-      location.pathname ===
-        "/scoreboard" &&
+      location.pathname === "/scoreboard" &&
       !currentSection
     ) {
       return true;
@@ -136,10 +122,8 @@ export default function Scoreboardsidebar() {
     // Fixtures / Standings
     if (
       item.section &&
-      location.pathname ===
-        "/scoreboard" &&
-      currentSection ===
-        item.section
+      location.pathname === "/scoreboard" &&
+      currentSection === item.section
     ) {
       return true;
     }
@@ -159,8 +143,11 @@ export default function Scoreboardsidebar() {
   // PUBLIC ACTIONS
   // =======================================================
 
-  const handleJoin = () => navigate("/join-tournament");
-  const handleOrganizer = () => navigate("/signup");
+  const handleJoin = () =>
+    navigate("/join-tournament");
+
+  const handleOrganizer = () =>
+    navigate("/signup");
 
   // =======================================================
   // RENDER
@@ -188,42 +175,29 @@ export default function Scoreboardsidebar() {
       ================================================= */}
 
       <nav className="org-sidebar-nav">
+        {NAV_ITEMS.map((item) => {
+          const Icon = item.icon;
+          const active = isActive(item);
 
-        {NAV_ITEMS.map(
-          (item) => {
-            const Icon =
-              item.icon;
+          return (
+            <button
+              key={item.label}
+              type="button"
+              className={`org-nav-item ${
+                active ? "active" : ""
+              }`}
+              onClick={() =>
+                handleNav(item)
+              }
+            >
+              <Icon size={18} />
 
-            const active =
-              isActive(item);
-
-            return (
-              <button
-                key={
-                  item.label
-                }
-                type="button"
-                className={`org-nav-item ${
-                  active
-                    ? "active"
-                    : ""
-                }`}
-                onClick={() =>
-                  handleNav(item)
-                }
-              >
-                <Icon
-                  size={18}
-                />
-
-                <span>
-                  {item.label}
-                </span>
-              </button>
-            );
-          }
-        )}
-
+              <span>
+                {item.label}
+              </span>
+            </button>
+          );
+        })}
       </nav>
 
       {/* =================================================
@@ -234,58 +208,45 @@ export default function Scoreboardsidebar() {
 
         {/* PUBLIC ACTIONS */}
 
-<div className="org-sidebar-public-actions">
+        {/* QUICK ACTIONS */}
 
-  {/* JOIN TOURNAMENT */}
+<div className="org-sidebar-quick-actions">
+
+  <div className="org-sidebar-quick-title">
+    QUICK ACTIONS
+  </div>
 
   <button
     type="button"
-    className="public-action-card public-action-primary"
+    className="org-quick-action org-quick-action-primary"
     onClick={handleJoin}
   >
-    <span className="public-action-icon">
-      <Trophy size={18} />
+    <span className="org-quick-action-icon">
+      <Trophy size={16} />
     </span>
 
-    <span className="public-action-content">
-      <span className="public-action-title">
-        Join Tournament
-      </span>
-
-      <span className="public-action-subtitle">
-        Find and join an event
-      </span>
+    <span className="org-quick-action-text">
+      Join Tournament
     </span>
   </button>
 
-
-  {/* ORGANIZER */}
-
   <button
     type="button"
-    className="public-action-card public-action-secondary"
+    className="org-quick-action org-quick-action-secondary"
     onClick={handleOrganizer}
   >
-    <span className="public-action-icon">
-      <ShieldCheck size={18} />
+    <span className="org-quick-action-icon">
+      <ShieldCheck size={16} />
     </span>
 
-    <span className="public-action-content">
-      <span className="public-action-title">
-        Organizer
-      </span>
-
-      <span className="public-action-subtitle">
-        Create & manage tournaments
-      </span>
+    <span className="org-quick-action-text">
+      Organizer Sign Up
     </span>
   </button>
 
 </div>
 
-
       </div>
-
     </aside>
   );
 }

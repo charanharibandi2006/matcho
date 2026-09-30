@@ -3726,4 +3726,7321 @@
 
 }
 
+/* =========================================================
+   MATCHO - PREMIUM COMPACT SPORTS SELECTOR
+   ========================================================= */
 
+.scoreboard-sports-selector {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin: 0 0 24px;
+  padding: 5px;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+
+  border: 1px solid rgba(108, 61, 255, 0.10);
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.72);
+
+  box-shadow:
+    0 8px 24px rgba(54, 38, 112, 0.045),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.scoreboard-sports-selector::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* =========================================================
+   SPORT BUTTON
+   ========================================================= */
+
+.scoreboard-sport-option {
+  position: relative;
+
+  flex: 0 0 auto;
+
+  min-width: 100px;
+  height: 46px;
+
+  padding: 0 14px;
+
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  border: 1px solid transparent;
+  border-radius: 11px;
+
+  background: transparent;
+  color: #252b4a;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+/* =========================================================
+   ICON
+   ========================================================= */
+
+.scoreboard-sport-icon {
+  display: inline-grid;
+  place-items: center;
+
+  width: 23px;
+  height: 23px;
+
+  font-size: 18px;
+  line-height: 1;
+
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
+}
+
+
+/* =========================================================
+   HOVER
+   ========================================================= */
+
+.scoreboard-sport-option:hover {
+  color: #5b3bea;
+
+  background: rgba(108, 61, 255, 0.055);
+
+  border-color: rgba(108, 61, 255, 0.10);
+
+  transform: translateY(-1px);
+}
+
+.scoreboard-sport-option:hover .scoreboard-sport-icon {
+  transform: scale(1.08);
+}
+
+
+/* =========================================================
+   ACTIVE SPORT
+   ========================================================= */
+
+.scoreboard-sport-option.active {
+  color: #ffffff;
+
+  border-color: transparent;
+
+  background:
+    linear-gradient(
+      135deg,
+      #5d3bff 0%,
+      #7135f5 48%,
+      #9329e8 100%
+    );
+
+  box-shadow:
+    0 7px 18px rgba(108, 61, 255, 0.20),
+    0 2px 5px rgba(108, 61, 255, 0.10);
+
+  transform: translateY(-1px);
+}
+
+.scoreboard-sport-option.active .scoreboard-sport-icon {
+  transform: scale(1.04);
+
+  filter:
+    drop-shadow(
+      0 2px 4px rgba(255, 255, 255, 0.20)
+    );
+}
+
+
+/* =========================================================
+   ACTIVE INNER HIGHLIGHT
+   ========================================================= */
+
+.scoreboard-sport-option.active::after {
+  content: "";
+
+  position: absolute;
+  inset: 1px;
+
+  border-radius: 10px;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.10),
+      transparent 45%
+    );
+}
+
+
+/* =========================================================
+   FOCUS
+   ========================================================= */
+
+.scoreboard-sport-option:focus-visible {
+  outline: none;
+
+  box-shadow:
+    0 0 0 3px rgba(108, 61, 255, 0.13);
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 899px) {
+
+  .scoreboard-sports-selector {
+    gap: 7px;
+    padding: 4px;
+
+    margin-bottom: 20px;
+
+    border-radius: 14px;
+  }
+
+  .scoreboard-sport-option {
+    min-width: 92px;
+    height: 44px;
+
+    padding: 0 12px;
+
+    border-radius: 10px;
+
+    font-size: 11.5px;
+  }
+
+  .scoreboard-sport-icon {
+    width: 21px;
+    height: 21px;
+
+    font-size: 17px;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 640px) {
+
+  .scoreboard-sports-selector {
+    width: calc(100% + 4px);
+
+    margin-left: -2px;
+    margin-right: -2px;
+
+    gap: 6px;
+
+    padding: 4px;
+
+    margin-bottom: 17px;
+
+    border-radius: 13px;
+  }
+
+  .scoreboard-sport-option {
+    min-width: 86px;
+    height: 42px;
+
+    padding: 0 10px;
+
+    gap: 6px;
+
+    border-radius: 9px;
+
+    font-size: 10.5px;
+  }
+
+  .scoreboard-sport-icon {
+    width: 19px;
+    height: 19px;
+
+    font-size: 16px;
+  }
+}
+
+
+/* =========================================================
+   MATCHO - COMPACT TOP SPORT SELECTOR
+========================================================= */
+
+.scoreboard-sports-selector {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 18px;
+  padding: 4px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  border: 1px solid #e7e2f5;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 6px 18px rgba(54, 38, 112, 0.045);
+  -webkit-overflow-scrolling: touch;
+}
+
+.scoreboard-sports-selector::-webkit-scrollbar {
+  display: none;
+}
+
+.scoreboard-sport-option {
+  flex: 0 0 auto;
+  min-width: 94px;
+  height: 52px;
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: transparent;
+  color: #182044;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease,
+    color 0.18s ease;
+}
+
+.scoreboard-sport-option:hover {
+  transform: translateY(-1px);
+  border-color: #ddd3ff;
+  background: #f7f3ff;
+}
+
+.scoreboard-sport-option.active {
+  color: #ffffff;
+  border-color: #6c3dff;
+  background: linear-gradient(135deg, #5d3bff 0%, #8a2be2 100%);
+  box-shadow: 0 7px 16px rgba(108, 61, 255, 0.20);
+}
+
+.scoreboard-sport-icon {
+  display: grid;
+  place-items: center;
+  min-height: 20px;
+  font-size: 19px;
+  line-height: 1;
+}
+
+.scoreboard-sport-option.active .scoreboard-sport-icon {
+  filter: drop-shadow(0 2px 3px rgba(255, 255, 255, 0.20));
+}
+
+@media (max-width: 899px) {
+  .scoreboard-sports-selector {
+    margin-bottom: 15px;
+    gap: 6px;
+  }
+
+  .scoreboard-sport-option {
+    min-width: 88px;
+    height: 48px;
+    padding: 5px 10px;
+  }
+}
+
+@media (max-width: 640px) {
+  .scoreboard-sports-selector {
+    margin-left: -2px;
+    margin-right: -2px;
+    width: calc(100% + 4px);
+    border-radius: 12px;
+    gap: 6px;
+    padding: 4px;
+  }
+
+  .scoreboard-sport-option {
+    min-width: 82px;
+    height: 44px;
+    border-radius: 10px;
+    font-size: 11px;
+    padding: 4px 9px;
+  }
+
+  .scoreboard-sport-icon {
+    font-size: 17px;
+  }
+}
+
+/* =========================================================
+   MATCHO TOP NAVBAR
+   Fixed app header
+========================================================= */
+
+.scoreboard-top-navbar {
+  position: sticky;
+  top: 14px;
+  z-index: 1200;
+
+  width: 100%;
+  min-height: 70px;
+  margin: 0 0 18px;
+
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  padding: 8px 12px 8px 18px;
+  box-sizing: border-box;
+
+  border: 1px solid #e3def0;
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow:
+    0 10px 30px rgba(46, 32, 91, 0.07),
+    0 2px 8px rgba(46, 32, 91, 0.025);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.scoreboard-top-brand {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.scoreboard-top-nav-spacer {
+  flex: 1 1 auto;
+  min-width: 20px;
+}
+
+.scoreboard-top-actions {
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* The previous dark pill made the actual Matcho mark look tiny. */
+.scoreboard-top-logo-wrap {
+  width: 124px;
+  height: 54px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  overflow: hidden;
+
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.scoreboard-top-logo {
+  display: block;
+
+  width: 124px;
+  height: 50px;
+
+  max-width: 100%;
+  max-height: 100%;
+
+  object-fit: contain;
+  object-position: center;
+
+  transform: none;
+}
+
+/* ---------------------------------------------------------
+   ICON BUTTONS
+--------------------------------------------------------- */
+
+.scoreboard-top-menu-wrap {
+  position: relative;
+}
+
+.scoreboard-top-icon-btn {
+  position: relative;
+
+  width: 44px;
+  height: 44px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+
+  border: 1px solid #e1dced;
+  border-radius: 13px;
+
+  background: #fff;
+  color: #59627c;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.scoreboard-top-icon-btn:hover,
+.scoreboard-top-icon-btn.active {
+  color: #673cff;
+  border-color: #cdbfff;
+  background: #f8f5ff;
+  box-shadow: 0 5px 14px rgba(103, 60, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.scoreboard-top-notification-dot {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+  background: #ff5b78;
+
+  box-shadow: 0 0 0 2px #fff;
+}
+
+/* ---------------------------------------------------------
+   PROFILE
+--------------------------------------------------------- */
+
+.scoreboard-profile-btn {
+  min-height: 44px;
+
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 5px 10px 5px 6px;
+
+  border: 1px solid #e1dced;
+  border-radius: 13px;
+
+  background: #fff;
+  color: #202949;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.scoreboard-profile-btn:hover,
+.scoreboard-profile-btn.active {
+  border-color: #cdbfff;
+  background: #fbf9ff;
+  box-shadow: 0 5px 14px rgba(103, 60, 255, 0.06);
+  transform: translateY(-1px);
+}
+
+.scoreboard-profile-avatar {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 10px;
+
+  background: #f0ebff;
+  color: #673cff;
+}
+
+.scoreboard-profile-avatar.large {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+}
+
+.scoreboard-profile-copy {
+  min-width: 84px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+}
+
+.scoreboard-profile-copy small {
+  color: #9aa1b4;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+}
+
+.scoreboard-profile-copy strong {
+  max-width: 145px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  color: #202949;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.scoreboard-profile-chevron {
+  color: #7c849a;
+  transition: transform 0.2s ease;
+}
+
+.scoreboard-profile-chevron.open {
+  transform: rotate(180deg);
+}
+
+/* ---------------------------------------------------------
+   DROPDOWNS
+--------------------------------------------------------- */
+
+.scoreboard-top-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+
+  width: min(330px, calc(100vw - 36px));
+
+  border: 1px solid #e1dced;
+  border-radius: 15px;
+
+  background: #fff;
+
+  box-shadow:
+    0 18px 42px rgba(37, 26, 82, 0.13),
+    0 4px 12px rgba(37, 26, 82, 0.05);
+
+  overflow: hidden;
+
+  animation: scoreboardDropdownIn 0.16s ease;
+}
+
+@keyframes scoreboardDropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scoreboard-dropdown-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 13px 14px;
+
+  border-bottom: 1px solid #eeeaf5;
+}
+
+.scoreboard-dropdown-head > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.scoreboard-dropdown-head span,
+.scoreboard-profile-dropdown-top span {
+  color: #9aa1b4;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.scoreboard-dropdown-head strong,
+.scoreboard-profile-dropdown-top strong {
+  color: #202949;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.scoreboard-dropdown-close {
+  width: 30px;
+  height: 30px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+
+  border: 1px solid #e5e1ee;
+  border-radius: 9px;
+
+  background: #fff;
+  color: #727b94;
+
+  cursor: pointer;
+}
+
+.scoreboard-dropdown-close:hover {
+  color: #673cff;
+  border-color: #cfc3ff;
+}
+
+.scoreboard-announcement-empty {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 7px;
+
+  padding: 24px 20px 26px;
+
+  text-align: center;
+}
+
+.scoreboard-announcement-icon {
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 12px;
+
+  background: #f0ebff;
+  color: #673cff;
+}
+
+.scoreboard-announcement-empty strong {
+  color: #202949;
+  font-size: 12px;
+}
+
+.scoreboard-announcement-empty p {
+  max-width: 250px;
+  margin: 0;
+
+  color: #8e95a9;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.scoreboard-profile-dropdown {
+  width: 260px;
+  padding: 14px;
+}
+
+.scoreboard-profile-dropdown-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.scoreboard-profile-dropdown-top > div:last-child {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.scoreboard-profile-dropdown-top strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scoreboard-profile-dropdown-note {
+  margin-top: 12px;
+  padding-top: 11px;
+
+  border-top: 1px solid #eeeaf5;
+
+  color: #8e95a9;
+  font-size: 10px;
+}
+
+/* ---------------------------------------------------------
+   FIXED NAVBAR CONTENT OFFSET
+--------------------------------------------------------- */
+
+.score-viewer-shell .stat-main {
+  padding-top: 102px;
+}
+
+/* =========================================================
+   TOP NAVBAR RESPONSIVE
+========================================================= */
+
+@media (max-width: 760px) {
+ .scoreboard-top-navbar {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+
+    min-height: 60px;
+
+    margin: 0;
+    padding: 6px 8px 6px 11px;
+    border-radius: 15px;
+  }
+
+  .scoreboard-top-logo-wrap {
+    width: 104px;
+    height: 44px;
+  }
+
+  .scoreboard-top-logo {
+    width: 104px;
+    height: 42px;
+  }
+
+  .scoreboard-top-actions {
+    gap: 6px;
+  }
+
+  .scoreboard-top-icon-btn {
+    width: 39px;
+    height: 39px;
+    border-radius: 10px;
+  }
+
+  .scoreboard-profile-btn {
+    min-height: 39px;
+    padding-right: 7px;
+    border-radius: 10px;
+  }
+
+  .scoreboard-profile-copy {
+    display: none;
+  }
+
+  .scoreboard-profile-avatar {
+    width: 29px;
+    height: 29px;
+    border-radius: 9px;
+  }
+
+  .score-viewer-shell .stat-main {
+    padding-top: 0;
+  }
+
+  .scoreboard-top-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+  }
+}
+
+@media (max-width: 430px) {
+ .scoreboard-top-navbar {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+  }
+
+  .scoreboard-top-logo-wrap {
+    width: 90px;
+    height: 38px;
+  }
+
+  .scoreboard-top-logo {
+    width: 90px;
+    height: 38px;
+  }
+
+  .scoreboard-top-icon-btn {
+    width: 37px;
+    height: 37px;
+  }
+
+  .scoreboard-profile-btn {
+    min-height: 37px;
+  }
+
+  .scoreboard-profile-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .score-viewer-shell .stat-main {
+    padding-top: 0;
+  }
+
+  .scoreboard-top-dropdown {
+    right: 0;
+    width: calc(100vw - 20px);
+  }
+}
+
+/* =========================================================
+   MATCHO DARK MODE
+========================================================= */
+
+html.matcho-dark,
+html.matcho-dark body {
+  background: #0e0d18;
+}
+
+html.matcho-dark .score-viewer-shell {
+  background: #0e0d18;
+}
+
+html.matcho-dark .scoreboard-top-navbar,
+.score-viewer-shell.matcho-dark.scoreboard-top-navbar {
+  border-color: #2a2540;
+  background: rgba(22, 19, 35, 0.95);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
+}
+
+html.matcho-dark .scoreboard-top-icon-btn,
+html.matcho-dark .scoreboard-profile-btn,
+html.matcho-dark .scoreboard-dropdown-close {
+  border-color: #332d4b;
+  background: #18152a;
+  color: #b8b1d0;
+}
+
+html.matcho-dark .scoreboard-top-icon-btn:hover,
+html.matcho-dark .scoreboard-top-icon-btn.active,
+html.matcho-dark .scoreboard-profile-btn:hover,
+html.matcho-dark .scoreboard-profile-btn.active {
+  border-color: #6547c7;
+  background: #241c3d;
+  color: #b69aff;
+}
+
+html.matcho-dark .scoreboard-profile-copy strong,
+html.matcho-dark .scoreboard-dropdown-head strong,
+html.matcho-dark .scoreboard-profile-dropdown-top strong,
+html.matcho-dark .scoreboard-announcement-empty strong {
+  color: #f2effb;
+}
+
+html.matcho-dark .scoreboard-profile-copy small,
+html.matcho-dark .scoreboard-dropdown-head span,
+html.matcho-dark .scoreboard-profile-dropdown-top span {
+  color: #8d86a8;
+}
+
+html.matcho-dark .scoreboard-top-dropdown {
+  border-color: #332d4b;
+  background: #18152a;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.32);
+}
+
+html.matcho-dark .scoreboard-dropdown-head,
+html.matcho-dark .scoreboard-profile-dropdown-note {
+  border-color: #2b2640;
+}
+
+html.matcho-dark .scoreboard-announcement-empty p,
+html.matcho-dark .scoreboard-profile-dropdown-note {
+  color: #948da9;
+}
+
+html.matcho-dark .scoreboard-tournament-selector,
+html.matcho-dark .stat-panel,
+html.matcho-dark .tm-card,
+html.matcho-dark .tm-points-card,
+html.matcho-dark .scoreboard-result-item,
+html.matcho-dark .scoreboard-modal-header,
+html.matcho-dark .scoreboard-modal-filters {
+  border-color: #2a2540;
+  background: #17142a;
+}
+
+html.matcho-dark .scoreboard-tournament-title strong,
+html.matcho-dark .stat-panel h4,
+html.matcho-dark .tm-card h2,
+html.matcho-dark .tm-card h3,
+html.matcho-dark .tm-points-card h3,
+html.matcho-dark .scoreboard-result-teams strong,
+html.matcho-dark .scoreboard-match-team-name,
+html.matcho-dark .score-match-team-name,
+html.matcho-dark .tm-side strong,
+html.matcho-dark .scoreboard-modal-header h2 {
+  color: #f2effb;
+}
+
+html.matcho-dark .scoreboard-tournament-select-wrap select,
+html.matcho-dark .scoreboard-match-search,
+html.matcho-dark .scoreboard-modal-filters button,
+html.matcho-dark .tm-section-tabs button,
+html.matcho-dark .scoreboard-filter-tabs button {
+  border-color: #332d4b;
+  background: #1b1830;
+  color: #ddd7ed;
+}
+
+html.matcho-dark .scoreboard-match-search input,
+html.matcho-dark .scoreboard-tournament-select-wrap select {
+  color: #ddd7ed;
+}
+
+html.matcho-dark .score-panel-subtitle,
+html.matcho-dark .score-match-meta,
+html.matcho-dark .tm-eyebrow,
+html.matcho-dark .tm-pool-label,
+html.matcho-dark .tm-standings-header p,
+html.matcho-dark .scoreboard-result-meta,
+html.matcho-dark .scoreboard-modal-header p,
+html.matcho-dark .tm-card p,
+html.matcho-dark .scoreboard-empty p {
+  color: #918aa7;
+}
+
+html.matcho-dark .scoreboard-results-icon,
+html.matcho-dark .scoreboard-tournament-icon,
+html.matcho-dark .scoreboard-profile-avatar {
+  background: #261f40;
+  color: #b59aff;
+}
+
+html.matcho-dark .scoreboard-filter-tabs button:hover,
+html.matcho-dark .scoreboard-modal-filters button:hover,
+html.matcho-dark .tm-section-tabs button:hover {
+  border-color: #6547c7;
+  color: #b69aff;
+}
+
+html.matcho-dark .scoreboard-list-button:hover,
+html.matcho-dark .scoreboard-result-item:hover {
+  background: #1f1a33;
+}
+
+html.matcho-dark .score-match-winner,
+html.matcho-dark .scoreboard-result-item {
+  border-color: #2b2640;
+}
+
+html.matcho-dark .tm-table th,
+html.matcho-dark .tm-table td {
+  border-color: #2b2640;
+}
+
+html.matcho-dark .tm-table th {
+  color: #aaa2bd;
+}
+
+html.matcho-dark .scoreboard-modal {
+  border-color: #2a2540;
+  background: #121020;
+}
+
+html.matcho-dark .scoreboard-modal-body {
+  background: #121020;
+}
+
+/* =========================================================
+   TOP NAVBAR RESPONSIVE
+========================================================= */
+
+@media (max-width: 760px) {
+ .scoreboard-top-navbar {
+    min-height: 62px;
+    margin-bottom: 14px;
+    padding: 8px 9px;
+    border-radius: 14px;
+  }
+
+  .scoreboard-top-logo-wrap {
+    min-width: 94px;
+    height: 40px;
+    padding: 4px 9px;
+    border-radius: 10px;
+  }
+
+  .scoreboard-top-logo {
+    width: 82px;
+    max-height: 32px;
+  }
+
+  .scoreboard-top-actions {
+    gap: 6px;
+  }
+
+  .scoreboard-top-icon-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+  }
+
+  .scoreboard-profile-btn {
+    min-height: 38px;
+    padding-right: 7px;
+    border-radius: 10px;
+  }
+
+  .scoreboard-profile-copy {
+    display: none;
+  }
+
+  .scoreboard-profile-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .scoreboard-top-dropdown {
+    position: fixed;
+    top: 75px;
+    right: 12px;
+  }
+}
+
+@media (max-width: 430px) {
+ .scoreboard-top-navbar {
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+
+  .scoreboard-top-logo-wrap {
+    min-width: 86px;
+  }
+
+  .scoreboard-top-logo {
+    width: 74px;
+  }
+
+  .scoreboard-top-dropdown {
+    right: 8px;
+    width: calc(100vw - 16px);
+  }
+}
+
+/* =========================================================
+   FINAL NAVBAR FIX
+   Keep navbar inside the main content column so it never
+   overlaps the left Matcho sidebar.
+========================================================= */
+
+.score-viewer-shell .scoreboard-top-navbar {
+  position: sticky !important;
+  top: 14px !important;
+  left: auto !important;
+  right: auto !important;
+  z-index: 1200 !important;
+
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 70px !important;
+
+  margin: 0 0 18px !important;
+  padding: 8px 12px 8px 18px !important;
+  box-sizing: border-box !important;
+
+  border-radius: 18px !important;
+}
+
+/* The sticky navbar is in normal document flow, so no artificial
+   top padding is needed anymore. */
+.score-viewer-shell .stat-main {
+  padding-top: 0 !important;
+}
+
+/* Cleaner Matcho logo. No dark pill and no oversized scaling. */
+.score-viewer-shell .scoreboard-top-logo-wrap {
+  width: 126px !important;
+  height: 54px !important;
+  min-width: 126px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}
+
+.score-viewer-shell .scoreboard-top-logo {
+  width: 120px !important;
+  height: 50px !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  transform: none !important;
+}
+
+@media (max-width: 760px) {
+  .score-viewer-shell .scoreboard-top-navbar {
+    top: 10px !important;
+    min-height: 60px !important;
+    margin-bottom: 14px !important;
+    padding: 6px 8px 6px 11px !important;
+    border-radius: 15px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo-wrap {
+    width: 104px !important;
+    min-width: 104px !important;
+    height: 44px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo {
+    width: 104px !important;
+    height: 42px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-dropdown {
+    position: absolute !important;
+    top: calc(100% + 10px) !important;
+    right: 0 !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .score-viewer-shell .scoreboard-top-navbar {
+    top: 8px !important;
+    padding-left: 7px !important;
+    padding-right: 7px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo-wrap {
+    width: 90px !important;
+    min-width: 90px !important;
+    height: 38px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo {
+    width: 90px !important;
+    height: 38px !important;
+  }
+}
+
+/* =========================================================
+   FINAL DESKTOP LAYOUT FIX
+   Navbar stays inside the main content column and never
+   covers the dashboard content while scrolling.
+========================================================= */
+
+@media (min-width: 901px) {
+  .score-viewer-shell .stat-main {
+    position: relative;
+    min-width: 0;
+    box-sizing: border-box;
+    padding-top: 0 !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-navbar {
+    position: sticky !important;
+    top: 0 !important;
+    left: auto !important;
+    right: auto !important;
+    z-index: 1200 !important;
+
+    width: 100% !important;
+    max-width: none !important;
+
+    margin: 0 0 22px !important;
+    padding: 8px 14px 8px 18px !important;
+
+    min-height: 70px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Give the first dashboard section its own space below the navbar. */
+  .score-viewer-shell .scoreboard-sports-selector {
+    width: 100%;
+    max-width: none;
+    margin-top: 0 !important;
+  }
+
+  /* Never allow a card/list to paint above the navbar. */
+  .score-viewer-shell .scoreboard-tournament-selector,
+  .score-viewer-shell .score-live-panel,
+  .score-viewer-shell .tm-card,
+  .score-viewer-shell .tm-points-card {
+    position: relative;
+    z-index: 1;
+  }
+
+  .score-viewer-shell .scoreboard-top-navbar {
+    isolation: isolate;
+  }
+
+  /* Desktop logo: keep the actual logo readable without a dark pill. */
+  .score-viewer-shell .scoreboard-top-logo-wrap {
+    width: 132px !important;
+    min-width: 132px !important;
+    height: 54px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo {
+    width: 128px !important;
+    height: 52px !important;
+    max-width: 128px !important;
+    max-height: 52px !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    transform: none !important;
+  }
+}
+
+/* =========================================================
+   DESKTOP HEADER / CONTENT SPACING
+========================================================= */
+
+@media (min-width: 1201px) {
+  .score-viewer-shell .stat-main {
+    padding-left: 28px !important;
+    padding-right: 28px !important;
+    padding-bottom: 34px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-navbar {
+    width: 100% !important;
+  }
+}
+
+/* =========================================================
+   JOIN / ORGANIZER ACTION PLACEMENT
+   These remain in the bottom action area of the sidebar.
+   Do not duplicate them in the top navbar.
+========================================================= */
+
+@media (min-width: 901px) {
+  .score-viewer-shell .scoreboard-top-actions {
+    margin-left: auto;
+  }
+}
+/* =========================================================
+   MATCHO - FULL WIDTH TOP NAVBAR
+   Starts exactly after the fixed sidebar.
+========================================================= */
+
+@media (min-width: 901px) {
+  .score-viewer-shell .scoreboard-top-navbar {
+    position: fixed !important;
+
+    top: 0 !important;
+    left: 240px !important;
+    right: 0 !important;
+
+    width: auto !important;
+    max-width: none !important;
+
+    height: 82px !important;
+    min-height: 82px !important;
+
+    margin: 0 !important;
+
+    padding: 0 28px !important;
+
+    box-sizing: border-box !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    border-radius: 0 !important;
+    border-top: 0 !important;
+    border-right: 0 !important;
+    border-left: 1px solid #e7e2f3 !important;
+    border-bottom: 1px solid #e7e2f3 !important;
+
+    background: rgba(255, 255, 255, 0.97) !important;
+
+    box-shadow:
+      0 6px 24px rgba(42, 30, 87, 0.06) !important;
+
+    z-index: 1200 !important;
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  /* Logo area */
+  .score-viewer-shell .scoreboard-top-logo-wrap {
+    width: 122px !important;
+    min-width: 122px !important;
+
+    height: 58px !important;
+
+    padding: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo {
+    width: 116px !important;
+    height: 52px !important;
+
+    max-width: 116px !important;
+    max-height: 52px !important;
+
+    object-fit: contain !important;
+    object-position: center !important;
+
+    transform: none !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-actions {
+    margin-left: auto !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    gap: 9px !important;
+  }
+
+  /* Push dashboard content below fixed navbar */
+  .score-viewer-shell .stat-main {
+    padding-top: 104px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Keep content itself nicely padded */
+  .score-viewer-shell .scoreboard-sports-selector,
+  .score-viewer-shell .scoreboard-tournament-selector,
+  .score-viewer-shell .score-live-panel,
+  .score-viewer-shell .tm-card {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+/* =========================================================
+   MATCHO NAVBAR LOGO
+   Desktop: hidden
+   Mobile: visible
+========================================================= */
+
+/* Desktop / large screens */
+@media (min-width: 901px) {
+  .score-viewer-shell .scoreboard-top-brand {
+    display: none !important;
+  }
+}
+
+/* Mobile / tablet */
+@media (max-width: 900px) {
+  .score-viewer-shell .scoreboard-top-brand {
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo-wrap {
+    display: flex !important;
+  }
+}
+
+/* =========================================================
+   FINAL MOBILE POLISH - MATCHO DASHBOARD
+   Existing desktop layout and functionality remain unchanged.
+========================================================= */
+
+@media (max-width: 900px) {
+
+  /* -------------------------------------------------------
+     MOBILE TOP NAVBAR
+     Keep hamburger clear of the Matcho logo.
+  ------------------------------------------------------- */
+
+  .score-viewer-shell .scoreboard-top-navbar {
+    position: sticky !important;
+    top: 8px !important;
+
+    width: 100% !important;
+    min-height: 62px !important;
+
+    margin: 0 0 12px !important;
+
+    padding: 6px 8px 6px 54px !important;
+
+    box-sizing: border-box !important;
+
+    gap: 6px !important;
+
+    border-radius: 15px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-brand {
+    flex: 0 0 auto !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    min-width: 0 !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo-wrap {
+    width: 94px !important;
+    min-width: 94px !important;
+    height: 44px !important;
+
+    padding: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    overflow: visible !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo {
+    width: 92px !important;
+    height: 44px !important;
+
+    max-width: 92px !important;
+    max-height: 44px !important;
+
+    object-fit: contain !important;
+    object-position: left center !important;
+
+    transform: none !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-nav-spacer {
+    flex: 1 1 auto !important;
+    min-width: 2px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-actions {
+    flex: 0 0 auto !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    gap: 6px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-icon-btn {
+    width: 38px !important;
+    height: 38px !important;
+
+    min-width: 38px !important;
+
+    border-radius: 10px !important;
+  }
+
+  .score-viewer-shell .scoreboard-profile-btn {
+    min-width: 38px !important;
+    min-height: 38px !important;
+
+    padding: 0 6px !important;
+
+    border-radius: 10px !important;
+  }
+
+  .score-viewer-shell .scoreboard-profile-copy {
+    display: none !important;
+  }
+
+  .score-viewer-shell .scoreboard-profile-avatar {
+    width: 28px !important;
+    height: 28px !important;
+
+    border-radius: 8px !important;
+  }
+
+  /* -------------------------------------------------------
+     SPORTS
+     Horizontal scroll stays, but the edge fade makes it
+     obvious that more sports are available.
+  ------------------------------------------------------- */
+
+  .score-viewer-shell .scoreboard-sports-selector {
+    position: relative !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 0 15px !important;
+
+    padding: 4px 4px 4px 4px !important;
+
+    gap: 5px !important;
+
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+
+    scroll-behavior: smooth;
+  }
+
+  .score-viewer-shell .scoreboard-sports-selector::after {
+    content: "";
+
+    position: sticky;
+    right: 0;
+
+    flex: 0 0 24px;
+
+    align-self: stretch;
+
+    margin-left: -24px;
+
+    pointer-events: none;
+
+    background: linear-gradient(
+      90deg,
+      rgba(255,255,255,0),
+      rgba(247,246,253,0.92)
+    );
+  }
+
+  .score-viewer-shell .scoreboard-sport-option {
+    flex: 0 0 auto !important;
+
+    min-width: 84px !important;
+    height: 46px !important;
+
+    padding: 4px 9px !important;
+
+    border-radius: 10px !important;
+
+    font-size: 11px !important;
+
+    gap: 5px !important;
+  }
+
+  .score-viewer-shell .scoreboard-sport-icon {
+    font-size: 17px !important;
+  }
+
+  /* -------------------------------------------------------
+     STATUS FILTERS
+     Keep ALL / LIVE / UPCOMING / COMPLETED on one row.
+  ------------------------------------------------------- */
+
+  .score-viewer-shell .score-live-panel > .scoreboard-filter-tabs {
+    width: 100% !important;
+
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+
+    gap: 6px !important;
+
+    margin: 0 0 12px !important;
+
+    flex-wrap: nowrap !important;
+  }
+
+  .score-viewer-shell .score-live-panel > .scoreboard-filter-tabs button,
+  .score-viewer-shell .scoreboard-filter-tabs button {
+    width: 100% !important;
+    min-width: 0 !important;
+
+    flex: none !important;
+
+    height: 38px !important;
+
+    padding: 0 4px !important;
+
+    border-radius: 9px !important;
+
+    font-size: 10.5px !important;
+
+    line-height: 1 !important;
+
+    white-space: nowrap !important;
+  }
+
+  /* -------------------------------------------------------
+     SEARCH
+  ------------------------------------------------------- */
+
+  .score-viewer-shell .score-live-panel > .scoreboard-match-search {
+    width: 100% !important;
+
+    height: 42px !important;
+
+    margin: 0 0 10px !important;
+
+    border-radius: 11px !important;
+  }
+
+  /* -------------------------------------------------------
+     MATCH CARDS
+     Slightly tighter without making the important data tiny.
+  ------------------------------------------------------- */
+
+  .score-viewer-shell .score-live-panel .scoreboard-match-card {
+    min-height: 0 !important;
+
+    padding: 14px !important;
+
+    border-radius: 15px !important;
+  }
+
+  .score-viewer-shell .score-live-panel
+  .scoreboard-match-card
+  .live-card-top {
+    margin-bottom: 2px !important;
+  }
+
+  .score-viewer-shell .score-live-panel
+  .scoreboard-match-card
+  .score-match-meta {
+    margin: 5px 0 9px !important;
+
+    font-size: 9.5px !important;
+
+    line-height: 1.3 !important;
+  }
+
+  .score-viewer-shell .score-live-panel
+  .scoreboard-match-card
+  .score-match-score {
+    min-height: 70px !important;
+
+    margin-top: 4px !important;
+    margin-bottom: 7px !important;
+
+    column-gap: 5px !important;
+  }
+
+  .score-viewer-shell .score-live-panel
+  .scoreboard-match-card
+  .score-match-team-row strong {
+    font-size: 14px !important;
+  }
+
+  .score-viewer-shell .score-live-panel
+  .scoreboard-match-card
+  .score-match-side-score {
+    font-size: 22px !important;
+  }
+
+  .score-viewer-shell .score-live-panel
+  .scoreboard-match-card
+  .score-match-center-score {
+    font-size: 22px !important;
+  }
+
+  .score-viewer-shell .score-live-panel
+  .scoreboard-match-card
+  .score-match-vs {
+    font-size: 8px !important;
+  }
+
+  .score-viewer-shell .score-live-panel
+  .scoreboard-match-card
+  .score-match-members,
+  .score-viewer-shell .score-live-panel
+  .scoreboard-match-card
+  .score-match-members span {
+    font-size: 9px !important;
+
+    line-height: 1.22 !important;
+  }
+
+  .score-viewer-shell .score-live-panel
+  .scoreboard-match-card
+  .live-card-foot {
+    padding-top: 7px !important;
+  }
+
+  .score-viewer-shell .score-live-panel
+  .scoreboard-match-card
+  .score-match-winner {
+    margin-top: 6px !important;
+
+    padding: 6px 8px !important;
+
+    border-radius: 8px !important;
+
+    font-size: 9.5px !important;
+  }
+}
+
+/* ---------------------------------------------------------
+   SMALL PHONES
+   Extra room around the hamburger/logo while preserving
+   the same compact layout.
+--------------------------------------------------------- */
+
+@media (max-width: 430px) {
+
+  .score-viewer-shell .scoreboard-top-navbar {
+    padding-left: 52px !important;
+    padding-right: 7px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo-wrap {
+    width: 90px !important;
+    min-width: 90px !important;
+    height: 42px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo {
+    width: 90px !important;
+    height: 42px !important;
+    max-width: 90px !important;
+    max-height: 42px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-actions {
+    gap: 5px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-icon-btn {
+    width: 37px !important;
+    height: 37px !important;
+    min-width: 37px !important;
+  }
+
+  .score-viewer-shell .scoreboard-profile-btn {
+    min-width: 37px !important;
+    min-height: 37px !important;
+  }
+
+  .score-viewer-shell .scoreboard-sport-option {
+    min-width: 82px !important;
+    height: 44px !important;
+
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .score-viewer-shell .scoreboard-filter-tabs {
+    gap: 5px !important;
+  }
+
+  .score-viewer-shell .scoreboard-filter-tabs button {
+    height: 37px !important;
+    padding-left: 3px !important;
+    padding-right: 3px !important;
+    font-size: 10px !important;
+  }
+}
+
+
+/* =========================================================
+   MOBILE FINAL NAVBAR
+   Full edge-to-edge + fixed while scrolling
+========================================================= */
+
+@media (max-width: 900px) {
+  .score-viewer-shell .scoreboard-top-navbar {
+    position: fixed !important;
+
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+
+    width: 100vw !important;
+    max-width: none !important;
+    min-width: 100vw !important;
+
+    height: 70px !important;
+    min-height: 70px !important;
+
+    margin: 0 !important;
+    padding: 6px 10px !important;
+
+    box-sizing: border-box !important;
+
+    border-radius: 0 !important;
+    border-top: 0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+
+    z-index: 1500 !important;
+  }
+
+  /* Keep dashboard content below the fixed header. */
+  .score-viewer-shell .stat-main {
+    padding-top: 84px !important;
+  }
+
+  /* Hamburger stays above the full-width navbar. */
+  .mobile-menu-trigger {
+    z-index: 1600 !important;
+  }
+
+  /* Mobile logo: room beside hamburger, but still compact. */
+  .score-viewer-shell .scoreboard-top-brand {
+    display: flex !important;
+    flex: 0 0 auto !important;
+    margin-left: 43px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo-wrap {
+    width: 94px !important;
+    min-width: 94px !important;
+    height: 48px !important;
+    padding: 0 !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo {
+    width: 92px !important;
+    height: 44px !important;
+    max-width: 92px !important;
+    max-height: 44px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-actions {
+    margin-left: auto !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .score-viewer-shell .scoreboard-top-navbar {
+    height: 68px !important;
+    min-height: 68px !important;
+    padding: 5px 7px !important;
+  }
+
+  .score-viewer-shell .stat-main {
+    padding-top: 82px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-brand {
+    margin-left: 39px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo-wrap {
+    width: 88px !important;
+    min-width: 88px !important;
+    height: 44px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo {
+    width: 86px !important;
+    height: 42px !important;
+    max-width: 86px !important;
+    max-height: 42px !important;
+  }
+}
+/* =========================================================
+   MOBILE NAVBAR - HAMBURGER / LOGO SPACING FIX
+========================================================= */
+
+@media (max-width: 900px) {
+  .score-viewer-shell .scoreboard-top-navbar {
+    padding-left: 58px !important;
+    padding-right: 8px !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    left: 0 !important;
+    right: 0 !important;
+
+    margin: 0 !important;
+
+    box-sizing: border-box !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-brand {
+    margin-left: 0 !important;
+    flex: 0 0 auto !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo-wrap {
+    width: 88px !important;
+    min-width: 88px !important;
+    height: 46px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo {
+    width: 84px !important;
+    height: 42px !important;
+
+    max-width: 84px !important;
+    max-height: 42px !important;
+
+    object-fit: contain !important;
+    object-position: left center !important;
+
+    transform: none !important;
+  }
+}
+
+/* Smaller phones */
+@media (max-width: 430px) {
+  .score-viewer-shell .scoreboard-top-navbar {
+    padding-left: 54px !important;
+    padding-right: 6px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo-wrap {
+    width: 82px !important;
+    min-width: 82px !important;
+    height: 44px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo {
+    width: 80px !important;
+    height: 40px !important;
+  }
+}
+
+/* =========================================================
+   MOBILE HAMBURGER - BLEND INTO WHITE NAVBAR
+========================================================= */
+
+@media (max-width: 900px) {
+  .mobile-menu-trigger {
+    background: #ffffff !important;
+    color: #6c3dff !important;
+
+    border: 0 !important;
+    box-shadow: none !important;
+
+    border-radius: 0 !important;
+
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .mobile-menu-trigger:hover {
+    background: #ffffff !important;
+    color: #5b32e6 !important;
+  }
+
+  .mobile-menu-trigger:active {
+    background: #ffffff !important;
+    transform: none !important;
+  }
+
+  /* When menu is open, keep it white as well */
+  .mobile-menu-root.is-open .mobile-menu-trigger {
+    background: #ffffff !important;
+    color: #6c3dff !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+}
+
+/* =========================================================
+   MOBILE HEADER - FINAL ALIGNMENT
+========================================================= */
+
+@media (max-width: 900px) {
+
+  /* Move hamburger slightly downward */
+  .mobile-menu-trigger {
+    top: 17px !important;
+
+    width: 42px !important;
+    height: 42px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    padding: 0 !important;
+  }
+
+  /* Keep logo centered vertically with hamburger */
+  .score-viewer-shell .scoreboard-top-brand {
+    height: 100% !important;
+
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo-wrap {
+    height: 50px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo {
+    width: 84px !important;
+    height: 44px !important;
+
+    object-fit: contain !important;
+    object-position: center !important;
+
+    margin: 0 !important;
+  }
+}
+
+/* Smaller phones */
+@media (max-width: 430px) {
+
+  .mobile-menu-trigger {
+    top: 15px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo-wrap {
+    height: 46px !important;
+  }
+
+  .score-viewer-shell .scoreboard-top-logo {
+    width: 80px !important;
+    height: 42px !important;
+  }
+}
+
+/* =========================================================
+   DASHBOARD QUICK ACTIONS
+========================================================= */
+
+.scoreboard-dashboard-actions {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin: -6px 0 18px;
+}
+
+.dashboard-action {
+  min-height: 42px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding: 0 14px;
+
+  border-radius: 10px;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+
+  line-height: 1;
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.dashboard-action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 auto;
+}
+
+.dashboard-action-primary {
+  border: 1px solid #633cff;
+
+  background: linear-gradient(
+    135deg,
+    #7040f5,
+    #633cff
+  );
+
+  color: #ffffff;
+
+  box-shadow:
+    0 5px 12px rgba(99, 60, 255, 0.16);
+}
+
+.dashboard-action-primary:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 8px 18px rgba(99, 60, 255, 0.22);
+}
+
+.dashboard-action-secondary {
+  border: 1px solid #ddd8ec;
+
+  background: #ffffff;
+
+  color: #283250;
+}
+
+.dashboard-action-secondary:hover {
+  transform: translateY(-1px);
+
+  border-color: #b9a8ff;
+
+  color: #633cff;
+
+  background: #faf8ff;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .scoreboard-dashboard-actions {
+    justify-content: stretch;
+
+    gap: 8px;
+
+    margin: -2px 0 16px;
+  }
+
+  .dashboard-action {
+    flex: 1 1 0;
+
+    min-width: 0;
+    min-height: 42px;
+
+    padding: 0 8px;
+
+    font-size: 10px;
+  }
+
+  .dashboard-action-icon svg {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 380px) {
+
+  .scoreboard-dashboard-actions {
+    gap: 6px;
+  }
+
+  .dashboard-action {
+    padding: 0 6px;
+
+    font-size: 9px;
+  }
+
+  .dashboard-action-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+/* =========================================================
+   DASHBOARD QUICK ACTIONS
+   Join Tournament + Organizer Sign Up
+   Appears above Sports Selector
+========================================================= */
+
+.scoreboard-dashboard-actions {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 9px;
+  margin: 0 0 12px;
+}
+
+.dashboard-action {
+  min-height: 40px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+  padding: 0 14px;
+
+  border-radius: 10px;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+
+  line-height: 1;
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.dashboard-action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+/* JOIN TOURNAMENT */
+
+.dashboard-action-primary {
+  border: 1px solid #633cff;
+
+  background: linear-gradient(
+    135deg,
+    #7040f5,
+    #633cff
+  );
+
+  color: #ffffff;
+
+  box-shadow:
+    0 5px 12px rgba(99, 60, 255, 0.14);
+}
+
+.dashboard-action-primary:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 7px 16px rgba(99, 60, 255, 0.20);
+}
+
+/* ORGANIZER SIGN UP */
+
+.dashboard-action-secondary {
+  border: 1px solid #ddd8ec;
+
+  background: #ffffff;
+
+  color: #283250;
+}
+
+.dashboard-action-secondary:hover {
+  transform: translateY(-1px);
+
+  border-color: #b9a8ff;
+  background: #faf8ff;
+  color: #633cff;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+  .scoreboard-dashboard-actions {
+    width: 100%;
+    justify-content: stretch;
+    gap: 8px;
+    margin: 0 0 10px;
+  }
+
+  .dashboard-action {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 40px;
+
+    padding: 0 8px;
+
+    font-size: 10px;
+  }
+
+  .dashboard-action-icon svg {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
+
+@media (max-width: 380px) {
+  .scoreboard-dashboard-actions {
+    gap: 6px;
+  }
+
+  .dashboard-action {
+    padding: 0 6px;
+    font-size: 9px;
+  }
+
+  .dashboard-action-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+
+
+/* =========================================================
+   MATCHO FINAL SPORTS BACKGROUND
+   Sports balls + badminton racquets remain visible.
+   Glitter moves slowly at a CONSTANT pace and follows cursor gently.
+   Paste/keep this block at the VERY BOTTOM of the CSS file.
+========================================================= */
+
+.score-viewer-shell .matcho-sports-background {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+  opacity: 1 !important;
+}
+
+/* Soft ambient purple light behind the objects */
+.score-viewer-shell .matcho-sports-background::before {
+  content: "";
+  position: absolute;
+  width: 48vw;
+  height: 48vw;
+  left: -16vw;
+  top: 8vh;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(121, 74, 255, 0.13) 0%, rgba(121, 74, 255, 0.035) 42%, transparent 72%);
+  filter: blur(8px);
+}
+
+.score-viewer-shell .matcho-sports-background::after {
+  content: "";
+  position: absolute;
+  width: 44vw;
+  height: 44vw;
+  right: -12vw;
+  bottom: -8vh;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(157, 99, 255, 0.10) 0%, rgba(157, 99, 255, 0.025) 45%, transparent 74%);
+  filter: blur(10px);
+}
+
+/* ---------------------------------------------------------
+   SPORTS ART — visible, slow and subtle
+--------------------------------------------------------- */
+.score-viewer-shell .matcho-bg-object {
+  position: absolute !important;
+  will-change: transform;
+  filter:
+    drop-shadow(0 0 8px rgba(130, 84, 255, 0.30))
+    drop-shadow(0 0 22px rgba(110, 61, 255, 0.12));
+}
+
+.score-viewer-shell .matcho-bg-depth {
+  will-change: transform;
+  transition: transform 600ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.score-viewer-shell .matcho-sport-art {
+  display: block;
+  overflow: visible;
+}
+
+/* Positions */
+.score-viewer-shell .matcho-bg-volleyball-one {
+  left: 13%;
+  top: 18%;
+  opacity: 0.16;
+  animation: matchoSportFloat1 22s ease-in-out infinite;
+}
+
+.score-viewer-shell .matcho-bg-volleyball-two {
+  right: 15%;
+  bottom: 14%;
+  opacity: 0.10;
+  animation: matchoSportFloat2 26s ease-in-out infinite;
+}
+
+.score-viewer-shell .matcho-bg-badminton-one {
+  right: 8%;
+  top: 13%;
+  opacity: 0.18;
+  animation: matchoRacquetSteady 25s ease-in-out infinite;
+}
+
+.score-viewer-shell .matcho-bg-badminton-two {
+  left: 5%;
+  bottom: 12%;
+  opacity: 0.09;
+  animation: matchoRacquetSteady2 29s ease-in-out infinite;
+}
+
+.score-viewer-shell .matcho-bg-football-one {
+  left: -2%;
+  top: 56%;
+  opacity: 0.11;
+  animation: matchoSportFloat3 27s ease-in-out infinite;
+}
+
+.score-viewer-shell .matcho-bg-basketball-one {
+  left: 47%;
+  top: 7%;
+  opacity: 0.095;
+  animation: matchoSportFloat4 30s ease-in-out infinite;
+}
+
+.score-viewer-shell .matcho-bg-throwball-one {
+  right: -2%;
+  top: 48%;
+  opacity: 0.11;
+  animation: matchoSportFloat5 24s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------
+   EXTRA PURPLE GLOW BALLS — smooth, NO GRIDS / NO SEAMS
+--------------------------------------------------------- */
+.score-viewer-shell .matcho-bg-ball {
+  position: absolute !important;
+  will-change: transform;
+  filter:
+    drop-shadow(0 0 8px rgba(138, 91, 255, 0.36))
+    drop-shadow(0 0 22px rgba(112, 58, 255, 0.16));
+}
+
+.score-viewer-shell .matcho-bg-ball .matcho-bg-depth {
+  will-change: transform;
+  transition: transform 650ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.score-viewer-shell .matcho-ambient-ball-art {
+  display: block;
+  overflow: visible;
+  animation: none !important;
+}
+
+.score-viewer-shell .matcho-bg-ball-1 { left: 30%; top: 19%; opacity: 0.12; animation: matchoPurpleBall1 28s ease-in-out infinite; }
+.score-viewer-shell .matcho-bg-ball-2 { left: 72%; top: 17%; opacity: 0.085; animation: matchoPurpleBall2 31s ease-in-out infinite; }
+.score-viewer-shell .matcho-bg-ball-3 { left: 19%; top: 73%; opacity: 0.10; animation: matchoPurpleBall3 34s ease-in-out infinite; }
+.score-viewer-shell .matcho-bg-ball-4 { left: 82%; top: 72%; opacity: 0.08; animation: matchoPurpleBall4 27s ease-in-out infinite; }
+.score-viewer-shell .matcho-bg-ball-5 { left: 57%; top: 38%; opacity: 0.065; animation: matchoPurpleBall5 32s ease-in-out infinite; }
+.score-viewer-shell .matcho-bg-ball-6 { left: 37%; top: 84%; opacity: 0.075; animation: matchoPurpleBall6 30s ease-in-out infinite; }
+.score-viewer-shell .matcho-bg-ball-7 { left: 87%; top: 27%; opacity: 0.07; animation: matchoPurpleBall7 35s ease-in-out infinite; }
+.score-viewer-shell .matcho-bg-ball-8 { left: 8%; top: 37%; opacity: 0.065; animation: matchoPurpleBall8 33s ease-in-out infinite; }
+
+/* ---------------------------------------------------------
+   GLITTER — larger, steady pace, NO flashing
+--------------------------------------------------------- */
+.score-viewer-shell .matcho-glitter-field {
+  position: absolute !important;
+  inset: 0 !important;
+  overflow: visible !important;
+  pointer-events: none !important;
+  z-index: 3 !important;
+}
+
+.score-viewer-shell .matcho-glitter-depth {
+  position: absolute !important;
+  inset: -40px !important;
+  will-change: transform;
+  transform: translate3d(
+    var(--matcho-glitter-x, 0px),
+    var(--matcho-glitter-y, 0px),
+    0
+  );
+  transition: transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.score-viewer-shell .matcho-glitter {
+  position: absolute !important;
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 50% !important;
+  opacity: 0.82 !important;
+
+  background: radial-gradient(
+    circle at 35% 30%,
+    #ffffff 0%,
+    #eee6ff 25%,
+    #c7a9ff 52%,
+    #8a55ee 72%,
+    rgba(105, 53, 222, 0.15) 88%,
+    transparent 100%
+  ) !important;
+
+  box-shadow:
+    0 0 5px rgba(255,255,255,0.92),
+    0 0 11px rgba(202,168,255,0.90),
+    0 0 20px rgba(137,82,255,0.62) !important;
+
+  animation-name: matchoGlitterSteady !important;
+  animation-timing-function: linear !important;
+  animation-iteration-count: infinite !important;
+  animation-direction: normal !important;
+}
+
+.score-viewer-shell .matcho-glitter::before,
+.score-viewer-shell .matcho-glitter::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  border-radius: 999px !important;
+  pointer-events: none !important;
+}
+
+.score-viewer-shell .matcho-glitter::before {
+  width: 18px !important;
+  height: 1.5px !important;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), rgba(199,160,255,0.75), rgba(255,255,255,0.9), transparent) !important;
+}
+
+.score-viewer-shell .matcho-glitter::after {
+  width: 1.5px !important;
+  height: 18px !important;
+  background: linear-gradient(180deg, transparent, rgba(255,255,255,0.9), rgba(199,160,255,0.75), rgba(255,255,255,0.9), transparent) !important;
+}
+
+/* Different sizes, but all move at a calm constant pace. */
+.score-viewer-shell .matcho-glitter.g1,
+.score-viewer-shell .matcho-glitter.g8,
+.score-viewer-shell .matcho-glitter.g15,
+.score-viewer-shell .matcho-glitter.g22,
+.score-viewer-shell .matcho-glitter.g29,
+.score-viewer-shell .matcho-glitter.g36 {
+  width: 10px !important;
+  height: 10px !important;
+  opacity: 0.90 !important;
+}
+
+.score-viewer-shell .matcho-glitter.g3,
+.score-viewer-shell .matcho-glitter.g11,
+.score-viewer-shell .matcho-glitter.g18,
+.score-viewer-shell .matcho-glitter.g26,
+.score-viewer-shell .matcho-glitter.g33 {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+/* No rapid flash on glitter. No animation on balls. */
+.score-viewer-shell .matcho-glitter {
+  animation-duration: 22s !important;
+}
+
+.score-viewer-shell .matcho-glitter.g2  { animation-duration: 24s !important; }
+.score-viewer-shell .matcho-glitter.g3  { animation-duration: 20s !important; }
+.score-viewer-shell .matcho-glitter.g4  { animation-duration: 26s !important; }
+.score-viewer-shell .matcho-glitter.g5  { animation-duration: 23s !important; }
+.score-viewer-shell .matcho-glitter.g6  { animation-duration: 28s !important; }
+.score-viewer-shell .matcho-glitter.g7  { animation-duration: 21s !important; }
+.score-viewer-shell .matcho-glitter.g8  { animation-duration: 25s !important; }
+.score-viewer-shell .matcho-glitter.g9  { animation-duration: 27s !important; }
+.score-viewer-shell .matcho-glitter.g10 { animation-duration: 23s !important; }
+.score-viewer-shell .matcho-glitter.g11 { animation-duration: 29s !important; }
+.score-viewer-shell .matcho-glitter.g12 { animation-duration: 24s !important; }
+.score-viewer-shell .matcho-glitter.g13 { animation-duration: 26s !important; }
+.score-viewer-shell .matcho-glitter.g14 { animation-duration: 22s !important; }
+.score-viewer-shell .matcho-glitter.g15 { animation-duration: 28s !important; }
+.score-viewer-shell .matcho-glitter.g16 { animation-duration: 25s !important; }
+.score-viewer-shell .matcho-glitter.g17 { animation-duration: 27s !important; }
+.score-viewer-shell .matcho-glitter.g18 { animation-duration: 21s !important; }
+.score-viewer-shell .matcho-glitter.g19 { animation-duration: 29s !important; }
+.score-viewer-shell .matcho-glitter.g20 { animation-duration: 24s !important; }
+.score-viewer-shell .matcho-glitter.g21 { animation-duration: 26s !important; }
+.score-viewer-shell .matcho-glitter.g22 { animation-duration: 23s !important; }
+.score-viewer-shell .matcho-glitter.g23 { animation-duration: 28s !important; }
+.score-viewer-shell .matcho-glitter.g24 { animation-duration: 25s !important; }
+.score-viewer-shell .matcho-glitter.g25 { animation-duration: 27s !important; }
+.score-viewer-shell .matcho-glitter.g26 { animation-duration: 21s !important; }
+.score-viewer-shell .matcho-glitter.g27 { animation-duration: 29s !important; }
+.score-viewer-shell .matcho-glitter.g28 { animation-duration: 24s !important; }
+.score-viewer-shell .matcho-glitter.g29 { animation-duration: 26s !important; }
+.score-viewer-shell .matcho-glitter.g30 { animation-duration: 22s !important; }
+.score-viewer-shell .matcho-glitter.g31 { animation-duration: 28s !important; }
+.score-viewer-shell .matcho-glitter.g32 { animation-duration: 25s !important; }
+.score-viewer-shell .matcho-glitter.g33 { animation-duration: 27s !important; }
+.score-viewer-shell .matcho-glitter.g34 { animation-duration: 23s !important; }
+.score-viewer-shell .matcho-glitter.g35 { animation-duration: 29s !important; }
+.score-viewer-shell .matcho-glitter.g36 { animation-duration: 24s !important; }
+
+@keyframes matchoGlitterSteady {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
+  25%  { transform: translate3d(9px, -6px, 0) rotate(45deg); }
+  50%  { transform: translate3d(-8px, -11px, 0) rotate(90deg); }
+  75%  { transform: translate3d(7px, 5px, 0) rotate(135deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(180deg); }
+}
+
+/* ---------------------------------------------------------
+   SLOW SPORTS MOTION
+--------------------------------------------------------- */
+@keyframes matchoSportFloat1 {
+  0%,100% { transform: translate3d(0,0,0) rotate(-5deg); }
+  50%     { transform: translate3d(12px,-8px,0) rotate(3deg); }
+}
+
+@keyframes matchoSportFloat2 {
+  0%,100% { transform: translate3d(0,0,0) rotate(4deg); }
+  50%     { transform: translate3d(-10px,-7px,0) rotate(-3deg); }
+}
+
+@keyframes matchoSportFloat3 {
+  0%,100% { transform: translate3d(0,0,0) rotate(-7deg); }
+  50%     { transform: translate3d(13px,-10px,0) rotate(5deg); }
+}
+
+@keyframes matchoSportFloat4 {
+  0%,100% { transform: translate3d(0,0,0) rotate(0deg); }
+  50%     { transform: translate3d(-9px,9px,0) rotate(7deg); }
+}
+
+@keyframes matchoSportFloat5 {
+  0%,100% { transform: translate3d(0,0,0) rotate(-4deg); }
+  50%     { transform: translate3d(-10px,-8px,0) rotate(4deg); }
+}
+
+@keyframes matchoRacquetSteady {
+  0%,100% { transform: translate3d(0,0,0) rotate(-11deg); }
+  50%     { transform: translate3d(-8px,-10px,0) rotate(-4deg); }
+}
+
+@keyframes matchoRacquetSteady2 {
+  0%,100% { transform: translate3d(0,0,0) rotate(9deg); }
+  50%     { transform: translate3d(9px,-7px,0) rotate(14deg); }
+}
+
+@keyframes matchoPurpleBall1 {
+  0%,100% { transform: translate3d(0,0,0); }
+  50%     { transform: translate3d(8px,-6px,0); }
+}
+@keyframes matchoPurpleBall2 {
+  0%,100% { transform: translate3d(0,0,0); }
+  50%     { transform: translate3d(-7px,7px,0); }
+}
+@keyframes matchoPurpleBall3 {
+  0%,100% { transform: translate3d(0,0,0); }
+  50%     { transform: translate3d(6px,-8px,0); }
+}
+@keyframes matchoPurpleBall4 {
+  0%,100% { transform: translate3d(0,0,0); }
+  50%     { transform: translate3d(-8px,-5px,0); }
+}
+@keyframes matchoPurpleBall5 {
+  0%,100% { transform: translate3d(0,0,0); }
+  50%     { transform: translate3d(7px,6px,0); }
+}
+@keyframes matchoPurpleBall6 {
+  0%,100% { transform: translate3d(0,0,0); }
+  50%     { transform: translate3d(-6px,-7px,0); }
+}
+@keyframes matchoPurpleBall7 {
+  0%,100% { transform: translate3d(0,0,0); }
+  50%     { transform: translate3d(7px,5px,0); }
+}
+@keyframes matchoPurpleBall8 {
+  0%,100% { transform: translate3d(0,0,0); }
+  50%     { transform: translate3d(-5px,6px,0); }
+}
+
+/* ---------------------------------------------------------
+   DARK MODE — still soft, not overpowering
+--------------------------------------------------------- */
+html.matcho-dark .score-viewer-shell .matcho-bg-object {
+  opacity: 0.20 !important;
+  filter:
+    drop-shadow(0 0 9px rgba(155, 119, 255, 0.55))
+    drop-shadow(0 0 24px rgba(112, 67, 255, 0.22));
+}
+
+html.matcho-dark .score-viewer-shell .matcho-bg-ball {
+  opacity: 0.12 !important;
+}
+
+html.matcho-dark .score-viewer-shell .matcho-glitter {
+  opacity: 0.92 !important;
+}
+
+/* ---------------------------------------------------------
+   MOBILE
+--------------------------------------------------------- */
+@media (max-width: 900px) {
+  .score-viewer-shell .matcho-sports-background {
+    opacity: 0.78 !important;
+  }
+
+  .score-viewer-shell .matcho-bg-object {
+    opacity: 0.085 !important;
+  }
+
+  .score-viewer-shell .matcho-bg-ball {
+    opacity: 0.055 !important;
+  }
+
+  .score-viewer-shell .matcho-glitter {
+    width: 6px !important;
+    height: 6px !important;
+  }
+
+  .score-viewer-shell .matcho-glitter::before {
+    width: 14px !important;
+  }
+
+  .score-viewer-shell .matcho-glitter::after {
+    height: 14px !important;
+  }
+
+  .score-viewer-shell .matcho-glitter-depth,
+  .score-viewer-shell .matcho-bg-depth {
+    transition-duration: 700ms;
+  }
+}
+
+/* ---------------------------------------------------------
+   REDUCED MOTION
+--------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .score-viewer-shell .matcho-bg-object,
+  .score-viewer-shell .matcho-bg-ball,
+  .score-viewer-shell .matcho-glitter {
+    animation: none !important;
+  }
+
+  .score-viewer-shell .matcho-glitter-depth,
+  .score-viewer-shell .matcho-bg-depth,
+  .score-viewer-shell .matcho-bg-ball .matcho-bg-depth {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+
+/* =========================================================
+   MATCHO FINAL MOTION — SLOW + CONSTANT + VISIBLE
+   - Glitter travels at a slow constant linear pace.
+   - Cursor gently offsets the whole glitter field.
+   - Sports balls + racquets also continuously move.
+   - No pulsing/flashing on balls.
+========================================================= */
+
+/* Keep background behind dashboard content */
+.score-viewer-shell .matcho-sports-background {
+  z-index: 0 !important;
+}
+
+/* ---------------------------------------------------------
+   SPORTS OBJECTS — CONSTANT MOTION
+--------------------------------------------------------- */
+.score-viewer-shell .matcho-bg-object {
+  will-change: transform;
+}
+
+.score-viewer-shell .matcho-bg-volleyball-one {
+  animation: matchoVolleyConstant1 38s linear infinite !important;
+}
+
+.score-viewer-shell .matcho-bg-volleyball-two {
+  animation: matchoVolleyConstant2 44s linear infinite !important;
+}
+
+.score-viewer-shell .matcho-bg-badminton-one {
+  animation: matchoRacquetConstant1 42s linear infinite !important;
+}
+
+.score-viewer-shell .matcho-bg-badminton-two {
+  animation: matchoRacquetConstant2 46s linear infinite !important;
+}
+
+.score-viewer-shell .matcho-bg-football-one {
+  animation: matchoFootballConstant 47s linear infinite !important;
+}
+
+.score-viewer-shell .matcho-bg-basketball-one {
+  animation: matchoBasketballConstant 43s linear infinite !important;
+}
+
+.score-viewer-shell .matcho-bg-throwball-one {
+  animation: matchoThrowballConstant 40s linear infinite !important;
+}
+
+/* Extra purple balls also move slowly */
+.score-viewer-shell .matcho-bg-ball-1 { animation: matchoPurpleBallConstant1 41s linear infinite !important; }
+.score-viewer-shell .matcho-bg-ball-2 { animation: matchoPurpleBallConstant2 45s linear infinite !important; }
+.score-viewer-shell .matcho-bg-ball-3 { animation: matchoPurpleBallConstant3 49s linear infinite !important; }
+.score-viewer-shell .matcho-bg-ball-4 { animation: matchoPurpleBallConstant4 43s linear infinite !important; }
+.score-viewer-shell .matcho-bg-ball-5 { animation: matchoPurpleBallConstant5 47s linear infinite !important; }
+.score-viewer-shell .matcho-bg-ball-6 { animation: matchoPurpleBallConstant6 52s linear infinite !important; }
+.score-viewer-shell .matcho-bg-ball-7 { animation: matchoPurpleBallConstant7 45s linear infinite !important; }
+.score-viewer-shell .matcho-bg-ball-8 { animation: matchoPurpleBallConstant8 50s linear infinite !important; }
+
+/* Smooth repeated travel loops — no stops or sudden jumps */
+@keyframes matchoVolleyConstant1 {
+  0%   { transform: translate3d(0, 0, 0) rotate(-4deg); }
+  25%  { transform: translate3d(18px, -10px, 0) rotate(2deg); }
+  50%  { transform: translate3d(30px, 4px, 0) rotate(7deg); }
+  75%  { transform: translate3d(12px, 16px, 0) rotate(1deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(-4deg); }
+}
+
+@keyframes matchoVolleyConstant2 {
+  0%   { transform: translate3d(0, 0, 0) rotate(5deg); }
+  25%  { transform: translate3d(-15px, 10px, 0) rotate(-1deg); }
+  50%  { transform: translate3d(-28px, -2px, 0) rotate(-6deg); }
+  75%  { transform: translate3d(-10px, -14px, 0) rotate(-1deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(5deg); }
+}
+
+@keyframes matchoRacquetConstant1 {
+  0%   { transform: translate3d(0, 0, 0) rotate(-9deg); }
+  25%  { transform: translate3d(-12px, -14px, 0) rotate(-4deg); }
+  50%  { transform: translate3d(-24px, 3px, 0) rotate(2deg); }
+  75%  { transform: translate3d(-9px, 18px, 0) rotate(-5deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(-9deg); }
+}
+
+@keyframes matchoRacquetConstant2 {
+  0%   { transform: translate3d(0, 0, 0) rotate(10deg); }
+  25%  { transform: translate3d(13px, 12px, 0) rotate(15deg); }
+  50%  { transform: translate3d(24px, -3px, 0) rotate(19deg); }
+  75%  { transform: translate3d(8px, -15px, 0) rotate(13deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(10deg); }
+}
+
+@keyframes matchoFootballConstant {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
+  25%  { transform: translate3d(22px, -8px, 0) rotate(22deg); }
+  50%  { transform: translate3d(40px, 7px, 0) rotate(48deg); }
+  75%  { transform: translate3d(17px, 18px, 0) rotate(72deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(96deg); }
+}
+
+@keyframes matchoBasketballConstant {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
+  25%  { transform: translate3d(-13px, 10px, 0) rotate(20deg); }
+  50%  { transform: translate3d(-25px, 1px, 0) rotate(42deg); }
+  75%  { transform: translate3d(-12px, -12px, 0) rotate(66deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(90deg); }
+}
+
+@keyframes matchoThrowballConstant {
+  0%   { transform: translate3d(0, 0, 0) rotate(-3deg); }
+  25%  { transform: translate3d(-20px, -7px, 0) rotate(-9deg); }
+  50%  { transform: translate3d(-34px, 5px, 0) rotate(-16deg); }
+  75%  { transform: translate3d(-14px, 18px, 0) rotate(-8deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(-3deg); }
+}
+
+@keyframes matchoPurpleBallConstant1 {
+  0%   { transform: translate3d(0, 0, 0); }
+  25%  { transform: translate3d(14px, -8px, 0); }
+  50%  { transform: translate3d(24px, 8px, 0); }
+  75%  { transform: translate3d(9px, 16px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+@keyframes matchoPurpleBallConstant2 {
+  0%   { transform: translate3d(0, 0, 0); }
+  25%  { transform: translate3d(-12px, 9px, 0); }
+  50%  { transform: translate3d(-22px, -4px, 0); }
+  75%  { transform: translate3d(-8px, -14px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+@keyframes matchoPurpleBallConstant3 {
+  0%   { transform: translate3d(0, 0, 0); }
+  25%  { transform: translate3d(10px, 12px, 0); }
+  50%  { transform: translate3d(21px, 3px, 0); }
+  75%  { transform: translate3d(12px, -12px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+@keyframes matchoPurpleBallConstant4 {
+  0%   { transform: translate3d(0, 0, 0); }
+  25%  { transform: translate3d(-16px, -7px, 0); }
+  50%  { transform: translate3d(-27px, 6px, 0); }
+  75%  { transform: translate3d(-11px, 15px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+@keyframes matchoPurpleBallConstant5 {
+  0%   { transform: translate3d(0, 0, 0); }
+  25%  { transform: translate3d(11px, -11px, 0); }
+  50%  { transform: translate3d(25px, -1px, 0); }
+  75%  { transform: translate3d(12px, 13px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+@keyframes matchoPurpleBallConstant6 {
+  0%   { transform: translate3d(0, 0, 0); }
+  25%  { transform: translate3d(-10px, 8px, 0); }
+  50%  { transform: translate3d(-20px, 0, 0); }
+  75%  { transform: translate3d(-9px, -13px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+@keyframes matchoPurpleBallConstant7 {
+  0%   { transform: translate3d(0, 0, 0); }
+  25%  { transform: translate3d(15px, 5px, 0); }
+  50%  { transform: translate3d(25px, -8px, 0); }
+  75%  { transform: translate3d(10px, -16px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+@keyframes matchoPurpleBallConstant8 {
+  0%   { transform: translate3d(0, 0, 0); }
+  25%  { transform: translate3d(-13px, -9px, 0); }
+  50%  { transform: translate3d(-23px, 4px, 0); }
+  75%  { transform: translate3d(-9px, 16px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+/* ---------------------------------------------------------
+   GLITTER — SLOW CONSTANT TRAVEL, NO FAST JITTER
+--------------------------------------------------------- */
+.score-viewer-shell .matcho-glitter-depth {
+  transition: transform 900ms cubic-bezier(0.22, 0.61, 0.36, 1) !important;
+}
+
+.score-viewer-shell .matcho-glitter {
+  animation-timing-function: linear !important;
+  animation-name: matchoGlitterConstant !important;
+  animation-direction: normal !important;
+  animation-iteration-count: infinite !important;
+  opacity: 0.78 !important;
+}
+
+@keyframes matchoGlitterConstant {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
+  20%  { transform: translate3d(7px, -4px, 0) rotate(18deg); }
+  40%  { transform: translate3d(14px, 3px, 0) rotate(36deg); }
+  60%  { transform: translate3d(5px, 9px, 0) rotate(54deg); }
+  80%  { transform: translate3d(-5px, 4px, 0) rotate(72deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(90deg); }
+}
+
+/* Keep the glitter speeds slow and continuous. */
+.score-viewer-shell .matcho-glitter.g1  { animation-duration: 34s !important; }
+.score-viewer-shell .matcho-glitter.g2  { animation-duration: 39s !important; }
+.score-viewer-shell .matcho-glitter.g3  { animation-duration: 31s !important; }
+.score-viewer-shell .matcho-glitter.g4  { animation-duration: 43s !important; }
+.score-viewer-shell .matcho-glitter.g5  { animation-duration: 36s !important; }
+.score-viewer-shell .matcho-glitter.g6  { animation-duration: 46s !important; }
+.score-viewer-shell .matcho-glitter.g7  { animation-duration: 33s !important; }
+.score-viewer-shell .matcho-glitter.g8  { animation-duration: 41s !important; }
+.score-viewer-shell .matcho-glitter.g9  { animation-duration: 37s !important; }
+.score-viewer-shell .matcho-glitter.g10 { animation-duration: 44s !important; }
+.score-viewer-shell .matcho-glitter.g11 { animation-duration: 32s !important; }
+.score-viewer-shell .matcho-glitter.g12 { animation-duration: 40s !important; }
+.score-viewer-shell .matcho-glitter.g13 { animation-duration: 35s !important; }
+.score-viewer-shell .matcho-glitter.g14 { animation-duration: 47s !important; }
+.score-viewer-shell .matcho-glitter.g15 { animation-duration: 38s !important; }
+.score-viewer-shell .matcho-glitter.g16 { animation-duration: 45s !important; }
+.score-viewer-shell .matcho-glitter.g17 { animation-duration: 33s !important; }
+.score-viewer-shell .matcho-glitter.g18 { animation-duration: 42s !important; }
+.score-viewer-shell .matcho-glitter.g19 { animation-duration: 36s !important; }
+.score-viewer-shell .matcho-glitter.g20 { animation-duration: 48s !important; }
+.score-viewer-shell .matcho-glitter.g21 { animation-duration: 39s !important; }
+.score-viewer-shell .matcho-glitter.g22 { animation-duration: 34s !important; }
+.score-viewer-shell .matcho-glitter.g23 { animation-duration: 44s !important; }
+.score-viewer-shell .matcho-glitter.g24 { animation-duration: 37s !important; }
+.score-viewer-shell .matcho-glitter.g25 { animation-duration: 46s !important; }
+.score-viewer-shell .matcho-glitter.g26 { animation-duration: 31s !important; }
+.score-viewer-shell .matcho-glitter.g27 { animation-duration: 43s !important; }
+.score-viewer-shell .matcho-glitter.g28 { animation-duration: 35s !important; }
+.score-viewer-shell .matcho-glitter.g29 { animation-duration: 47s !important; }
+.score-viewer-shell .matcho-glitter.g30 { animation-duration: 40s !important; }
+.score-viewer-shell .matcho-glitter.g31 { animation-duration: 33s !important; }
+.score-viewer-shell .matcho-glitter.g32 { animation-duration: 45s !important; }
+.score-viewer-shell .matcho-glitter.g33 { animation-duration: 38s !important; }
+.score-viewer-shell .matcho-glitter.g34 { animation-duration: 49s !important; }
+.score-viewer-shell .matcho-glitter.g35 { animation-duration: 36s !important; }
+.score-viewer-shell .matcho-glitter.g36 { animation-duration: 42s !important; }
+
+/* Larger particles remain visible without flashing. */
+.score-viewer-shell .matcho-glitter.g1,
+.score-viewer-shell .matcho-glitter.g8,
+.score-viewer-shell .matcho-glitter.g15,
+.score-viewer-shell .matcho-glitter.g22,
+.score-viewer-shell .matcho-glitter.g29,
+.score-viewer-shell .matcho-glitter.g36 {
+  width: 10px !important;
+  height: 10px !important;
+  opacity: 0.86 !important;
+}
+
+/* ---------------------------------------------------------
+   DARK MODE
+--------------------------------------------------------- */
+html.matcho-dark .score-viewer-shell .matcho-bg-object {
+  animation-play-state: running !important;
+}
+
+/* ---------------------------------------------------------
+   REDUCED MOTION
+--------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .score-viewer-shell .matcho-bg-object,
+  .score-viewer-shell .matcho-bg-ball,
+  .score-viewer-shell .matcho-glitter {
+    animation: none !important;
+  }
+}
+
+
+/* =========================================================
+   MATCHO — SPORT-AWARE TOURNAMENT SELECTOR + SEARCH
+   Tournament list changes with the selected sport.
+========================================================= */
+
+.scoreboard-tournament-select-wrap {
+  position: relative !important;
+  z-index: 40 !important;
+}
+
+.scoreboard-tournament-select-trigger {
+  width: 100%;
+  height: 46px;
+  padding: 0 42px 0 14px;
+  border: 1px solid #ddd8ec;
+  border-radius: 11px;
+  outline: none;
+  background: #fff;
+  color: #283250;
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.scoreboard-tournament-select-trigger:hover {
+  border-color: #cfc2ff;
+}
+
+.scoreboard-tournament-select-trigger:focus-visible {
+  border-color: #6c3dff;
+  box-shadow: 0 0 0 3px rgba(108, 61, 255, 0.08);
+}
+
+.scoreboard-tournament-select-trigger.disabled,
+.scoreboard-tournament-select-trigger:disabled {
+  background: #f7f7fa;
+  color: #9ba1b2;
+  border-color: #e3e0e9;
+  cursor: not-allowed;
+}
+
+.scoreboard-tournament-selected-text {
+  display: block;
+  min-width: 0;
+  padding-right: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scoreboard-tournament-select-trigger .scoreboard-tournament-chevron {
+  position: absolute !important;
+  top: 50% !important;
+  right: 14px !important;
+  pointer-events: none;
+  color: #747d96;
+  transform: translateY(-50%);
+  transition: transform 0.18s ease, color 0.18s ease;
+}
+
+.scoreboard-tournament-select-trigger .scoreboard-tournament-chevron.open {
+  transform: translateY(-50%) rotate(180deg);
+  color: #6c3dff;
+}
+
+.scoreboard-tournament-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  overflow: hidden;
+  border: 1px solid #ddd8ec;
+  border-radius: 13px;
+  background: #fff;
+  box-shadow:
+    0 18px 45px rgba(40, 26, 87, 0.16),
+    0 3px 12px rgba(40, 26, 87, 0.07);
+  animation: matchoTournamentDropIn 0.16s ease-out;
+}
+
+.scoreboard-tournament-search {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 10px;
+  padding: 0 11px;
+  height: 40px;
+  border: 1px solid #e3def0;
+  border-radius: 9px;
+  background: #faf9fd;
+  color: #858da3;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.scoreboard-tournament-search:focus-within {
+  border-color: #b7a6ff;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(108, 61, 255, 0.07);
+}
+
+.scoreboard-tournament-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #283250;
+  font-family: "Poppins", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.scoreboard-tournament-search input::placeholder {
+  color: #a0a6b7;
+}
+
+.scoreboard-tournament-search-clear {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #8c93a6;
+  cursor: pointer;
+}
+
+.scoreboard-tournament-search-clear:hover {
+  background: #f0eaff;
+  color: #633cff;
+}
+
+.scoreboard-tournament-options {
+  max-height: 290px;
+  padding: 0 6px 7px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #d2c7f7 transparent;
+}
+
+.scoreboard-tournament-option {
+  width: 100%;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 8px 11px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #283250;
+  font-family: "Poppins", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.scoreboard-tournament-option:hover {
+  background: #f5f1ff;
+  color: #633cff;
+}
+
+.scoreboard-tournament-option.active {
+  background: #673cff;
+  color: #fff;
+  font-weight: 700;
+}
+
+.scoreboard-tournament-option span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scoreboard-tournament-no-results {
+  min-height: 86px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+  color: #959caf;
+  font-family: "Poppins", sans-serif;
+  font-size: 10px;
+  text-align: center;
+}
+
+@keyframes matchoTournamentDropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Keep the selector above nearby cards/background art. */
+.scoreboard-tournament-selector {
+  position: relative !important;
+  z-index: 35 !important;
+}
+
+@media (max-width: 1000px) {
+  .scoreboard-tournament-dropdown {
+    top: calc(100% + 6px);
+  }
+}
+
+@media (max-width: 650px) {
+  .scoreboard-tournament-select-trigger {
+    height: 44px;
+  }
+
+  .scoreboard-tournament-dropdown {
+    max-height: 360px;
+  }
+
+  .scoreboard-tournament-options {
+    max-height: 235px;
+  }
+}
+
+html.matcho-dark .scoreboard-tournament-select-trigger {
+  background: #1f1b2c;
+  border-color: #3a344e;
+  color: #ece9f5;
+}
+
+html.matcho-dark .scoreboard-tournament-select-trigger.disabled,
+html.matcho-dark .scoreboard-tournament-select-trigger:disabled {
+  background: #191621;
+  color: #746f84;
+}
+
+html.matcho-dark .scoreboard-tournament-dropdown {
+  background: #1c1927;
+  border-color: #39334b;
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.38),
+    0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+html.matcho-dark .scoreboard-tournament-search {
+  background: #242032;
+  border-color: #3c3550;
+  color: #aaa3bc;
+}
+
+html.matcho-dark .scoreboard-tournament-search:focus-within {
+  background: #1d1929;
+  border-color: #7658dc;
+}
+
+html.matcho-dark .scoreboard-tournament-search input {
+  color: #eeeaf7;
+}
+
+html.matcho-dark .scoreboard-tournament-option {
+  color: #e8e4f0;
+}
+
+html.matcho-dark .scoreboard-tournament-option:hover {
+  background: #2b2540;
+  color: #cbbdff;
+}
+
+
+.scoreboard-sport-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+
+  flex: 0 0 24px;
+
+  font-family:
+    "Segoe UI Emoji",
+    "Apple Color Emoji",
+    "Noto Color Emoji",
+    sans-serif;
+
+  font-size: 21px;
+  line-height: 1;
+
+  font-weight: normal;
+
+  visibility: visible;
+  opacity: 1;
+
+  transform: none;
+}
+
+.scoreboard-sport-label {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.scoreboard-sport-option {
+  flex: 0 0 auto;
+
+  min-width: 130px;
+  height: 52px;
+
+  padding: 6px 14px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  border: 1px solid transparent;
+  border-radius: 11px;
+
+  background: transparent;
+  color: #182044;
+
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+/* =========================================================
+   MATCH SCORES HEADER - FINAL LAYOUT
+   Search right | filters below
+========================================================= */
+
+.score-viewer-shell .score-live-panel > .stat-panel-head {
+  display: grid !important;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto;
+
+  grid-template-areas:
+    "title search"
+    "filters filters";
+
+  align-items: start;
+
+  column-gap: 24px;
+  row-gap: 14px;
+
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Left side: title + LIVE NOW */
+.score-viewer-shell
+.score-live-panel
+> .stat-panel-head
+> .flex-head {
+  grid-area: title;
+
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+}
+
+/* Search at top-right */
+.score-viewer-shell
+.score-live-panel
+> .scoreboard-match-search {
+  grid-area: search;
+
+  position: static !important;
+
+  width: 355px !important;
+  max-width: 355px !important;
+
+  height: 46px;
+
+  margin: 0 !important;
+
+  transform: none !important;
+}
+
+/* Filter tabs BELOW title + search */
+.score-viewer-shell
+.score-live-panel
+> .scoreboard-filter-tabs {
+  grid-area: filters;
+
+  position: static !important;
+
+  width: 100% !important;
+
+  margin: 0 !important;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: flex-start;
+
+  gap: 8px;
+}
+
+/* Slightly cleaner filter buttons */
+.score-viewer-shell
+.score-live-panel
+> .scoreboard-filter-tabs
+button {
+  min-width: 72px;
+
+  height: 40px;
+
+  padding: 0 16px;
+
+  border-radius: 10px;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 760px) {
+
+  .score-viewer-shell .score-live-panel > .stat-panel-head {
+    display: flex !important;
+
+    flex-direction: column;
+
+    gap: 12px;
+  }
+
+  .score-viewer-shell
+  .score-live-panel
+  > .stat-panel-head
+  > .flex-head {
+    width: 100%;
+  }
+
+  .score-viewer-shell
+  .score-live-panel
+  > .scoreboard-match-search {
+    width: 100% !important;
+    max-width: none !important;
+
+    height: 42px;
+
+    margin: 0 !important;
+  }
+
+  .score-viewer-shell
+  .score-live-panel
+  > .scoreboard-filter-tabs {
+    width: 100% !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+      repeat(4, minmax(0, 1fr));
+
+    gap: 6px;
+
+    margin: 0 !important;
+  }
+
+  .score-viewer-shell
+  .score-live-panel
+  > .scoreboard-filter-tabs
+  button {
+    width: 100% !important;
+    min-width: 0;
+
+    height: 38px;
+
+    padding: 0 4px;
+
+    font-size: 10.5px;
+  }
+}
+
+/* =========================================================
+   MATCHO — SIGNATURE DARK MODE
+   OBSIDIAN / VIOLET / GLASS SPORTS ARENA
+   ========================================================= */
+
+
+/* =========================================================
+   01 — ROOT / PAGE
+========================================================= */
+
+html.matcho-dark,
+html.matcho-dark body {
+  min-height: 100%;
+  background:
+    radial-gradient(
+      900px 600px at 10% 0%,
+      rgba(107, 63, 255, 0.18),
+      transparent 68%
+    ),
+    radial-gradient(
+      900px 600px at 92% 12%,
+      rgba(147, 83, 255, 0.14),
+      transparent 66%
+    ),
+    radial-gradient(
+      900px 700px at 50% 100%,
+      rgba(74, 37, 165, 0.12),
+      transparent 72%
+    ),
+    #07070d !important;
+
+  color: #f5f1ff;
+}
+
+html.matcho-dark .score-viewer-shell {
+  position: relative !important;
+  isolation: isolate !important;
+
+  min-height: 100vh;
+
+  background:
+    radial-gradient(
+      1000px 650px at 9% 5%,
+      rgba(121, 76, 255, 0.15),
+      transparent 68%
+    ),
+    radial-gradient(
+      950px 650px at 91% 14%,
+      rgba(153, 92, 255, 0.13),
+      transparent 69%
+    ),
+    radial-gradient(
+      1000px 800px at 52% 90%,
+      rgba(69, 35, 150, 0.12),
+      transparent 72%
+    ),
+    linear-gradient(
+      135deg,
+      #08070e 0%,
+      #0b0914 38%,
+      #100b1c 70%,
+      #08070d 100%
+    ) !important;
+
+  color: #f5f1ff;
+}
+
+
+/* =========================================================
+   02 — CRITICAL STACKING FIX
+   Dashboard stays ABOVE sports background
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.matcho-sports-background {
+  position: fixed !important;
+  inset: 0 !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  z-index: 0 !important;
+
+  pointer-events: none !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.stat-main {
+  position: relative !important;
+  z-index: 2 !important;
+
+  min-height: 100vh;
+}
+
+
+/* Keep navbar above everything */
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-top-navbar {
+  z-index: 1200 !important;
+}
+
+
+/* =========================================================
+   03 — SPORTS BACKGROUND
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.matcho-sports-background {
+  opacity: 1 !important;
+}
+
+
+/* Large violet atmospheric bloom */
+
+html.matcho-dark
+.score-viewer-shell
+.matcho-sports-background::before {
+  content: "";
+
+  position: absolute;
+
+  width: 72vw;
+  height: 72vw;
+
+  left: -28vw;
+  top: -12vw;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(125, 78, 255, 0.24) 0%,
+      rgba(111, 64, 233, 0.11) 34%,
+      rgba(83, 45, 181, 0.035) 58%,
+      transparent 76%
+    );
+
+  filter: blur(28px);
+
+  pointer-events: none;
+}
+
+
+/* Right-side violet atmosphere */
+
+html.matcho-dark
+.score-viewer-shell
+.matcho-sports-background::after {
+  content: "";
+
+  position: absolute;
+
+  width: 62vw;
+  height: 62vw;
+
+  right: -22vw;
+  bottom: -16vw;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(171, 107, 255, 0.18) 0%,
+      rgba(115, 64, 227, 0.08) 38%,
+      transparent 73%
+    );
+
+  filter: blur(30px);
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   04 — SPORTS OBJECTS
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.matcho-bg-object {
+  opacity: 0.14 !important;
+
+  filter:
+    drop-shadow(
+      0 0 10px rgba(143, 93, 255, 0.44)
+    )
+    drop-shadow(
+      0 0 28px rgba(98, 48, 222, 0.20)
+    ) !important;
+}
+
+
+/* Main badminton/racquet artwork */
+
+html.matcho-dark
+.score-viewer-shell
+.matcho-bg-badminton-one {
+  opacity: 0.30 !important;
+
+  filter:
+    drop-shadow(
+      0 0 13px rgba(182, 143, 255, 0.60)
+    )
+    drop-shadow(
+      0 0 38px rgba(112, 64, 238, 0.25)
+    ) !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.matcho-bg-badminton-two {
+  opacity: 0.17 !important;
+
+  filter:
+    drop-shadow(
+      0 0 11px rgba(168, 126, 255, 0.48)
+    )
+    drop-shadow(
+      0 0 30px rgba(104, 57, 226, 0.19)
+    ) !important;
+}
+
+
+/* Balls */
+
+html.matcho-dark
+.score-viewer-shell
+.matcho-bg-volleyball-one {
+  opacity: 0.15 !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.matcho-bg-volleyball-two {
+  opacity: 0.095 !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.matcho-bg-football-one {
+  opacity: 0.13 !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.matcho-bg-basketball-one {
+  opacity: 0.14 !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.matcho-bg-throwball-one {
+  opacity: 0.13 !important;
+}
+
+
+/* =========================================================
+   05 — FLOATING PURPLE BALLS
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.matcho-bg-ball {
+  opacity: 0.075 !important;
+
+  filter:
+    drop-shadow(
+      0 0 12px rgba(130, 74, 255, 0.40)
+    )
+    drop-shadow(
+      0 0 28px rgba(92, 45, 201, 0.18)
+    ) !important;
+}
+
+
+/* =========================================================
+   06 — PREMIUM GLITTER
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.matcho-glitter {
+  opacity: 0.72 !important;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #ffffff 0%,
+      #efe8ff 23%,
+      #c8aaff 50%,
+      #8051e7 72%,
+      rgba(105, 53, 222, 0.08) 88%,
+      transparent 100%
+    ) !important;
+
+  box-shadow:
+    0 0 6px rgba(255,255,255,0.92),
+    0 0 15px rgba(176,131,255,0.64),
+    0 0 28px rgba(112,61,226,0.24) !important;
+}
+
+
+/* =========================================================
+   07 — TOP NAVBAR
+========================================================= */
+
+html.matcho-dark
+.scoreboard-top-navbar {
+  border-color:
+    rgba(162, 129, 255, 0.20) !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(28, 23, 49, 0.94),
+      rgba(13, 11, 24, 0.92)
+    ) !important;
+
+  box-shadow:
+    0 18px 46px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255,255,255,0.055) !important;
+
+  backdrop-filter: blur(22px) !important;
+  -webkit-backdrop-filter: blur(22px) !important;
+}
+
+
+/* Notification / theme / profile buttons */
+
+html.matcho-dark
+.scoreboard-top-icon-btn,
+html.matcho-dark
+.scoreboard-profile-btn {
+  border-color:
+    rgba(162, 132, 255, 0.22) !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(40, 31, 68, 0.96),
+      rgba(23, 19, 40, 0.96)
+    ) !important;
+
+  color: #ded6f8 !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.05),
+    0 7px 22px rgba(0,0,0,0.20) !important;
+}
+
+html.matcho-dark
+.scoreboard-top-icon-btn:hover,
+html.matcho-dark
+.scoreboard-top-icon-btn.active,
+html.matcho-dark
+.scoreboard-profile-btn:hover,
+html.matcho-dark
+.scoreboard-profile-btn.active {
+  border-color:
+    rgba(168, 131, 255, 0.50) !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(58, 42, 100, 0.96),
+      rgba(31, 23, 57, 0.96)
+    ) !important;
+
+  color: #c8b0ff !important;
+
+  box-shadow:
+    0 0 0 1px rgba(140, 99, 240, 0.12),
+    0 10px 28px rgba(86,48,184,0.22) !important;
+}
+
+
+/* =========================================================
+   08 — TOP DROPDOWN
+========================================================= */
+
+html.matcho-dark
+.scoreboard-top-dropdown {
+  border-color:
+    rgba(165, 131, 255, 0.20) !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      #1d1730 0%,
+      #120f20 100%
+    ) !important;
+
+  box-shadow:
+    0 25px 65px rgba(0,0,0,0.48),
+    inset 0 1px 0 rgba(255,255,255,0.045) !important;
+
+  backdrop-filter: blur(22px) !important;
+}
+
+html.matcho-dark
+.scoreboard-dropdown-head,
+html.matcho-dark
+.scoreboard-profile-dropdown-note {
+  border-color:
+    rgba(145, 117, 216, 0.15) !important;
+}
+
+html.matcho-dark
+.scoreboard-dropdown-head strong,
+html.matcho-dark
+.scoreboard-profile-dropdown-top strong {
+  color: #f5efff !important;
+}
+
+html.matcho-dark
+.scoreboard-dropdown-head span,
+html.matcho-dark
+.scoreboard-profile-dropdown-top span,
+html.matcho-dark
+.scoreboard-profile-dropdown-note {
+  color: #9186aa !important;
+}
+
+
+/* =========================================================
+   09 — SPORTS SELECTOR
+========================================================= */
+
+html.matcho-dark
+.scoreboard-sports-selector {
+  border:
+    1px solid rgba(158, 126, 251, 0.18) !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(31, 25, 54, 0.86),
+      rgba(14, 12, 26, 0.82)
+    ) !important;
+
+  box-shadow:
+    0 16px 40px rgba(0,0,0,0.28),
+    inset 0 1px 0 rgba(255,255,255,0.045) !important;
+
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+}
+
+
+/* Sports text */
+
+html.matcho-dark
+.scoreboard-sport-option {
+  color: #d9d1ee !important;
+}
+
+html.matcho-dark
+.scoreboard-sport-option:hover {
+  border-color:
+    rgba(165, 131, 255, 0.24) !important;
+
+  background:
+    rgba(105, 67, 211, 0.13) !important;
+
+  color: #ffffff !important;
+}
+
+
+/* Active sport */
+
+html.matcho-dark
+.scoreboard-sport-option.active {
+  border-color:
+    rgba(196, 168, 255, 0.22) !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      #653aff 0%,
+      #7937ee 48%,
+      #9b31e8 100%
+    ) !important;
+
+  color: #ffffff !important;
+
+  box-shadow:
+    0 11px 30px rgba(105,61,255,0.38),
+    0 0 25px rgba(131,74,255,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.16) !important;
+}
+
+
+/* =========================================================
+   10 — TOURNAMENT SELECTOR
+========================================================= */
+
+html.matcho-dark
+.scoreboard-tournament-selector {
+  border-color:
+    rgba(158, 126, 251, 0.18) !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(29, 24, 50, 0.90),
+      rgba(16, 13, 29, 0.88)
+    ) !important;
+
+  box-shadow:
+    0 17px 42px rgba(0,0,0,0.29),
+    inset 0 1px 0 rgba(255,255,255,0.045) !important;
+
+  backdrop-filter: blur(18px) !important;
+}
+
+html.matcho-dark
+.scoreboard-tournament-icon {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(111, 73, 226, 0.24),
+      rgba(145, 95, 255, 0.09)
+    ) !important;
+
+  color: #b99eff !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+
+html.matcho-dark
+.scoreboard-tournament-title span {
+  color: #887d9f !important;
+}
+
+html.matcho-dark
+.scoreboard-tournament-title strong {
+  color: #f4efff !important;
+}
+
+html.matcho-dark
+.scoreboard-tournament-select-wrap select,
+html.matcho-dark
+.scoreboard-tournament-select-trigger {
+  border-color:
+    rgba(158, 126, 251, 0.20) !important;
+
+  background:
+    rgba(22, 18, 39, 0.92) !important;
+
+  color: #eee8fb !important;
+}
+
+
+/* =========================================================
+   11 — REAL-TIME MATCH SECTION
+========================================================= */
+
+html.matcho-dark
+.score-live-panel {
+  border-color:
+    rgba(158, 126, 251, 0.19) !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(29, 24, 50, 0.91),
+      rgba(14, 12, 27, 0.90)
+    ) !important;
+
+  box-shadow:
+    0 22px 58px rgba(0,0,0,0.36),
+    inset 0 1px 0 rgba(255,255,255,0.045) !important;
+
+  backdrop-filter: blur(21px) !important;
+  -webkit-backdrop-filter: blur(21px) !important;
+}
+
+html.matcho-dark
+.score-live-panel h4,
+html.matcho-dark
+.score-live-panel .stat-panel-head h4 {
+  color: #f7f2ff !important;
+}
+
+html.matcho-dark
+.score-panel-subtitle {
+  color: #9389a8 !important;
+}
+
+
+/* =========================================================
+   12 — SEARCH
+========================================================= */
+
+html.matcho-dark
+.scoreboard-match-search {
+  border-color:
+    rgba(157, 124, 249, 0.21) !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(34, 28, 57, 0.93),
+      rgba(18, 15, 33, 0.94)
+    ) !important;
+
+  color: #a99fbd !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.04),
+    0 8px 25px rgba(0,0,0,0.22) !important;
+}
+
+html.matcho-dark
+.scoreboard-match-search:focus-within {
+  border-color:
+    rgba(157, 118, 255, 0.60) !important;
+
+  box-shadow:
+    0 0 0 3px rgba(123,76,255,0.11),
+    0 10px 28px rgba(0,0,0,0.24) !important;
+}
+
+html.matcho-dark
+.scoreboard-match-search svg {
+  color: #968aad !important;
+}
+
+html.matcho-dark
+.scoreboard-match-search input {
+  color: #f0ebfb !important;
+}
+
+html.matcho-dark
+.scoreboard-match-search input::placeholder {
+  color: #7f7593 !important;
+}
+
+html.matcho-dark
+.scoreboard-match-search button {
+  background: rgba(120,88,196,0.14) !important;
+  color: #9d91b4 !important;
+}
+
+
+/* =========================================================
+   13 — STATUS FILTERS
+========================================================= */
+
+html.matcho-dark
+.scoreboard-filter-tabs button {
+  border-color:
+    rgba(151, 120, 238, 0.20) !important;
+
+  background:
+    rgba(29, 24, 49, 0.86) !important;
+
+  color: #aaa1bd !important;
+}
+
+html.matcho-dark
+.scoreboard-filter-tabs button:hover {
+  border-color:
+    rgba(167, 131, 255, 0.42) !important;
+
+  background:
+    rgba(105, 66, 214, 0.14) !important;
+
+  color: #e4dcf8 !important;
+}
+
+html.matcho-dark
+.scoreboard-filter-tabs button.active {
+  border-color: transparent !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      #673dff,
+      #8336ec
+    ) !important;
+
+  color: #ffffff !important;
+
+  box-shadow:
+    0 9px 24px rgba(104,60,255,0.29) !important;
+}
+
+
+/* =========================================================
+   14 — MATCH CARDS
+========================================================= */
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card {
+  border:
+    1px solid rgba(155, 124, 245, 0.18) !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(33, 28, 54, 0.98) 0%,
+      rgba(21, 18, 39, 0.98) 55%,
+      rgba(15, 13, 29, 0.99) 100%
+    ) !important;
+
+  box-shadow:
+    0 20px 46px rgba(0,0,0,0.34),
+    inset 0 1px 0 rgba(255,255,255,0.05) !important;
+
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+}
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card:hover {
+  border-color:
+    rgba(171, 137, 255, 0.38) !important;
+
+  transform: translateY(-2px) !important;
+
+  box-shadow:
+    0 26px 58px rgba(0,0,0,0.42),
+    0 0 26px rgba(107,61,225,0.10),
+    inset 0 1px 0 rgba(255,255,255,0.065) !important;
+}
+
+
+/* Tournament / sport title */
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.sport-tag {
+  color: #f0eaff !important;
+}
+
+
+/* Match metadata */
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.score-match-meta {
+  color: #8f87a2 !important;
+}
+
+
+/* Team names */
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.score-match-team-row strong,
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.score-match-team-name {
+  color: #f6f1ff !important;
+}
+
+
+/* Player names */
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.score-match-members,
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.score-match-members span {
+  color: #968da8 !important;
+}
+
+
+/* Scores */
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.score-match-side-score,
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.score-match-center-score {
+  color: #ad88ff !important;
+
+  text-shadow:
+    0 0 18px rgba(142,98,255,0.25) !important;
+}
+
+
+/* VS */
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.score-match-vs {
+  color: #81788f !important;
+}
+
+
+/* Footer */
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.live-card-foot {
+  border-top-color:
+    rgba(146,115,215,0.15) !important;
+}
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.live-card-foot > span {
+  color: #817891 !important;
+}
+
+
+/* =========================================================
+   15 — MATCH STATUS BADGES
+========================================================= */
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.badge-green {
+  background:
+    rgba(36, 174, 105, 0.11) !important;
+
+  color: #62dba6 !important;
+
+  border-color:
+    rgba(78, 220, 146, 0.24) !important;
+}
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.upcoming-badge {
+  background:
+    rgba(117, 76, 255, 0.13) !important;
+
+  color: #bba3ff !important;
+
+  border-color:
+    rgba(153, 116, 255, 0.27) !important;
+}
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.live-badge-pulse {
+  background:
+    rgba(225, 50, 65, 0.11) !important;
+
+  color: #ff828c !important;
+
+  border-color:
+    rgba(255, 96, 109, 0.23) !important;
+}
+
+
+/* =========================================================
+   16 — SERVING / WINNER
+========================================================= */
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.score-serving {
+  background:
+    rgba(119, 76, 235, 0.13) !important;
+
+  color: #b49aff !important;
+}
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.score-match-winner {
+  border-color:
+    rgba(151, 112, 244, 0.22) !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(103,62,212,0.15),
+      rgba(124,70,232,0.07)
+    ) !important;
+
+  color: #b99eff !important;
+}
+
+
+/* =========================================================
+   17 — RECENT RESULTS
+========================================================= */
+
+html.matcho-dark
+.scoreboard-results-panel {
+  background: transparent !important;
+}
+
+html.matcho-dark
+.scoreboard-results-header h4 {
+  color: #f4efff !important;
+}
+
+html.matcho-dark
+.scoreboard-results-header p,
+html.matcho-dark
+.scoreboard-result-meta {
+  color: #8d849f !important;
+}
+
+html.matcho-dark
+.scoreboard-results-icon {
+  background:
+    rgba(105, 67, 214, 0.18) !important;
+
+  color: #b89eff !important;
+}
+
+html.matcho-dark
+.scoreboard-result-item {
+  border-top-color:
+    rgba(143, 116, 206, 0.14) !important;
+}
+
+html.matcho-dark
+.scoreboard-result-item:hover {
+  background:
+    rgba(111, 72, 213, 0.08) !important;
+}
+
+html.matcho-dark
+.scoreboard-result-teams strong {
+  color: #f1ecfb !important;
+}
+
+html.matcho-dark
+.scoreboard-result-score {
+  background:
+    rgba(113, 75, 225, 0.14) !important;
+
+  color: #b598ff !important;
+}
+
+html.matcho-dark
+.scoreboard-result-winner span {
+  color: #79718b !important;
+}
+
+html.matcho-dark
+.scoreboard-result-winner strong {
+  background:
+    rgba(40, 169, 103, 0.11) !important;
+
+  color: #61d8a2 !important;
+}
+
+
+/* =========================================================
+   18 — FIXTURES / GENERAL CARDS
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.tm-card,
+html.matcho-dark
+.score-viewer-shell
+.tm-points-card {
+  border-color:
+    rgba(153, 122, 236, 0.17) !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(29,24,49,0.94),
+      rgba(16,13,29,0.94)
+    ) !important;
+
+  box-shadow:
+    0 18px 44px rgba(0,0,0,0.30),
+    inset 0 1px 0 rgba(255,255,255,0.04) !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-card h2,
+html.matcho-dark
+.score-viewer-shell
+.tm-card h3,
+html.matcho-dark
+.score-viewer-shell
+.tm-points-card h3 {
+  color: #f3edff !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-card p,
+html.matcho-dark
+.score-viewer-shell
+.tm-eyebrow,
+html.matcho-dark
+.score-viewer-shell
+.tm-pool-label {
+  color: #8d849f !important;
+}
+
+
+/* =========================================================
+   19 — STANDINGS
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.tm-standings-header p {
+  color: #8d849f !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-table {
+  color: #ece6f8 !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-table th {
+  color: #aaa1b8 !important;
+
+  background:
+    rgba(28, 23, 47, 0.90) !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-table td,
+html.matcho-dark
+.score-viewer-shell
+.tm-table th {
+  border-color:
+    rgba(142, 112, 203, 0.14) !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-table tr:hover td {
+  background:
+    rgba(108,69,214,0.055) !important;
+}
+
+
+/* =========================================================
+   20 — SECTION TABS
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.tm-section-tabs button {
+  border-color:
+    rgba(151, 120, 237, 0.18) !important;
+
+  background:
+    rgba(26, 22, 44, 0.84) !important;
+
+  color: #9e95b3 !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-section-tabs button:hover {
+  border-color:
+    rgba(163,127,250,0.38) !important;
+
+  color: #d5c8f5 !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-section-tabs button.active {
+  border-color: transparent !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      #673dff,
+      #8137ed
+    ) !important;
+
+  color: #ffffff !important;
+
+  box-shadow:
+    0 8px 22px rgba(102,61,255,0.27) !important;
+}
+
+
+/* =========================================================
+   21 — VIEW ALL / GENERAL PURPLE BUTTONS
+========================================================= */
+
+html.matcho-dark
+.scoreboard-view-all-btn {
+  border-color:
+    rgba(154, 121, 240, 0.22) !important;
+
+  background:
+    rgba(27, 22, 47, 0.90) !important;
+
+  color: #b69aff !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.04) !important;
+}
+
+html.matcho-dark
+.scoreboard-view-all-btn:hover {
+  border-color:
+    rgba(168, 131, 255, 0.42) !important;
+
+  background:
+    rgba(100,63,205,0.13) !important;
+}
+
+
+/* =========================================================
+   22 — MAIN ACTION BUTTONS
+========================================================= */
+
+html.matcho-dark
+.dashboard-action-primary {
+  background:
+    linear-gradient(
+      135deg,
+      #683eff,
+      #8a35ee
+    ) !important;
+
+  color: #ffffff !important;
+
+  box-shadow:
+    0 10px 24px rgba(105,61,255,0.26) !important;
+}
+
+html.matcho-dark
+.dashboard-action-secondary {
+  border-color:
+    rgba(154,121,242,0.22) !important;
+
+  background:
+    rgba(28,23,48,0.86) !important;
+
+  color: #bba9df !important;
+}
+
+html.matcho-dark
+.dashboard-action-secondary:hover {
+  border-color:
+    rgba(166,130,253,0.44) !important;
+
+  background:
+    rgba(105,67,214,0.11) !important;
+
+  color: #ddd1f5 !important;
+}
+
+
+/* =========================================================
+   23 — EMPTY / LOADING / ERROR
+========================================================= */
+
+html.matcho-dark
+.scoreboard-empty {
+  color: #898098 !important;
+}
+
+html.matcho-dark
+.scoreboard-empty h3 {
+  color: #eee8fa !important;
+}
+
+html.matcho-dark
+.scoreboard-empty p {
+  color: #837b93 !important;
+}
+
+html.matcho-dark
+.scoreboard-loading h2 {
+  color: #eee8fa !important;
+}
+
+html.matcho-dark
+.scoreboard-loading p {
+  color: #877f97 !important;
+}
+
+html.matcho-dark
+.scoreboard-error {
+  border-color:
+    rgba(255,110,110,0.20) !important;
+
+  background:
+    rgba(130,30,40,0.12) !important;
+
+  color: #ff8990 !important;
+}
+
+
+/* =========================================================
+   24 — MODALS
+========================================================= */
+
+html.matcho-dark
+.scoreboard-modal {
+  border-color:
+    rgba(158,126,251,0.18) !important;
+
+  background:
+    #100d1d !important;
+
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.50) !important;
+}
+
+html.matcho-dark
+.scoreboard-modal-header,
+html.matcho-dark
+.scoreboard-modal-filters {
+  border-color:
+    rgba(149,117,218,0.14) !important;
+
+  background:
+    rgba(24,20,41,0.96) !important;
+}
+
+html.matcho-dark
+.scoreboard-modal-header h2 {
+  color: #f1ebfb !important;
+}
+
+html.matcho-dark
+.scoreboard-modal-header p {
+  color: #8b829c !important;
+}
+
+html.matcho-dark
+.scoreboard-modal-close {
+  border-color:
+    rgba(153,121,237,0.20) !important;
+
+  background:
+    rgba(29,24,49,0.90) !important;
+
+  color: #a99dbb !important;
+}
+
+
+/* =========================================================
+   25 — DARK SCROLLBARS
+========================================================= */
+
+html.matcho-dark
+* {
+  scrollbar-color:
+    #493574
+    #0d0b15;
+}
+
+html.matcho-dark
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+html.matcho-dark
+*::-webkit-scrollbar-track {
+  background: #0d0b15;
+}
+
+html.matcho-dark
+*::-webkit-scrollbar-thumb {
+  border-radius: 99px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #63458f,
+      #34234f
+    );
+}
+
+html.matcho-dark
+*::-webkit-scrollbar-thumb:hover {
+  background:
+    linear-gradient(
+      180deg,
+      #8059bc,
+      #493167
+    );
+}
+
+
+/* =========================================================
+   26 — MOBILE DARK MODE
+========================================================= */
+
+@media (max-width: 900px) {
+
+  html.matcho-dark
+  .score-viewer-shell
+  .matcho-bg-object {
+    opacity: 0.095 !important;
+  }
+
+  html.matcho-dark
+  .score-viewer-shell
+  .matcho-bg-badminton-one {
+    opacity: 0.21 !important;
+  }
+
+  html.matcho-dark
+  .score-viewer-shell
+  .matcho-bg-badminton-two {
+    opacity: 0.12 !important;
+  }
+
+  html.matcho-dark
+  .score-viewer-shell
+  .matcho-bg-ball {
+    opacity: 0.05 !important;
+  }
+
+  html.matcho-dark
+  .score-viewer-shell
+  .matcho-glitter {
+    opacity: 0.58 !important;
+  }
+}
+
+
+/* =========================================================
+   27 — REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  html.matcho-dark
+  .score-viewer-shell
+  .matcho-bg-object,
+
+  html.matcho-dark
+  .score-viewer-shell
+  .matcho-bg-ball,
+
+  html.matcho-dark
+  .score-viewer-shell
+  .matcho-glitter {
+    animation: none !important;
+  }
+}
+
+ /* =========================================================
+   MATCHO DARK MODE — INNER WHITE BOX FIX
+========================================================= */
+
+
+/* ---------------------------------------------------------
+   1. GAME / SET SCORE BOX
+--------------------------------------------------------- */
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.score-match-game-scores {
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(43, 34, 70, 0.96),
+      rgba(25, 20, 44, 0.98)
+    ) !important;
+
+  border-color:
+    rgba(151, 119, 235, 0.20) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.045),
+    0 8px 20px rgba(0,0,0,0.20) !important;
+}
+
+
+/* Small G1 / G2 / G3 pills */
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.score-match-game-item {
+
+  background:
+    rgba(121, 82, 222, 0.12) !important;
+
+  border-color:
+    rgba(153, 119, 244, 0.16) !important;
+
+  color:
+    #c7b6f4 !important;
+}
+
+
+/* Sets text */
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.score-match-sets {
+
+  color:
+    #ba9cff !important;
+}
+
+
+/* ---------------------------------------------------------
+   2. NO MATCHES FOUND BOX
+--------------------------------------------------------- */
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-empty {
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(28, 23, 48, 0.94),
+      rgba(17, 14, 31, 0.97)
+    ) !important;
+
+  border-color:
+    rgba(151, 119, 235, 0.17) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.035),
+    0 12px 30px rgba(0,0,0,0.22) !important;
+}
+
+
+/* Empty icon */
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-empty svg {
+
+  color:
+    #9b8ab9 !important;
+}
+
+
+/* Empty heading */
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-empty h3 {
+
+  color:
+    #eee8fa !important;
+}
+
+
+/* Empty description */
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-empty p {
+
+  color:
+    #8e859f !important;
+}
+
+
+/* ---------------------------------------------------------
+   3. RECENT RESULTS SPORT ICON BOX
+--------------------------------------------------------- */
+
+html.matcho-dark
+.scoreboard-result-sport {
+
+  background:
+    rgba(100, 64, 192, 0.14) !important;
+
+  border:
+    1px solid rgba(151, 117, 237, 0.14) !important;
+
+  color:
+    #bba2ff !important;
+}
+
+
+/* ---------------------------------------------------------
+   4. ANY OTHER LIGHT RESULT ITEM
+--------------------------------------------------------- */
+
+html.matcho-dark
+.scoreboard-result-item {
+
+  background:
+    transparent !important;
+
+  border-top-color:
+    rgba(145, 114, 208, 0.14) !important;
+}
+
+
+/* ---------------------------------------------------------
+   5. UPCOMING / LIVE SMALL UI
+--------------------------------------------------------- */
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.score-serving {
+
+  background:
+    rgba(111, 72, 214, 0.13) !important;
+
+  color:
+    #b99fff !important;
+
+  border:
+    1px solid rgba(151, 116, 237, 0.16) !important;
+}
+
+
+/* ---------------------------------------------------------
+   6. MAKE SURE ALL MATCH CARD INTERNALS STAY DARK
+--------------------------------------------------------- */
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.score-match-game-scores,
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.score-match-game-list,
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.score-match-sets {
+
+  color-scheme: dark;
+}
+
+
+/* ---------------------------------------------------------
+   7. FORCE COMMON LIGHT BACKGROUNDS OFF
+--------------------------------------------------------- */
+
+html.matcho-dark
+.score-live-panel
+.scoreboard-match-card
+.score-match-game-scores * {
+
+  color-scheme: dark;
+}
+
+
+/* ---------------------------------------------------------
+   8. MOBILE
+--------------------------------------------------------- */
+
+@media (max-width: 700px) {
+
+  html.matcho-dark
+  .score-live-panel
+  .scoreboard-match-card
+  .score-match-game-scores {
+
+    border-radius: 10px !important;
+  }
+}
+
+ /* =========================================================
+    MATCHO — FIXTURES + STANDINGS DARK THEME
+    Premium Obsidian / Violet Glass
+========================================================= */
+
+
+/* =========================================================
+   PAGE HEADERS
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.dash-header-flex h1 {
+  color: #f7f2ff !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.dash-header-flex p {
+  color: #9188a5 !important;
+}
+
+
+/* =========================================================
+   SPORTS BAR ON FIXTURES / STANDINGS
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.page-sport-selector {
+  margin-bottom: 20px !important;
+
+  border:
+    1px solid rgba(159, 127, 250, 0.18) !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(29, 24, 51, 0.90),
+      rgba(14, 12, 26, 0.84)
+    ) !important;
+
+  box-shadow:
+    0 16px 38px rgba(0,0,0,0.27),
+    inset 0 1px 0 rgba(255,255,255,0.045) !important;
+
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.page-sport-selector
+.scoreboard-sport-option {
+  color: #d9d2ed !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.page-sport-selector
+.scoreboard-sport-option:hover {
+  background:
+    rgba(109, 69, 218, 0.12) !important;
+
+  border-color:
+    rgba(167, 133, 255, 0.26) !important;
+
+  color: #ffffff !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.page-sport-selector
+.scoreboard-sport-option.active {
+  background:
+    linear-gradient(
+      135deg,
+      #673dff 0%,
+      #7e38ee 52%,
+      #9732e7 100%
+    ) !important;
+
+  border-color:
+    rgba(196, 169, 255, 0.22) !important;
+
+  color: #ffffff !important;
+
+  box-shadow:
+    0 10px 27px rgba(105,61,255,0.34),
+    inset 0 1px 0 rgba(255,255,255,0.15) !important;
+}
+
+
+/* =========================================================
+   TOURNAMENT SELECTOR
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-tournament-selector {
+  border-color:
+    rgba(154, 122, 239, 0.18) !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(30,25,51,0.94),
+      rgba(15,13,28,0.93)
+    ) !important;
+
+  box-shadow:
+    0 18px 42px rgba(0,0,0,0.29),
+    inset 0 1px 0 rgba(255,255,255,0.045) !important;
+
+  backdrop-filter: blur(18px) !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-tournament-title span {
+  color: #877d9d !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-tournament-title strong {
+  color: #f4efff !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-tournament-icon {
+  background:
+    rgba(110,70,218,0.18) !important;
+
+  color: #b99dff !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-tournament-select-wrap select {
+  border-color:
+    rgba(154,122,239,0.20) !important;
+
+  background:
+    #18142a !important;
+
+  color:
+    #eee8fa !important;
+}
+
+
+/* =========================================================
+   FIXTURES MAIN CARD
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.tm-card {
+  border:
+    1px solid rgba(153,122,239,0.17) !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(28,24,48,0.95),
+      rgba(15,13,29,0.96)
+    ) !important;
+
+  box-shadow:
+    0 22px 50px rgba(0,0,0,0.31),
+    inset 0 1px 0 rgba(255,255,255,0.04) !important;
+
+  color: #eee9f9 !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-card-heading h2 {
+  color: #f5f0ff !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-card-heading p {
+  color: #8d849f !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-eyebrow {
+  color: #968ba9 !important;
+}
+
+
+/* =========================================================
+   FIXTURE SEARCH
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.tm-card
+.scoreboard-match-search {
+  border-color:
+    rgba(153,121,239,0.20) !important;
+
+  background:
+    rgba(23,19,40,0.94) !important;
+
+  color:
+    #aaa1b8 !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-card
+.scoreboard-match-search input {
+  color: #eee9fa !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-card
+.scoreboard-match-search input::placeholder {
+  color: #7e758f !important;
+}
+
+
+/* =========================================================
+   FIXTURE STAGE FILTERS
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.tm-section-tabs button {
+  border-color:
+    rgba(151,119,235,0.20) !important;
+
+  background:
+    rgba(27,23,46,0.88) !important;
+
+  color:
+    #a69cb7 !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.025) !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-section-tabs button:hover {
+  border-color:
+    rgba(166,130,252,0.40) !important;
+
+  background:
+    rgba(105,67,211,0.12) !important;
+
+  color:
+    #ddd3f3 !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-section-tabs button.active {
+  border-color: transparent !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      #673dff,
+      #8137ed
+    ) !important;
+
+  color: #ffffff !important;
+
+  box-shadow:
+    0 8px 22px rgba(103,61,255,0.27) !important;
+}
+
+
+/* =========================================================
+   FIXTURE GRID
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.tm-fixtures-grid {
+  background: transparent !important;
+}
+
+
+/* =========================================================
+   FIXTURE CARDS
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.tm-fixture-card {
+  border:
+    1px solid rgba(156,123,242,0.17) !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(34,29,56,0.97),
+      rgba(18,15,34,0.98)
+    ) !important;
+
+  box-shadow:
+    0 17px 38px rgba(0,0,0,0.29),
+    inset 0 1px 0 rgba(255,255,255,0.04) !important;
+
+  color: #ede7f7 !important;
+
+  transition:
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-fixture-card:hover {
+  transform: translateY(-2px);
+
+  border-color:
+    rgba(171,137,255,0.35) !important;
+
+  box-shadow:
+    0 23px 48px rgba(0,0,0,0.36),
+    0 0 24px rgba(107,61,223,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.055) !important;
+}
+
+
+/* Fixture top */
+
+html.matcho-dark
+.score-viewer-shell
+.tm-fixture-top {
+  color: #eee8fa !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-fixture-top strong {
+  color: #f2edfc !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-fixture-top span {
+  color: #8c829c !important;
+}
+
+
+/* Matchup */
+
+html.matcho-dark
+.score-viewer-shell
+.tm-side strong {
+  color: #f4effd !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-team-members,
+html.matcho-dark
+.score-viewer-shell
+.tm-team-members span {
+  color: #93899f !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-vs {
+  color: #81778f !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-side-score {
+  color: #ad88ff !important;
+
+  text-shadow:
+    0 0 15px rgba(145,101,255,0.20) !important;
+}
+
+
+/* Bottom divider */
+
+html.matcho-dark
+.score-viewer-shell
+.tm-fixture-bottom {
+  border-top-color:
+    rgba(144,113,207,0.14) !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-fixture-bottom > span:first-child {
+  color: #837a91 !important;
+}
+
+
+/* =========================================================
+   FIXTURE STATUS
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.tm-status.completed {
+  background:
+    rgba(35,170,104,0.11) !important;
+
+  color:
+    #60d9a2 !important;
+
+  border-color:
+    rgba(76,219,143,0.22) !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-status.live {
+  background:
+    rgba(224,47,65,0.11) !important;
+
+  color:
+    #ff808a !important;
+
+  border-color:
+    rgba(255,100,112,0.22) !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-status.upcoming {
+  background:
+    rgba(111,72,221,0.13) !important;
+
+  color:
+    #b79cff !important;
+
+  border-color:
+    rgba(153,116,255,0.23) !important;
+}
+
+
+/* =========================================================
+   SEMI / FINAL SET SCORE BOX
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.audience-fixture-game-scores {
+  border:
+    1px solid rgba(150,117,230,0.18) !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(40,32,65,0.93),
+      rgba(23,19,42,0.95)
+    ) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.035) !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.audience-fixture-game {
+  border-color:
+    rgba(146,113,220,0.13) !important;
+
+  background:
+    rgba(112,74,208,0.09) !important;
+
+  color: #9e95b0 !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.audience-fixture-game.played {
+  background:
+    rgba(116,76,220,0.15) !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.audience-fixture-game span {
+  color: #817790 !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.audience-fixture-game strong {
+  color: #bc9fff !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.audience-fixture-sets {
+  color: #b89aff !important;
+}
+
+
+/* Winner */
+
+html.matcho-dark
+.score-viewer-shell
+.audience-fixture-winner {
+  border-color:
+    rgba(150,113,240,0.20) !important;
+
+  background:
+    rgba(102,64,207,0.10) !important;
+
+  color: #ab98cf !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.audience-fixture-winner strong {
+  color: #c0a8ff !important;
+}
+
+
+/* =========================================================
+   STANDINGS HEADER
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.tm-standings-header h2 {
+  color: #f5efff !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-standings-header p {
+  color: #8d849f !important;
+}
+
+
+/* =========================================================
+   STANDINGS CARDS
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.tm-points-card {
+  border:
+    1px solid rgba(154,122,240,0.17) !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(30,25,50,0.96),
+      rgba(16,13,29,0.97)
+    ) !important;
+
+  box-shadow:
+    0 19px 46px rgba(0,0,0,0.30),
+    inset 0 1px 0 rgba(255,255,255,0.04) !important;
+
+  color: #eee8f8 !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-points-header h3 {
+  color: #f4effd !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-pool-label {
+  color: #8f85a1 !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-live-icon {
+  background:
+    rgba(103,66,208,0.14) !important;
+
+  color: #ad91ff !important;
+}
+
+
+/* =========================================================
+   STANDINGS TABLE
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.tm-table-wrap {
+  border-color:
+    rgba(145,113,210,0.12) !important;
+
+  background: transparent !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-table {
+  background: transparent !important;
+
+  color: #e8e1f3 !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-table thead,
+html.matcho-dark
+.score-viewer-shell
+.tm-table th {
+  background:
+    rgba(31,25,51,0.90) !important;
+
+  color:
+    #a69db7 !important;
+
+  border-color:
+    rgba(142,111,205,0.13) !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-table td {
+  background:
+    transparent !important;
+
+  color:
+    #ded7ea !important;
+
+  border-color:
+    rgba(142,111,205,0.12) !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-table tbody tr:hover td {
+  background:
+    rgba(102,65,205,0.055) !important;
+}
+
+
+/* Team names */
+
+html.matcho-dark
+.score-viewer-shell
+.tm-standings-team-name {
+  color: #eee8fa !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-standings-members,
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-standings-members span {
+  color: #8c839d !important;
+}
+
+
+/* Rank */
+
+html.matcho-dark
+.score-viewer-shell
+.tm-rank {
+  color: #91889e !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-rank.top {
+  color: #b49aff !important;
+
+  text-shadow:
+    0 0 12px rgba(149,103,255,0.18) !important;
+}
+
+
+/* Points */
+
+html.matcho-dark
+.score-viewer-shell
+.tm-points {
+  color: #b493ff !important;
+
+  text-shadow:
+    0 0 12px rgba(142,99,255,0.16) !important;
+}
+
+
+/* =========================================================
+   STANDINGS EMPTY STATE
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.tm-card.scoreboard-empty {
+  border-color:
+    rgba(151,118,234,0.17) !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(28,23,48,0.95),
+      rgba(16,13,29,0.97)
+    ) !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-card.scoreboard-empty h3 {
+  color: #eee8f8 !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-card.scoreboard-empty p {
+  color: #898098 !important;
+}
+
+
+/* =========================================================
+   UNIVERSAL INNER CONTROLS
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.tm-card input,
+html.matcho-dark
+.score-viewer-shell
+.tm-card select {
+  color-scheme: dark;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.tm-card button {
+  color-scheme: dark;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+  html.matcho-dark
+  .score-viewer-shell
+  .page-sport-selector {
+    margin-bottom: 16px !important;
+  }
+
+  html.matcho-dark
+  .score-viewer-shell
+  .tm-fixture-card,
+  html.matcho-dark
+  .score-viewer-shell
+  .tm-points-card {
+    border-radius: 14px !important;
+  }
+
+  html.matcho-dark
+  .score-viewer-shell
+  .tm-table-wrap {
+    overflow-x: auto !important;
+  }
+}
+
+/* =========================================================
+   DARK MODE — FIXTURE / STAGE FILTER BAR
+========================================================= */
+
+html.matcho-dark .tm-section-tabs {
+  background:
+    linear-gradient(
+      135deg,
+      #1b172b,
+      #12101e
+    ) !important;
+
+  border: 1px solid #332b4b !important;
+
+  border-radius: 16px !important;
+
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+html.matcho-dark .tm-section-tabs button {
+  background: transparent !important;
+
+  border: 1px solid transparent !important;
+
+  color: #9d95ad !important;
+
+  border-radius: 11px !important;
+
+  box-shadow: none !important;
+}
+
+html.matcho-dark .tm-section-tabs button:hover {
+  background: rgba(107, 69, 214, 0.14) !important;
+
+  color: #ddd5ef !important;
+}
+
+html.matcho-dark .tm-section-tabs button.active {
+  background:
+    linear-gradient(
+      135deg,
+      #673cff,
+      #8336ee
+    ) !important;
+
+  color: #ffffff !important;
+
+  box-shadow:
+    0 7px 18px rgba(103, 60, 255, 0.30) !important;
+}
+
+/* =========================================================
+   MATCHO — FIXTURES SEARCH + TOURNAMENT UI
+========================================================= */
+
+
+/* =========================================================
+   FIXTURE PANEL LAYOUT
+========================================================= */
+
+.score-viewer-shell .audience-fixtures-panel {
+  display: grid !important;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto;
+
+  grid-template-areas:
+    "heading search"
+    "filters filters"
+    "content content";
+
+  column-gap: 28px;
+  row-gap: 18px;
+
+  align-items: start;
+}
+
+
+/* Heading */
+
+.score-viewer-shell
+.audience-fixtures-panel
+.tm-card-heading {
+  grid-area: heading;
+
+  margin: 0 !important;
+  min-width: 0;
+}
+
+
+/* =========================================================
+   PLAYER / TEAM SEARCH — RIGHT CORNER
+========================================================= */
+
+.score-viewer-shell
+.audience-fixtures-panel
+.scoreboard-match-search {
+  grid-area: search;
+
+  position: static !important;
+
+  width: 350px !important;
+  max-width: 350px !important;
+
+  height: 46px;
+
+  margin: 0 !important;
+
+  justify-self: end;
+  align-self: start;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   FILTER BAR
+========================================================= */
+
+.score-viewer-shell
+.audience-fixtures-panel
+.tm-section-tabs {
+  grid-area: filters;
+
+  margin: 0 !important;
+}
+
+
+/* Fixture content */
+
+.score-viewer-shell
+.audience-fixtures-panel
+.tm-fixtures-grid,
+.score-viewer-shell
+.audience-fixtures-panel
+.scoreboard-empty {
+  grid-area: content;
+}
+
+
+/* =========================================================
+   WHITE MODE
+========================================================= */
+
+.score-viewer-shell:not(.matcho-dark)
+.audience-fixtures-panel
+.scoreboard-match-search {
+  background: #ffffff !important;
+
+  border-color: #ded8ed !important;
+
+  box-shadow:
+    0 6px 18px rgba(49, 36, 91, 0.06) !important;
+}
+
+.score-viewer-shell:not(.matcho-dark)
+.audience-fixtures-panel
+.scoreboard-match-search input {
+  color: #283250 !important;
+}
+
+.score-viewer-shell:not(.matcho-dark)
+.audience-fixtures-panel
+.scoreboard-match-search input::placeholder {
+  color: #9aa0b3 !important;
+}
+
+
+/* Tournament selector */
+
+.score-viewer-shell:not(.matcho-dark)
+.scoreboard-tournament-selector {
+  background: #ffffff !important;
+
+  border-color: #e1dced !important;
+
+  box-shadow:
+    0 10px 28px rgba(49, 36, 91, 0.06) !important;
+}
+
+
+/* Tournament dropdown */
+
+.score-viewer-shell:not(.matcho-dark)
+.scoreboard-tournament-dropdown {
+  background: #ffffff !important;
+
+  border-color: #ddd7ea !important;
+
+  box-shadow:
+    0 18px 45px rgba(40, 26, 87, 0.16),
+    0 3px 12px rgba(40, 26, 87, 0.07) !important;
+}
+
+.score-viewer-shell:not(.matcho-dark)
+.scoreboard-tournament-search {
+  background: #faf9fd !important;
+
+  border-color: #e1dced !important;
+}
+
+.score-viewer-shell:not(.matcho-dark)
+.scoreboard-tournament-search:focus-within {
+  background: #ffffff !important;
+
+  border-color: #a996f3 !important;
+
+  box-shadow:
+    0 0 0 3px rgba(108, 61, 255, 0.07) !important;
+}
+
+.score-viewer-shell:not(.matcho-dark)
+.scoreboard-tournament-option {
+  background: transparent !important;
+
+  color: #283250 !important;
+}
+
+.score-viewer-shell:not(.matcho-dark)
+.scoreboard-tournament-option:hover {
+  background: #f5f1ff !important;
+
+  color: #633cff !important;
+}
+
+.score-viewer-shell:not(.matcho-dark)
+.scoreboard-tournament-option.active {
+  background: #673cff !important;
+
+  color: #ffffff !important;
+}
+
+
+/* =========================================================
+   DARK MODE
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.audience-fixtures-panel
+.scoreboard-match-search {
+  background:
+    linear-gradient(
+      135deg,
+      #211b35,
+      #151121
+    ) !important;
+
+  border-color:
+    #41365d !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.04),
+    0 10px 26px rgba(0,0,0,0.22) !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.audience-fixtures-panel
+.scoreboard-match-search input {
+  color: #f0eafa !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.audience-fixtures-panel
+.scoreboard-match-search input::placeholder {
+  color: #817892 !important;
+}
+
+
+/* Dark tournament selector */
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-tournament-selector {
+  background:
+    linear-gradient(
+      145deg,
+      #211b35,
+      #151120
+    ) !important;
+
+  border-color:
+    #40345a !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.04),
+    0 12px 30px rgba(0,0,0,0.23) !important;
+}
+
+
+/* Dark dropdown */
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-tournament-dropdown {
+  background:
+    linear-gradient(
+      145deg,
+      #211b35,
+      #120f1d
+    ) !important;
+
+  border-color:
+    #44375f !important;
+
+  box-shadow:
+    0 22px 55px rgba(0,0,0,0.48),
+    0 0 24px rgba(103,61,255,0.08) !important;
+}
+
+
+/* Tournament dropdown search */
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-tournament-search {
+  background:
+    #28203d !important;
+
+  border-color:
+    #493b63 !important;
+
+  color:
+    #a79bb9 !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-tournament-search:focus-within {
+  background:
+    #211a32 !important;
+
+  border-color:
+    #7658dc !important;
+
+  box-shadow:
+    0 0 0 3px rgba(118,88,220,0.10) !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-tournament-search input {
+  color:
+    #f0ebfa !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-tournament-search input::placeholder {
+  color:
+    #817790 !important;
+}
+
+
+/* Tournament options */
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-tournament-option {
+  background:
+    transparent !important;
+
+  color:
+    #d2c9df !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-tournament-option:hover {
+  background:
+    rgba(108,67,218,0.14) !important;
+
+  color:
+    #eee8fa !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-tournament-option.active {
+  background:
+    linear-gradient(
+      135deg,
+      #673cff,
+      #8435ed
+    ) !important;
+
+  color:
+    #ffffff !important;
+
+  box-shadow:
+    0 6px 16px rgba(103,60,255,0.22) !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-tournament-no-results {
+  color:
+    #8d839d !important;
+}
+
+
+/* =========================================================
+   FILTER BAR — WHITE MODE
+========================================================= */
+
+.score-viewer-shell:not(.matcho-dark)
+.audience-fixtures-panel
+.tm-section-tabs {
+  background:
+    #f3f0fa !important;
+
+  border-radius:
+    14px !important;
+}
+
+
+/* =========================================================
+   FILTER BAR — DARK MODE
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.audience-fixtures-panel
+.tm-section-tabs {
+  background:
+    linear-gradient(
+      135deg,
+      #211b35,
+      #151120
+    ) !important;
+
+  border:
+    1px solid #3c3155 !important;
+
+  border-radius:
+    14px !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.035),
+    0 8px 22px rgba(0,0,0,0.18) !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.audience-fixtures-panel
+.tm-section-tabs button {
+  color:
+    #9f96ad !important;
+
+  background:
+    transparent !important;
+}
+
+html.matcho-dark
+.score-viewer-shell
+.audience-fixtures-panel
+.tm-section-tabs button.active {
+  background:
+    linear-gradient(
+      135deg,
+      #673cff,
+      #8435ed
+    ) !important;
+
+  color:
+    #ffffff !important;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 800px) {
+
+  .score-viewer-shell
+  .audience-fixtures-panel {
+    display: flex !important;
+
+    flex-direction: column;
+
+    gap: 16px;
+  }
+
+  .score-viewer-shell
+  .audience-fixtures-panel
+  .tm-card-heading {
+    width: 100%;
+  }
+
+  .score-viewer-shell
+  .audience-fixtures-panel
+  .scoreboard-match-search {
+    width: 100% !important;
+    max-width: none !important;
+
+    justify-self: stretch;
+  }
+
+  .score-viewer-shell
+  .audience-fixtures-panel
+  .tm-section-tabs {
+    width: 100%;
+
+    overflow-x: auto;
+  }
+}
+
+html.matcho-dark .tm-table,
+html.matcho-dark .tm-table tbody,
+html.matcho-dark .tm-table tr,
+html.matcho-dark .tm-table td {
+  background: transparent !important;
+}
+
+html.matcho-dark .tm-table tbody tr:hover,
+html.matcho-dark .tm-table tbody tr:hover td {
+  background: rgba(104, 64, 210, 0.08) !important;
+}
+
+/* Keep rank/points badges slightly brighter */
+html.matcho-dark .tm-rank {
+  background: #28213f !important;
+  color: #b5a6d4 !important;
+}
+
+html.matcho-dark .tm-rank.top {
+  background: #302450 !important;
+  color: #b99cff !important;
+}
+
+html.matcho-dark .tm-points {
+  background: #2b2345 !important;
+  color: #b99cff !important;
+}
+
+/* =========================================================
+   MATCHO — MOBILE DARK MODE FINAL FIX
+========================================================= */
+
+@media (max-width: 900px) {
+
+  /* =======================================================
+     1. REMOVE WHITE SPORTS SCROLLBAR
+  ======================================================= */
+
+  html.matcho-dark
+  .score-viewer-shell
+  .scoreboard-sports-selector {
+
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+
+  html.matcho-dark
+  .score-viewer-shell
+  .scoreboard-sports-selector::-webkit-scrollbar {
+
+    display: none !important;
+
+    width: 0 !important;
+    height: 0 !important;
+
+    background: transparent !important;
+  }
+
+
+  /* =======================================================
+     2. DARK HAMBURGER
+  ======================================================= */
+
+  html.matcho-dark
+  .mobile-menu-trigger {
+
+    background:
+      linear-gradient(
+        145deg,
+        #211b35,
+        #151120
+      ) !important;
+
+    color:
+      #b99cff !important;
+
+    border:
+      1px solid rgba(153, 119, 239, 0.28) !important;
+
+    border-radius:
+      10px !important;
+
+    box-shadow:
+      0 8px 22px rgba(0, 0, 0, 0.28),
+      inset 0 1px 0 rgba(255,255,255,0.05) !important;
+
+    backdrop-filter:
+      blur(14px) !important;
+
+    -webkit-backdrop-filter:
+      blur(14px) !important;
+  }
+
+  html.matcho-dark
+  .mobile-menu-trigger:hover {
+
+    background:
+      linear-gradient(
+        145deg,
+        #2a2243,
+        #1b1530
+      ) !important;
+
+    color:
+      #d0bcff !important;
+  }
+
+  html.matcho-dark
+  .mobile-menu-root.is-open
+  .mobile-menu-trigger {
+
+    background:
+      linear-gradient(
+        145deg,
+        #2b2147,
+        #19132d
+      ) !important;
+
+    color:
+      #d0bbff !important;
+
+    border-color:
+      rgba(169, 133, 255, 0.42) !important;
+  }
+
+
+  /* =======================================================
+     3. MATCHO LOGO — PURE WHITE
+  ======================================================= */
+
+  html.matcho-dark
+  .score-viewer-shell
+  .scoreboard-top-logo {
+
+    filter:
+      brightness(0)
+      invert(1) !important;
+
+    opacity:
+      1 !important;
+  }
+
+
+  /* Keep transparent wrapper */
+  html.matcho-dark
+  .score-viewer-shell
+  .scoreboard-top-logo-wrap {
+
+    background:
+      transparent !important;
+
+    border:
+      0 !important;
+
+    box-shadow:
+      none !important;
+  }
+
+
+  /* =======================================================
+     4. TOP NAVBAR DARK GLASS
+  ======================================================= */
+
+  html.matcho-dark
+  .score-viewer-shell
+  .scoreboard-top-navbar {
+
+    background:
+      linear-gradient(
+        135deg,
+        rgba(20, 16, 34, 0.97),
+        rgba(12, 10, 22, 0.97)
+      ) !important;
+
+    border-bottom:
+      1px solid rgba(145, 111, 225, 0.16) !important;
+
+    box-shadow:
+      0 12px 35px rgba(0,0,0,0.28) !important;
+  }
+
+
+  /* =======================================================
+     5. DARK SPORTS BAR
+  ======================================================= */
+
+  html.matcho-dark
+  .score-viewer-shell
+  .scoreboard-sports-selector {
+
+    background:
+      linear-gradient(
+        135deg,
+        rgba(28, 23, 47, 0.96),
+        rgba(15, 12, 27, 0.96)
+      ) !important;
+
+    border:
+      1px solid rgba(151, 116, 235, 0.20) !important;
+
+    box-shadow:
+      0 10px 26px rgba(0,0,0,0.25),
+      inset 0 1px 0 rgba(255,255,255,0.04) !important;
+  }
+
+}
+
+/* =========================================================
+   DARK MODE — REMOVE SPORTS BAR RIGHT EDGE FADE
+========================================================= */
+
+@media (max-width: 900px) {
+
+  html.matcho-dark
+  .score-viewer-shell
+  .scoreboard-sports-selector::after {
+    content: none !important;
+
+    display: none !important;
+
+    width: 0 !important;
+    min-width: 0 !important;
+    flex: 0 0 0 !important;
+
+    margin: 0 !important;
+
+    background: transparent !important;
+  }
+
+  html.matcho-dark
+  .score-viewer-shell
+  .scoreboard-sports-selector::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  html.matcho-dark
+  .score-viewer-shell
+  .scoreboard-sports-selector {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+}
+
+/* =========================================================
+   MATCHO — DARK MODE LIVE NOW PILL
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.live-pill-sm {
+
+  display: inline-flex !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+
+  gap: 6px !important;
+
+  min-height: 28px !important;
+
+  padding: 0 10px !important;
+
+  border-radius: 999px !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(74, 29, 48, 0.92),
+      rgba(38, 21, 38, 0.96)
+    ) !important;
+
+  border:
+    1px solid rgba(255, 86, 108, 0.32) !important;
+
+  color:
+    #ff7180 !important;
+
+  font-family:
+    "Poppins",
+    sans-serif !important;
+
+  font-size: 9px !important;
+
+  font-weight: 800 !important;
+
+  line-height: 1 !important;
+
+  box-shadow:
+    0 5px 16px rgba(0,0,0,0.20),
+    0 0 14px rgba(255,70,95,0.08) !important;
+}
+
+
+/* Live icon */
+
+html.matcho-dark
+.score-viewer-shell
+.live-pill-sm
+.live-pulsing-dot {
+
+  width: 11px !important;
+  height: 11px !important;
+
+  color:
+    #ff6677 !important;
+
+  stroke-width:
+    2.5 !important;
+
+  filter:
+    drop-shadow(
+      0 0 5px rgba(255,75,95,0.55)
+    ) !important;
+}
+
+
+/* Subtle pulse */
+
+@keyframes matchoDarkLivePulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.68;
+    transform: scale(1.08);
+  }
+}
+
+html.matcho-dark
+.score-viewer-shell
+.live-pill-sm
+.live-pulsing-dot {
+
+  animation:
+    matchoDarkLivePulse 1.8s ease-in-out infinite !important;
+}
+/* =========================================================
+   DARK MODE — MATCH TOURNAMENT NAME
+========================================================= */
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-match-card
+.scoreboard-match-tournament {
+  color: #e9e1f7 !important;
+
+  opacity: 1 !important;
+
+  font-weight: 700 !important;
+}
+
+
+/* Keep it slightly brighter on hover */
+
+html.matcho-dark
+.score-viewer-shell
+.scoreboard-match-card:hover
+.scoreboard-match-tournament {
+  color: #f4efff !important;
+}
+
+ /* =========================================================
+   MATCHO — REAL SIDEBAR QUICK ACTIONS
+========================================================= */
+
+
+/* Quick actions section */
+
+html.matcho-dark .org-sidebar-quick-actions {
+  margin: 10px 12px 18px !important;
+
+  padding-top: 18px !important;
+
+  border-top:
+    1px solid rgba(146, 119, 205, 0.14) !important;
+}
+
+
+/* Title */
+
+html.matcho-dark .org-sidebar-quick-title {
+  color: #817792 !important;
+
+  margin-bottom: 10px !important;
+}
+
+
+/* =========================================================
+   BASE BUTTON
+========================================================= */
+
+html.matcho-dark .org-quick-action {
+  width: 100% !important;
+
+  min-height: 46px !important;
+
+  display: flex !important;
+  align-items: center !important;
+
+  gap: 10px !important;
+
+  margin-bottom: 7px !important;
+
+  padding: 0 10px !important;
+
+  box-sizing: border-box !important;
+
+  border-radius: 11px !important;
+
+  font-family: "Poppins", sans-serif !important;
+
+  font-size: 11px !important;
+  font-weight: 700 !important;
+
+  color: #d8d0e7 !important;
+
+  background:
+    rgba(255,255,255,0.025) !important;
+
+  border:
+    1px solid rgba(145, 118, 202, 0.12) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.025),
+    0 6px 16px rgba(0,0,0,0.14) !important;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease !important;
+}
+
+
+/* =========================================================
+   ICON
+========================================================= */
+
+html.matcho-dark .org-quick-action-icon {
+  width: 30px !important;
+  height: 30px !important;
+
+  min-width: 30px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  border-radius: 8px !important;
+
+  background:
+    rgba(255,255,255,0.045) !important;
+
+  color:
+    #9d92b2 !important;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease !important;
+}
+
+html.matcho-dark .org-quick-action-icon svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+
+/* =========================================================
+   JOIN TOURNAMENT
+========================================================= */
+
+html.matcho-dark .org-quick-action-primary {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(103, 61, 255, 0.20),
+      rgba(78, 43, 156, 0.12)
+    ) !important;
+
+  border:
+    1px solid rgba(121, 82, 242, 0.32) !important;
+
+  color:
+    #d9cbff !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.035),
+    0 8px 20px rgba(73,42,160,0.15) !important;
+}
+
+html.matcho-dark .org-quick-action-primary
+.org-quick-action-icon {
+  background:
+    rgba(108, 61, 255, 0.20) !important;
+
+  color:
+    #b99cff !important;
+}
+
+html.matcho-dark .org-quick-action-primary:hover {
+  transform:
+    translateX(3px) !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(112, 66, 226, 0.29),
+      rgba(83, 48, 168, 0.18)
+    ) !important;
+
+  border-color:
+    rgba(153, 117, 255, 0.48) !important;
+
+  color:
+    #ffffff !important;
+
+  box-shadow:
+    0 10px 25px rgba(71,40,156,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.05) !important;
+}
+
+html.matcho-dark .org-quick-action-primary:hover
+.org-quick-action-icon {
+  background:
+    rgba(123, 79, 247, 0.30) !important;
+
+  color:
+    #d3c1ff !important;
+
+  transform:
+    scale(1.05) !important;
+}
+
+
+/* =========================================================
+   ORGANIZER SIGN UP
+========================================================= */
+
+html.matcho-dark .org-quick-action-secondary {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(39, 34, 55, 0.60),
+      rgba(22, 19, 35, 0.72)
+    ) !important;
+
+  border:
+    1px solid rgba(137, 119, 171, 0.14) !important;
+
+  color:
+    #aaa1b9 !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.025),
+    0 6px 16px rgba(0,0,0,0.12) !important;
+}
+
+html.matcho-dark .org-quick-action-secondary
+.org-quick-action-icon {
+  background:
+    rgba(255,255,255,0.045) !important;
+
+  color:
+    #91879f !important;
+}
+
+html.matcho-dark .org-quick-action-secondary:hover {
+  transform:
+    translateX(3px) !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(48, 41, 67, 0.80),
+      rgba(24, 20, 40, 0.90)
+    ) !important;
+
+  border-color:
+    rgba(147, 121, 194, 0.28) !important;
+
+  color:
+    #eee8f8 !important;
+
+  box-shadow:
+    0 10px 22px rgba(0,0,0,0.20) !important;
+}
+
+html.matcho-dark .org-quick-action-secondary:hover
+.org-quick-action-icon {
+  background:
+    rgba(110, 72, 211, 0.13) !important;
+
+  color:
+    #c1adf3 !important;
+
+  transform:
+    scale(1.05) !important;
+}
+
+
+/* =========================================================
+   TEXT
+========================================================= */
+
+html.matcho-dark .org-quick-action-text {
+  color: inherit !important;
+}
+
+
+/* =========================================================
+   FOCUS
+========================================================= */
+
+html.matcho-dark .org-quick-action:focus,
+html.matcho-dark .org-quick-action:focus-visible {
+  outline: none !important;
+
+  box-shadow:
+    0 0 0 3px rgba(108, 61, 255, 0.10) !important;
+}
+
+/* =========================================================
+   MATCHO THEME TRANSITION — SOFT GLASS MORPH
+   ========================================================= */
+
+html.matcho-theme-transition {
+  overflow: hidden;
+}
+
+/* Soft glass layer */
+html.matcho-theme-transition::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 99998;
+  pointer-events: none;
+
+  background: rgba(18, 14, 30, 0.16);
+
+  backdrop-filter: blur(0px) saturate(100%);
+  -webkit-backdrop-filter: blur(0px) saturate(100%);
+
+  opacity: 0;
+
+  animation: matchoThemeGlass 520ms cubic-bezier(.22, .75, .25, 1) forwards;
+}
+
+/* Slight depth change */
+html.matcho-theme-transition .score-viewer-shell {
+  animation: matchoThemeDepth 520ms cubic-bezier(.22, .75, .25, 1) forwards;
+}
+
+/* Theme button itself gets a small premium rotation */
+html.matcho-theme-transition .scoreboard-top-icon-btn {
+  animation: matchoThemeButton 520ms cubic-bezier(.22, .75, .25, 1) forwards;
+}
+
+
+/* -------------------------
+   Glass transition
+   ------------------------- */
+
+@keyframes matchoThemeGlass {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0px) saturate(100%);
+    -webkit-backdrop-filter: blur(0px) saturate(100%);
+  }
+
+  35% {
+    opacity: 1;
+    backdrop-filter: blur(8px) saturate(82%);
+    -webkit-backdrop-filter: blur(8px) saturate(82%);
+  }
+
+  55% {
+    opacity: 1;
+    backdrop-filter: blur(8px) saturate(82%);
+    -webkit-backdrop-filter: blur(8px) saturate(82%);
+  }
+
+  100% {
+    opacity: 0;
+    backdrop-filter: blur(0px) saturate(100%);
+    -webkit-backdrop-filter: blur(0px) saturate(100%);
+  }
+}
+
+
+/* -------------------------
+   Page depth / focus
+   ------------------------- */
+
+@keyframes matchoThemeDepth {
+  0% {
+    transform: scale(1);
+    filter: blur(0px);
+  }
+
+  35% {
+    transform: scale(0.992);
+    filter: blur(1.2px);
+  }
+
+  55% {
+    transform: scale(0.992);
+    filter: blur(1.2px);
+  }
+
+  100% {
+    transform: scale(1);
+    filter: blur(0px);
+  }
+}
+
+
+/* -------------------------
+   Theme icon animation
+   ------------------------- */
+
+@keyframes matchoThemeButton {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+
+  35% {
+    transform: rotate(90deg) scale(0.88);
+  }
+
+  55% {
+    transform: rotate(180deg) scale(0.88);
+  }
+
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html.matcho-theme-transition::before,
+  html.matcho-theme-transition .score-viewer-shell,
+  html.matcho-theme-transition .scoreboard-top-icon-btn {
+    animation: none !important;
+  }
+}
+
+/* =========================================================
+   MOBILE ANNOUNCEMENTS DROPDOWN FIX
+   Keeps the panel fully inside the viewport.
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .score-viewer-shell .scoreboard-announcements-dropdown {
+    position: fixed !important;
+
+    top: 76px !important;
+    left: 12px !important;
+    right: 12px !important;
+
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0 !important;
+
+    margin: 0 !important;
+
+    box-sizing: border-box !important;
+
+    z-index: 99999 !important;
+
+    overflow: hidden !important;
+  }
+
+  .score-viewer-shell .scoreboard-announcement-empty {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .score-viewer-shell .scoreboard-dropdown-head {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 430px) {
+  .score-viewer-shell .scoreboard-announcements-dropdown {
+    top: 72px !important;
+
+    left: 8px !important;
+    right: 8px !important;
+
+    width: auto !important;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 360px) {
+  .score-viewer-shell .scoreboard-announcements-dropdown {
+    left: 6px !important;
+    right: 6px !important;
+  }
+
+  .score-viewer-shell .scoreboard-dropdown-head {
+    padding: 12px !important;
+  }
+
+  .score-viewer-shell .scoreboard-announcement-empty {
+    padding: 22px 14px 24px !important;
+  }
+}

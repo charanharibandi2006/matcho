@@ -1085,3 +1085,480 @@
   object-fit: contain;
   display: block;
 }
+
+/* =========================================================
+   MATCHO JOIN TOURNAMENT — DARK MODE
+   ========================================================= */
+
+html.matcho-dark .join-tournament-page {
+  min-height: 100vh !important;
+
+  background:
+    radial-gradient(
+      circle at 82% 0%,
+      rgba(108, 61, 255, 0.16),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 12% 90%,
+      rgba(76, 45, 150, 0.10),
+      transparent 28%
+    ),
+    #0b0913 !important;
+
+  color: #eeeaff !important;
+}
+
+html.matcho-dark .join-tournament-main {
+  color: #eeeaff !important;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+html.matcho-dark .join-page-heading .join-back-btn {
+  background: rgba(255,255,255,0.035) !important;
+  border: 1px solid rgba(151,119,235,0.18) !important;
+  color: #b9a9df !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.03),
+    0 8px 22px rgba(0,0,0,0.20) !important;
+}
+
+html.matcho-dark .join-page-heading .join-back-btn:hover {
+  background: rgba(108,61,255,0.12) !important;
+  border-color: rgba(151,119,235,0.32) !important;
+  color: #d7ccf5 !important;
+}
+
+html.matcho-dark .join-tournament-page .reg-page-title {
+  color: #eee9fb !important;
+}
+
+html.matcho-dark .join-tournament-page .join-page-subtitle {
+  color: #8f88a8 !important;
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+html.matcho-dark .join-search-box {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(31,25,49,0.94),
+      rgba(17,14,29,0.98)
+    ) !important;
+
+  border: 1px solid rgba(151,119,235,0.20) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.035),
+    0 12px 32px rgba(0,0,0,0.24) !important;
+}
+
+html.matcho-dark .join-search-box:focus-within {
+  border-color: rgba(124,80,255,0.65) !important;
+
+  box-shadow:
+    0 0 0 3px rgba(112,64,245,0.12),
+    0 12px 32px rgba(0,0,0,0.26) !important;
+}
+
+html.matcho-dark .join-search-icon {
+  color: #9384b8 !important;
+}
+
+html.matcho-dark .join-search-input {
+  color: #eeeaff !important;
+}
+
+html.matcho-dark .join-search-input::placeholder {
+  color: #77708c !important;
+}
+
+html.matcho-dark .join-search-clear {
+  color: #ad96ff !important;
+}
+
+
+/* =========================================================
+   SECTION HEADING
+   ========================================================= */
+
+html.matcho-dark .join-section-heading h2 {
+  color: #f0ebfa !important;
+}
+
+html.matcho-dark .join-section-heading p {
+  color: #827b98 !important;
+}
+
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+html.matcho-dark .join-tournament-card {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(31,25,49,0.96),
+      rgba(17,14,29,0.985)
+    ) !important;
+
+  border: 1px solid rgba(151,119,235,0.16) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.035),
+    0 14px 38px rgba(0,0,0,0.27) !important;
+}
+
+html.matcho-dark .join-tournament-card:hover {
+  border-color: rgba(151,119,235,0.34) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.045),
+    0 18px 44px rgba(0,0,0,0.34),
+    0 0 22px rgba(108,61,255,0.08) !important;
+}
+
+
+/* SPORT ICON */
+
+html.matcho-dark .join-card-sport-icon {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(108,61,255,0.16),
+      rgba(79,49,145,0.12)
+    ) !important;
+
+  border: 1px solid rgba(151,119,235,0.15) !important;
+
+  color: #bba7ff !important;
+}
+
+html.matcho-dark .join-card-sport-emoji {
+  filter: drop-shadow(
+    0 0 7px rgba(144,103,255,0.18)
+  );
+}
+
+
+/* STATUS */
+
+html.matcho-dark .join-status-badge.open {
+  background: rgba(29,112,72,0.16) !important;
+  border: 1px solid rgba(74,190,126,0.18) !important;
+  color: #6fe0a1 !important;
+}
+
+html.matcho-dark .join-status-badge.full {
+  background: rgba(145,43,57,0.16) !important;
+  border: 1px solid rgba(255,87,108,0.18) !important;
+  color: #ff7c8b !important;
+}
+
+
+/* TITLE */
+
+html.matcho-dark .join-card-title-area h3 {
+  color: #f0ebfa !important;
+}
+
+html.matcho-dark .join-card-title-area p {
+  color: #938ca8 !important;
+}
+
+
+/* DESCRIPTION */
+
+html.matcho-dark .join-card-description {
+  color: #8f88a3 !important;
+}
+
+
+/* DETAILS */
+
+html.matcho-dark .join-card-details {
+  border-top-color: rgba(151,119,235,0.12) !important;
+}
+
+html.matcho-dark .join-card-details > div {
+  color: #aaa2ba !important;
+}
+
+html.matcho-dark .join-card-details svg {
+  color: #8f82b1 !important;
+}
+
+
+/* ORGANIZER */
+
+html.matcho-dark .join-card-organizer {
+  color: #81798f !important;
+}
+
+html.matcho-dark .join-card-organizer strong {
+  color: #b8add0 !important;
+}
+
+
+/* =========================================================
+   JOIN BUTTON
+   ========================================================= */
+
+html.matcho-dark .join-card-button {
+  background:
+    linear-gradient(
+      135deg,
+      #7040f5,
+      #6132df
+    ) !important;
+
+  color: #ffffff !important;
+
+  box-shadow:
+    0 8px 20px rgba(92,52,210,0.24) !important;
+}
+
+html.matcho-dark .join-card-button:hover:not(:disabled) {
+  background:
+    linear-gradient(
+      135deg,
+      #7d4fff,
+      #6939ec
+    ) !important;
+
+  box-shadow:
+    0 10px 24px rgba(92,52,210,0.32) !important;
+}
+
+html.matcho-dark .join-card-button:disabled {
+  background:
+    rgba(255,255,255,0.06) !important;
+
+  color: #777186 !important;
+
+  border: 1px solid rgba(255,255,255,0.06) !important;
+}
+
+html.matcho-dark .join-card-button.joined {
+  background:
+    rgba(36,130,79,0.14) !important;
+
+  border: 1px solid rgba(86,202,132,0.18) !important;
+
+  color: #6fdea0 !important;
+}
+
+
+/* =========================================================
+   EMPTY / LOADING
+   ========================================================= */
+
+html.matcho-dark .join-empty-state,
+html.matcho-dark .join-status-card {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(29,24,46,0.94),
+      rgba(16,13,27,0.98)
+    ) !important;
+
+  border-color: rgba(151,119,235,0.15) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.035),
+    0 12px 32px rgba(0,0,0,0.22) !important;
+}
+
+html.matcho-dark .join-empty-icon,
+html.matcho-dark .join-loading-icon {
+  background: rgba(108,61,255,0.12) !important;
+  color: #b69fff !important;
+}
+
+html.matcho-dark .join-empty-state h2,
+html.matcho-dark .join-status-card h3 {
+  color: #eee9f8 !important;
+}
+
+html.matcho-dark .join-empty-state p,
+html.matcho-dark .join-status-card p {
+  color: #8b849d !important;
+}
+
+html.matcho-dark .join-clear-search {
+  color: #ad96ff !important;
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+html.matcho-dark .join-modal-overlay {
+  background: rgba(5,3,10,0.72) !important;
+
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+html.matcho-dark .join-modal {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(31,25,49,0.98),
+      rgba(17,14,29,0.995)
+    ) !important;
+
+  border: 1px solid rgba(151,119,235,0.19) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.04),
+    0 30px 80px rgba(0,0,0,0.48) !important;
+}
+
+html.matcho-dark .join-modal-icon {
+  background: rgba(108,61,255,0.13) !important;
+  color: #b9a4ff !important;
+}
+
+html.matcho-dark .join-modal-header h2 {
+  color: #f0ebfa !important;
+}
+
+html.matcho-dark .join-modal-header p,
+html.matcho-dark .join-modal-description {
+  color: #8d869e !important;
+}
+
+
+/* FORM */
+
+html.matcho-dark .join-modal .auth-label {
+  color: #b8b0c9 !important;
+}
+
+html.matcho-dark .join-modal .auth-input {
+  background:
+    rgba(255,255,255,0.035) !important;
+
+  border-color:
+    rgba(151,119,235,0.16) !important;
+
+  color: #eeeaff !important;
+}
+
+html.matcho-dark .join-modal .auth-input::placeholder {
+  color: #756e83 !important;
+}
+
+html.matcho-dark .join-modal .auth-input:focus {
+  border-color: #7040f5 !important;
+
+  box-shadow:
+    0 0 0 3px rgba(112,64,245,0.12) !important;
+}
+
+html.matcho-dark .join-modal select.auth-input {
+  background-color: #1b1629 !important;
+}
+
+html.matcho-dark .join-modal select.auth-input option {
+  background: #1b1629 !important;
+  color: #eeeaff !important;
+}
+
+
+/* MODAL BUTTONS */
+
+html.matcho-dark .join-cancel-button {
+  background: rgba(255,255,255,0.035) !important;
+
+  border-color: rgba(151,119,235,0.16) !important;
+
+  color: #a7a0b5 !important;
+}
+
+html.matcho-dark .join-cancel-button:hover:not(:disabled) {
+  background: rgba(255,255,255,0.06) !important;
+  color: #d3cbe0 !important;
+}
+
+html.matcho-dark .join-submit-button {
+  background:
+    linear-gradient(
+      135deg,
+      #7040f5,
+      #6132df
+    ) !important;
+
+  color: white !important;
+}
+
+html.matcho-dark .join-submit-button:hover:not(:disabled) {
+  background:
+    linear-gradient(
+      135deg,
+      #7d4fff,
+      #6939ec
+    ) !important;
+}
+
+
+/* =========================================================
+   ERROR / SUCCESS
+   ========================================================= */
+
+html.matcho-dark .join-modal .tm-error {
+  background: rgba(145,43,57,0.12) !important;
+  border-color: rgba(255,87,108,0.18) !important;
+  color: #ff8794 !important;
+}
+
+html.matcho-dark .join-modal .tm-success {
+  background: rgba(29,112,72,0.12) !important;
+  border-color: rgba(74,190,126,0.18) !important;
+  color: #72dfa2 !important;
+}
+
+
+/* =========================================================
+   MOBILE DARK MODE
+   ========================================================= */
+
+@media (max-width: 700px) {
+  html.matcho-dark .join-tournament-main {
+    padding-bottom: 40px !important;
+  }
+
+  html.matcho-dark .join-tournament-card {
+    border-radius: 18px !important;
+  }
+}
+
+
+/* =========================================================
+   DARK SCROLLBAR
+   ========================================================= */
+
+html.matcho-dark .join-modal::-webkit-scrollbar {
+  width: 7px;
+}
+
+html.matcho-dark .join-modal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html.matcho-dark .join-modal::-webkit-scrollbar-thumb {
+  background: rgba(142,113,210,0.28);
+  border-radius: 10px;
+}
